@@ -1,0 +1,64 @@
+{
+  "module_categories.glowberry": "Glowberry",
+
+  "modules.lightLevel.name": "Lichtlevel",
+  "modules.lightLevel.description": "Zeigt Lichtlevel auf Blöcken mit farblichen Overlays an, um das Spawnen von Monstern zu verhindern",
+
+  "modules.lightLevel.groups.general": "Allgemein",
+  "modules.lightLevel.settings.showSafeAreas.name": "Sichere Bereiche anzeigen",
+  "modules.lightLevel.settings.showSafeAreas.description": "Wenn deaktiviert, wird nur das Lichtlevel 0 (gefährlichste) angezeigt. Wenn aktiviert, werden alle Lichtlevel angezeigt.",
+  "modules.lightLevel.settings.chunkScanRange.name": "Scanreichweite",
+  "modules.lightLevel.settings.chunkScanRange.description": "Abstand in Blöcken um den Spieler herum, in denen Lichtlevel angezeigt werden",
+
+  "modules.lightLevel.groups.colors": "Farben",
+  "modules.lightLevel.settings.unsafeColor.name": "Unsichere Farbe",
+  "modules.lightLevel.settings.unsafeColor.description": "Overlay-Farbe für Lichtlevel 0 - Monster spawnen",
+  "modules.lightLevel.settings.safeColor.name": "Sichere Farbe",
+  "modules.lightLevel.settings.safeColor.description": "Overlay-Farbe für Lichtlevel 1 - 15 - keine Monster spawnen",
+  "modules.lightLevel.settings.threshold.name": "Lichtlevel-Grenzwert",
+  "modules.lightLevel.settings.threshold.description": "Lichtlevel unterhalb dieses Wertes werden als unsicher (rot) angezeigt. Standard: 1 (nur Level 0 ist unsicher, entspricht Minecraft-Verhalten)",
+
+  "modules.fastPlace.name": "Schnelles Platzieren",
+  "modules.fastPlace.description": "Verringert die Verzögerung zwischen Blockplatzierungen für schnelleres Bauen",
+  "modules.fastPlace.groups.general": "Allgemein",
+
+  "modules.fastBreak.name": "Schnelles Abbauen",
+  "modules.fastBreak.description": "Entfernt die Verzögerung zwischen Blockabbau im Kreativmodus für schnelleres Abbauen",
+
+  "modules.noHurtcam.name": "Kein Hurtcam",
+  "modules.noHurtcam.description": "Deaktiviert den Bildschirm-Wackeleffekt beim Erleiden von Schaden",
+
+  "modules.autoTool.name": "Auto Tool",
+  "modules.autoTool.description": "Wechselt automatisch zum besten Werkzeug, wenn Blöcke abgebaut oder Wesen angegriffen werden",
+  "modules.autoTool.groups.tools": "Werkzeugkategorien",
+  "modules.autoTool.settings.swords.name": "Schwerter",
+  "modules.autoTool.settings.swords.description": "Zum Schwertern beim Angreifen wechseln erlauben",
+  "modules.autoTool.settings.axes.name": "Äxte", 
+  "modules.autoTool.settings.axes.description": "Zu Äxten für Abbau oder Angriff wechseln erlauben",
+  "modules.autoTool.settings.pickaxes.name": "Spitzhacken",
+  "modules.autoTool.settings.pickaxes.description": "Zu Spitzhacken für Abbau wechseln erlauben",
+  "modules.autoTool.settings.shovels.name": "Schaufeln",
+  "modules.autoTool.settings.shovels.description": "Zu Schaufeln für Abbau wechseln erlauben",
+  "modules.autoTool.settings.hoes.name": "Hoe",
+  "modules.autoTool.settings.hoes.description": "Zu Hoes für Abbau wechseln erlauben",
+  "modules.autoTool.settings.changeForEntities.name": "Für Wesen wechseln",
+  "modules.autoTool.settings.changeForEntities.description": "Zu bester Waffe wechseln, wenn Wesen angegriffen werden",
+  
+  "modules.horseStats.name": "Pferde-Statistiken",
+  "modules.horseStats.description": "Zeigt Pferde-Statistiken an, wenn ein Pferd besteigen wird, in der Aktionsleiste",
+  "modules.horseStats.groups.general": "Allgemein",
+  "modules.horseStats.settings.displayDuration.name": "Anzeigedauer",
+  "modules.horseStats.settings.displayDuration.description": "Wie viele Sekunden die Pferde-Statistiken in der Aktionsleiste angezeigt werden sollen",
+
+  "modules.autoClicker.name": "Auto Clicker",
+  "modules.autoClicker.description": "Klickt automatisch mit festgelegter Angriffsgeschwindigkeit, wenn aktiviert",
+  "modules.autoClicker.groups.general": "Allgemein",
+  "modules.autoClicker.settings.buttonType.name": "Taste",
+  "modules.autoClicker.settings.buttonType.description": "Welche Maustaste zu klicken ist",
+  "modules.autoClicker.settings.buttonType.lEFT": "Linksklick",
+  "modules.autoClicker.settings.buttonType.rIGHT": "Rechtsklick",
+  "modules.autoClicker.settings.attackSpeed.name": "Angriffsgeschwindigkeit",
+  "modules.autoClicker.settings.attackSpeed.description": "Angriffsgeschwindigkeit-Wert (1,6 = Schwert)",
+  "modules.autoClicker.settings.toggleKeybind.name": "Umschalttaste",
+  "modules.autoClicker.settings.toggleKeybind.description": "Taste zum Umschalten des Auto Clickers an/aus"
+  }

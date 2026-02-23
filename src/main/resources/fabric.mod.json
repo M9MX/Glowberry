@@ -1,0 +1,35 @@
+{
+    "schemaVersion": 1,
+    "id": "glowberry-addon",
+    "version": "${version}",
+    "name": "Glowberry Addon",
+    "description": "Cactus Addon",
+    "authors": [
+        "M9MX"
+    ],
+    "contact": {
+        "homepage": "https://cactusmod.xyz/",
+        "sources": "https://github.com/cactusmod/addon-template"
+    },
+    "icon": "assets/glowberry/icon.png",
+    "environment": "client",
+    "entrypoints": {
+        "cactus": [
+            "org.m9mx.cactus.glowberry.GlowberryMain"
+        ]
+    },
+    "mixins": [
+        "glowberry.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": ">=0.17.3",
+        "minecraft": "~1.21.11",
+        "java": ">=21",
+        "cactus": ">=0.12.2",
+        "fabric-api": "*",
+        "overlaylib": "*"
+    },
+    "suggests": {
+        "another-mod": "*"
+    }
+}

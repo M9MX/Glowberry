@@ -1,0 +1,64 @@
+{
+  "module_categories.glowberry": "Glowberry",
+
+  "modules.lightLevel.name": "Light Level",
+  "modules.lightLevel.description": "Displays light levels on blocks with colored overlays to help prevent mob spawns",
+
+  "modules.lightLevel.groups.general": "General",
+  "modules.lightLevel.settings.showSafeAreas.name": "Show Safe Areas",
+  "modules.lightLevel.settings.showSafeAreas.description": "When disabled, only shows light level 0 (most dangerous). When enabled, shows all light levels.",
+  "modules.lightLevel.settings.chunkScanRange.name": "Scan Range",
+  "modules.lightLevel.settings.chunkScanRange.description": "Distance in blocks around player to show light levels",
+
+  "modules.lightLevel.groups.colors": "Colors",
+  "modules.lightLevel.settings.unsafeColor.name": "Unsafe Color",
+  "modules.lightLevel.settings.unsafeColor.description": "Overlay color for light levels are 0 - hostile mobs spawn",
+  "modules.lightLevel.settings.safeColor.name": "Safe Color",
+  "modules.lightLevel.settings.safeColor.description": "Overlay color for light levels are 1 - 15 - no hostile mobs spawn",
+  "modules.lightLevel.settings.threshold.name": "Light Level Threshold",
+  "modules.lightLevel.settings.threshold.description": "Light levels below this value are shown as unsafe (red). Default: 1 (only level 0 is unsafe, matching Minecraft behavior)",
+
+  "modules.fastPlace.name": "Fast Place",
+  "modules.fastPlace.description": "Reduces the delay between block placements for faster building",
+  "modules.fastPlace.groups.general": "General",
+
+  "modules.fastBreak.name": "Fast Break",
+  "modules.fastBreak.description": "Removes the delay between block breaking in creative mode for faster mining",
+
+  "modules.noHurtcam.name": "No Hurtcam",
+  "modules.noHurtcam.description": "Disables the screen shake effect when taking damage",
+
+  "modules.autoTool.name": "Auto Tool",
+  "modules.autoTool.description": "Automatically switches to the best tool when mining blocks or attacking entities",
+  "modules.autoTool.groups.tools": "Tool Categories",
+  "modules.autoTool.settings.swords.name": "Swords",
+  "modules.autoTool.settings.swords.description": "Allow switching to swords when attacking",
+  "modules.autoTool.settings.axes.name": "Axes", 
+  "modules.autoTool.settings.axes.description": "Allow switching to axes for mining or attacking",
+  "modules.autoTool.settings.pickaxes.name": "Pickaxes",
+  "modules.autoTool.settings.pickaxes.description": "Allow switching to pickaxes for mining",
+  "modules.autoTool.settings.shovels.name": "Shovels",
+  "modules.autoTool.settings.shovels.description": "Allow switching to shovels for mining",
+  "modules.autoTool.settings.hoes.name": "Hoes",
+  "modules.autoTool.settings.hoes.description": "Allow switching to hoes for mining",
+  "modules.autoTool.settings.changeForEntities.name": "Change for Entities",
+  "modules.autoTool.settings.changeForEntities.description": "Switch to best weapon when attacking entities",
+
+  "modules.horseStats.name": "Horse Stats",
+  "modules.horseStats.description": "Displays horse statistics when mounting a horse in the action bar",
+  "modules.horseStats.groups.general": "General",
+  "modules.horseStats.settings.displayDuration.name": "Display Duration",
+  "modules.horseStats.settings.displayDuration.description": "How many seconds to display horse stats in the action bar",
+
+  "modules.autoClicker.name": "Auto Clicker",
+  "modules.autoClicker.description": "Automatically clicks at a set attack speed when enabled",
+  "modules.autoClicker.groups.general": "General",
+  "modules.autoClicker.settings.buttonType.name": "Button Type",
+  "modules.autoClicker.settings.buttonType.description": "Which mouse button to click",
+  "modules.autoClicker.settings.buttonType.lEFT": "Left Click",
+  "modules.autoClicker.settings.buttonType.rIGHT": "Right Click",
+  "modules.autoClicker.settings.attackSpeed.name": "Attack Speed",
+  "modules.autoClicker.settings.attackSpeed.description": "Attack speed value (1.6 = sword)",
+  "modules.autoClicker.settings.toggleKeybind.name": "Toggle Key",
+  "modules.autoClicker.settings.toggleKeybind.description": "Key to toggle auto clicker on/off"
+  }

@@ -1,0 +1,25 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "org.m9mx.cactus.glowberry.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MinecraftAccessor",
+    "InventoryAccessor"
+  ],
+  "client": [
+    "ClientChunkCacheMixin",
+    "LevelRendererMixin",
+    "GameRendererMixin",
+    "KeyMappingMixin",
+    "BreakMixin",
+    "GuiHurtcamMixin",
+    "GameRendererHurtcamMixin",
+    "AutoToolMixin",
+    "HorseStatsMixin",
+    "GuiAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

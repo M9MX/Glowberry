@@ -1,0 +1,86 @@
+package org.m9mx.cactus.glowberry.feature.modules;
+
+import com.dwarslooper.cactus.client.event.EventHandler;
+import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
+import com.dwarslooper.cactus.client.feature.module.Category;
+import com.dwarslooper.cactus.client.feature.module.Module;
+import com.dwarslooper.cactus.client.systems.config.settings.group.SettingGroup;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.KeybindSetting;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
+import com.dwarslooper.cactus.client.util.game.ChatUtils;
+import net.minecraft.client.Minecraft;
+import net.xolt.freecam.Freecam;
+import org.lwjgl.glfw.GLFW;
+
+// Use the correct import paths as provided
+import com.dwarslooper.cactus.client.systems.key.KeyBind;
+
+public class FreecamModule extends Module {
+    public static FreecamModule INSTANCE;
+
+    private final SettingGroup generalGroup;
+    public final Setting<KeyBind> toggleKeybind;
+
+    private boolean lastKeyPressed = false;
+
+    public FreecamModule(Category category) {
+        super("freecam", category, new Module.Options());
+        INSTANCE = this;
+
+        this.generalGroup = this.settings.buildGroup("general");
+        this.toggleKeybind = this.generalGroup.add(new KeybindSetting("toggleKeybind", KeyBind.of(GLFW.GLFW_KEY_R)));
+    }
+
+    @Override
+    public void onEnable() {
+        // Module enabled - no message
+    }
+
+    @Override
+    public void onDisable() {
+        // Disable freecam when module is disabled if it's currently enabled
+        if (Freecam.isEnabled()) {
+            Freecam.toggle();
+        }
+    }
+
+    @EventHandler
+    public void onTick(ClientTickEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null) {
+            return;
+        }
+
+        // Check if the toggle key is pressed
+        boolean keyPressed = isRKeyPressed();
+
+        // Toggle freecam on key press (only when module is active)
+        if (keyPressed && !lastKeyPressed && this.active()) {
+            toggleFreecam();
+        }
+        lastKeyPressed = keyPressed;
+    }
+
+    private void toggleFreecam() {
+        // Use the actual Freecam mod toggle functionality
+        Freecam.toggle();
+    }
+
+    private boolean isRKeyPressed() {
+        try {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc.getWindow() == null)
+                return false;
+
+            java.lang.reflect.Field handleField = mc.getWindow().getClass().getDeclaredField("handle");
+            handleField.setAccessible(true);
+            long windowHandle = (long) handleField.get(mc.getWindow());
+
+            // Get the key code from the KeyBind setting using the proper API
+            KeyBind keyBind = this.toggleKeybind.get();
+            return keyBind.isPressed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
