@@ -31,6 +31,4 @@ public class FastPlaceModule extends Module {
         // When module is disabled, fast place is disabled
         this.fastPlaceActive = false;
     }
-
-
 }

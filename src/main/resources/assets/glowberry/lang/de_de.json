@@ -60,5 +60,11 @@
   "modules.autoClicker.settings.attackSpeed.name": "Angriffsgeschwindigkeit",
   "modules.autoClicker.settings.attackSpeed.description": "Angriffsgeschwindigkeit-Wert (1,6 = Schwert)",
   "modules.autoClicker.settings.toggleKeybind.name": "Umschalttaste",
-  "modules.autoClicker.settings.toggleKeybind.description": "Taste zum Umschalten des Auto Clickers an/aus"
+  "modules.autoClicker.settings.toggleKeybind.description": "Taste zum Umschalten des Auto Clickers an/aus",
+
+  "modules.tabList.name": "Tab-Liste",
+  "modules.tabList.description": "Zeigt den Ping der Spieler neben ihren Namen in der Spielerliste an",
+  "modules.tabList.groups.general": "Allgemein",
+  "modules.tabList.settings.showPing.name": "Ping anzeigen",
+  "modules.tabList.settings.showPing.description": "Zeige Ping-Werte neben den Spielernamen in der Tab-Liste mit Farbcodierung an"
   }

@@ -17,7 +17,8 @@
     "GameRendererHurtcamMixin",
     "AutoToolMixin",
     "HorseStatsMixin",
-    "GuiAccessor"
+    "GuiAccessor",
+    "PlayerTabOverlayMixin"
   ],
   "injectors": {
     "defaultRequire": 1
