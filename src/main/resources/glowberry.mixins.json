@@ -18,7 +18,18 @@
     "AutoToolMixin",
     "HorseStatsMixin",
     "GuiAccessor",
-    "PlayerTabOverlayMixin"
+    "PlayerTabOverlayMixin",
+    "shield.ShieldSpecialRendererMixin",
+    "shield.PlayerItemInHandLayerMixin",
+    "shield.ClientPacketListenerMixin",
+    "shield.MultiPlayerGameModeMixin",
+    "totemcounter.TotemCounterGameRendererMixin",
+    "totemcounter.TotemCounterGuiMixin",
+    "totemcounter.TotemCounterClientPacketListenerMixin",
+    "totemcounter.TotemCounterPlayerTabOverlayMixin",
+    "totemcounter.TotemCounterPlayerMixin",
+    "totemcounter.TotemCounterChatComponentMixin",
+    "totemcounter.TotemCounterPlayerDeathMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Credits: https://github.com/Alex-265/mc-ping-in-tablist
+ */
 @Mixin(PlayerTabOverlay.class)
 public class PlayerTabOverlayMixin {
 

@@ -44,12 +44,14 @@
   "modules.autoTool.settings.changeForEntities.name": "Change for Entities",
   "modules.autoTool.settings.changeForEntities.description": "Switch to best weapon when attacking entities",
 
+
   "modules.horseStats.name": "Horse Stats",
   "modules.horseStats.description": "Displays horse statistics when mounting a horse in the action bar",
   "modules.horseStats.groups.general": "General",
   "modules.horseStats.settings.displayDuration.name": "Display Duration",
   "modules.horseStats.settings.displayDuration.description": "How many seconds to display horse stats in the action bar",
 
+  
   "modules.autoClicker.name": "Auto Clicker",
   "modules.autoClicker.description": "Automatically clicks at a set attack speed when enabled",
   "modules.autoClicker.groups.general": "General",
@@ -62,9 +64,50 @@
   "modules.autoClicker.settings.toggleKeybind.name": "Toggle Key",
   "modules.autoClicker.settings.toggleKeybind.description": "Key to toggle auto clicker on/off",
 
+
   "modules.tabList.name": "Tab List",
   "modules.tabList.description": "Displays player ping next to their names in the player list",
   "modules.tabList.groups.general": "General",
   "modules.tabList.settings.showPing.name": "Show Ping",
-  "modules.tabList.settings.showPing.description": "Display ping values next to player names in the tab list with color coding"
+  "modules.tabList.settings.showPing.description": "Display ping values next to player names in the tab list with color coding",
+
+
+  "modules.totemcounter.name": "Totem Counter",
+  "modules.totemcounter.description": "Displays your totem count on screen and tracks enemy totem pops in tab list",
+  
+  "modules.totemcounter.groups.display": "HUD Settings",
+  "modules.totemcounter.settings.displayEnabled.name": "Show Your Totem Count",
+  "modules.totemcounter.settings.displayEnabled.description": "Display your totem count with icon on the HUD",
+  "modules.totemcounter.settings.displayColors.name": "Colored Count",
+  "modules.totemcounter.settings.displayColors.description": "Color code your totem count - green for high (9+), red for low (1-2)",
+
+  "modules.totemcounter.groups.counter": "Enemy Pop Counter",
+  "modules.totemcounter.settings.counterEnabled.name": "Track Enemy Pops",
+  "modules.totemcounter.settings.counterEnabled.description": "Show how many times enemies popped totems in tab list",
+  "modules.totemcounter.settings.separator.name": "Show Separator",
+  "modules.totemcounter.settings.separator.description": "Display a '|' between player name and pop count",
+  "modules.totemcounter.settings.counterColors.name": "Color Pop Counter",
+  "modules.totemcounter.settings.counterColors.description": "Color code pops - green for 1-2, yellow for 5-6, red for 9+",
+
+
+  "modules.shieldStatus.name": "Shield Status",
+  "modules.shieldStatus.description": "Displays shield status with color indicators for enabled, in use, and disabled states",
+  
+  "modules.shieldStatus.groups.general": "General",
+  "modules.shieldStatus.settings.selfStateOnly.name": "Self State Only",
+  "modules.shieldStatus.settings.selfStateOnly.description": "Shows shield states for the client player only, ignores other players",
+  "modules.shieldStatus.settings.opacity.name": "Shield Opacity",
+  "modules.shieldStatus.settings.opacity.description": "Opacity of the shield (0% = invisible, 100% = fully opaque)",
+  
+  "modules.shieldStatus.groups.colors": "Colors",
+  "modules.shieldStatus.settings.interpolateColor.name": "Interpolate Color",
+  "modules.shieldStatus.settings.interpolateColor.description": "Smoothly fade the shield color from green (enabled) to red (disabled) during cooldown. When off, the color instantly switches to red when broken",
+  "modules.shieldStatus.settings.grayscaleTexture.name": "Grayscale Texture",
+  "modules.shieldStatus.settings.grayscaleTexture.description": "Removes texture colors before applying the overlay, making the shield color more visible and vibrant",
+  "modules.shieldStatus.settings.enabledColor.name": "Enabled Color",
+  "modules.shieldStatus.settings.enabledColor.description": "Color of the shield when enabled",
+  "modules.shieldStatus.settings.usingColor.name": "Using Color",
+  "modules.shieldStatus.settings.usingColor.description": "Color of the shield when in use",
+  "modules.shieldStatus.settings.disabledColor.name": "Disabled Color",
+  "modules.shieldStatus.settings.disabledColor.description": "Color of the shield when disabled"
   }

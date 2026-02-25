@@ -8,7 +8,9 @@ import org.m9mx.cactus.glowberry.feature.modules.NoHurtcamModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
 import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule; // Import the new module
+import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
+import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
@@ -46,7 +48,9 @@ public class GlowberryMain implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> new AutoToolModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new HorseStatsModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new AutoClickerModule(GLOWBERRY_CATEGORY)); // Register the new AutoClicker module
+		registryBus.register(Module.class, ctx -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TabListModule(GLOWBERRY_CATEGORY));
+		registryBus.register(Module.class, ctx -> new TotemCounterModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		

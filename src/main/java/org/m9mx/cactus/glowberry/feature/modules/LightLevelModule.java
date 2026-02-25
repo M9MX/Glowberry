@@ -52,13 +52,8 @@ public class LightLevelModule extends Module {
 
 	@EventHandler
 	public void onTick(ClientTickEvent event) {
-	// Update all settings in real-time
-		LightLevelOverlayHandler.updateSettings(
-			chunkScanRange.get(),
-			threshold.get(),
-			unsafeColor.get(),
-			safeColor.get()
-		);
+		// Update chunk scan radius in real-time
+		LightLevelOverlayHandler.updateChunkScanRadius(chunkScanRange.get());
 	}
 
 	public int getColorForLightLevel(int lightLevel) {

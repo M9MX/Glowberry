@@ -25,6 +25,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Credits: https://github.com/zelythia/AutoTools
+ */
 @Mixin(MultiPlayerGameMode.class)
 public class AutoToolMixin {
 

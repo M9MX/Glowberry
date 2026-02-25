@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
@@ -19,8 +18,8 @@ public class GameRendererMixin {
             
             // Only apply fast place if holding a block item
             if (minecraft.player != null && minecraft.player.getMainHandItem().getItem() instanceof BlockItem) {
-                MinecraftAccessor accessor = (MinecraftAccessor) (Object) minecraft;
-                accessor.setRightClickDelay(0);
+                    MinecraftAccessor accessor = (MinecraftAccessor) (Object) minecraft;
+                    accessor.setRightClickDelay(0);
             }
         }
     }

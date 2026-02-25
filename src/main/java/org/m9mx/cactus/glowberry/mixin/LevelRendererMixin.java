@@ -10,6 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Credits: https://github.com/lugosieben/lightoverlay
+ */
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {
     @Inject(method = "blockChanged", at = @At("HEAD"))
