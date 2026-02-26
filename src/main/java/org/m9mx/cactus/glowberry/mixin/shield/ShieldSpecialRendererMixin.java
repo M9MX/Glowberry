@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.util.shield.ShieldItemModelRenderer;
+import org.m9mx.cactus.glowberry.util.shield.FocusedEntityHolder;
 
 @Mixin(ShieldSpecialRenderer.class)
 public class ShieldSpecialRendererMixin {
@@ -43,7 +44,6 @@ public class ShieldSpecialRendererMixin {
 			return; // Module not enabled, use vanilla rendering
 		}
 
-		// Get the player holding the shield
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null || mc.player == null) {
 			return;
@@ -58,31 +58,20 @@ public class ShieldSpecialRendererMixin {
 			player = mc.player;
 		} else if (itemDisplayContext == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND 
 			|| itemDisplayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND) {
-			// Third-person: check for client player first (F5 mode)
-			if (mc.player != null && (mc.player.getMainHandItem().is(Items.SHIELD) || mc.player.getOffhandItem().is(Items.SHIELD))) {
-				player = mc.player;
-			} else if (mc.level != null) {
-				// Otherwise find the closest player with a shield
-				double closestDistance = Double.MAX_VALUE;
-				Player closestPlayer = null;
-				
-				for (Player p : mc.level.players()) {
-					if (p == mc.player) continue;
-					
-					// Check if this player is holding a shield
-					if (!p.getMainHandItem().is(Items.SHIELD) && !p.getOffhandItem().is(Items.SHIELD)) {
-						continue;
-					}
-					
-					// Find the closest player with a shield
-					double distance = mc.player.distanceTo(p);
-					if (distance < closestDistance) {
-						closestDistance = distance;
-						closestPlayer = p;
-					}
+			// Try to get from focused entity first (being rendered in PlayerItemInHandLayer)
+			if (FocusedEntityHolder.getFocused() != null) {
+				player = FocusedEntityHolder.getFocused();
+			} else if (entityId >= 0) {
+				// Fallback: use entityId to get the entity
+				var entity = mc.level.getEntity(entityId);
+				if (entity instanceof Player p) {
+					player = p;
 				}
-				
-				player = closestPlayer;
+			}
+			
+			// If still no player, try to find client player (F5 mode)
+			if (player == null && (mc.player.getMainHandItem().is(Items.SHIELD) || mc.player.getOffhandItem().is(Items.SHIELD))) {
+				player = mc.player;
 			}
 		}
 		

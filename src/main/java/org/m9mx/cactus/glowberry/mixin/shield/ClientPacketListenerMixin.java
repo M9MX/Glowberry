@@ -20,7 +20,6 @@ public class ClientPacketListenerMixin {
 
 		String soundId = packet.getSound().value().location().toString().toLowerCase();
 		if (soundId.contains("shield.break")) {
-			System.out.println("[Shield] Shield break sound detected at: " + packet.getX() + ", " + packet.getY() + ", " + packet.getZ());
 			module.getShieldStateManager().handleBreakPacket(packet.getX(), packet.getY(), packet.getZ());
 		}
 	}
