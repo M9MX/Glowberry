@@ -11,6 +11,8 @@ import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule; // Import th
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
+import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
+import org.m9mx.cactus.glowberry.util.appleskin.network.SyncHandler;
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
@@ -51,6 +53,7 @@ public class GlowberryMain implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TabListModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TotemCounterModule(GLOWBERRY_CATEGORY));
+		registryBus.register(Module.class, ctx -> new AppleSkinModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		
@@ -61,6 +64,9 @@ public class GlowberryMain implements ICactusAddon {
 	public void onLoadComplete() {
 		// This is called when Cactus is fully done initializing
 		// This does not mean the game has completely loaded yet
+		
+		// Initialize the server-side sync handler
+		SyncHandler.init();
 	}
 
 	@Override

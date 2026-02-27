@@ -30,6 +30,7 @@
         "overlaylib": "*"
     },
     "suggests": {
-        "another-mod": "*"
+        "jei": "*",
+        "rei": "*"
     }
 }

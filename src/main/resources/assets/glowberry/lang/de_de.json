@@ -1,6 +1,32 @@
 {
   "module_categories.glowberry": "Glowberry",
 
+  "modules.appleSkin.name": "AppleSkin",
+  "modules.appleSkin.description": "Fügt verschiedene Verbesserungen für Nahrungsmittel-bezogene HUD-Anzeigen hinzu",
+
+  "modules.appleSkin.groups.hudOverlay": "HUD-Overlay",
+  "modules.appleSkin.groups.tooltip": "Tooltip",
+
+  "modules.appleSkin.settings.showSaturationHudOverlay.name": "Sättigungs-HUD-Overlay anzeigen",
+  "modules.appleSkin.settings.showSaturationHudOverlay.description": "Zeigt deine aktuelle Sättigung als Overlay auf der Hungerleiste an",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.name": "Nahrungs-Werte-HUD-Overlay anzeigen",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.description": "Zeigt den Hunger (und die Sättigung, falls 'Sättigungs-HUD-Overlay anzeigen' aktiviert ist), welcher durch die aktuell gehaltene Nahrung wiederhergestellt werden würde",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.name": "Nahrungs-Gesundheits-HUD-Overlay anzeigen",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.description": "Zeigt die geschätzte Gesundheit, die durch Nahrung auf der Gesundheitsleiste wiederhergestellt werden kann",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.name": "Nahrungs-Erschöpfungs-HUD-Unterlage anzeigen",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.description": "Zeigt deine Nahrungserschöpfung als Fortschrittsbalken hinter der Hungerleiste an",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.name": "Vanilla-Animations-Overlay anzeigen",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.description": "Das Gesundheits-/Hunger-Overlay wird sich bewegen, um den Minecraft-Icon-Animationen zu entsprechen",
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.name": "Maximale HUD-Overlay-Deckkraft",
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.description": "Deckkraftwert der blinkenden Symbole an ihrem sichtbarsten Punkt (1,0 = vollständig deckend, 0,0 = vollständig transparent)",
+
+  "modules.appleSkin.settings.showFoodValuesInTooltip.name": "Nahrungs-Werte im Tooltip anzeigen",
+  "modules.appleSkin.settings.showFoodValuesInTooltip.description": "Zeigt die Hunger- und Sättigungswerte von Nahrungsmitteln im Tooltip an, solange UMSCHALT gedrückt wird",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.name": "Nahrungs-Werte immer im Tooltip anzeigen",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.description": "Zeigt die Hunger- und Sättigungswerte von Nahrungsmitteln automatisch im Tooltip an (ohne dass UMSCHALT gedrückt werden muss)",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.name": "Nahrungs-Werte-HUD-Overlay in der Nebenhand anzeigen",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.description": "Aktiviert die Hunger-/Sättigungs-/Gesundheits-Overlays für Nahrungsmittel in deiner Nebenhand",
+
   "modules.lightLevel.name": "Lichtlevel",
   "modules.lightLevel.description": "Zeigt Lichtlevel auf Blöcken mit farblichen Overlays an, um das Spawnen von Monstern zu verhindern",
 

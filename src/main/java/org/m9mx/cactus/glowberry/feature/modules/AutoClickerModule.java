@@ -39,7 +39,7 @@ public class AutoClickerModule extends Module {
 
         this.generalGroup = this.settings.buildGroup("general");
         this.buttonType = this.generalGroup.add(new EnumSetting<>("buttonType", ButtonType.LEFT));
-        this.attackSpeed = this.generalGroup.add(new FloatSetting("attackSpeed", 1.6f).min(1.0f).max(20.0f));
+        this.attackSpeed = this.generalGroup.add(new FloatSetting("attackSpeed", 1.6f).min(0.0f).max(3.0f));
         this.toggleKeybind = this.generalGroup.add(new KeybindSetting("toggleKeybind", KeyBind.of(GLFW.GLFW_KEY_X)));
     }
 

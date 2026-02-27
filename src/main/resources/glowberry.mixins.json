@@ -1,11 +1,14 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "org.m9mx.cactus.glowberry.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MinecraftAccessor",
-    "InventoryAccessor"
+    "InventoryAccessor",
+
+    "appleskin.ServerPlayerEntityMixin",
+    "appleskin.PlayerManagerMixin",
+    "appleskin.HungerManagerMixin"
   ],
   "client": [
     "ClientChunkCacheMixin",
@@ -19,6 +22,12 @@
     "HorseStatsMixin",
     "GuiAccessor",
     "PlayerTabOverlayMixin",
+
+    "appleskin.ItemStackMixin",
+    "appleskin.InGameHudMixin",
+    "appleskin.MinecraftClientMixin",
+    "appleskin.TooltipComponentMixin",
+
     "shield.ShieldSpecialRendererMixin",
     "shield.PlayerItemInHandLayerMixin",
     "shield.ClientPacketListenerMixin",
@@ -26,6 +35,7 @@
     "shield.LocalPlayerMixin",
     "shield.LivingEntityMixin",
     "shield.MinecraftMixin",
+
     "totemcounter.TotemCounterGameRendererMixin",
     "totemcounter.TotemCounterGuiMixin",
     "totemcounter.TotemCounterClientPacketListenerMixin",
@@ -35,6 +45,7 @@
     "totemcounter.TotemCounterPlayerDeathMixin"
   ],
   "injectors": {
-    "defaultRequire": 1
+    "defaultRequire": 1,
+    "maxShiftBy": 2
   }
 }

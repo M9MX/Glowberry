@@ -1,6 +1,32 @@
 {
   "module_categories.glowberry": "Glowberry",
 
+  "modules.appleSkin.name": "AppleSkin",
+  "modules.appleSkin.description": "Adds various food-related HUD improvements",
+  
+  "modules.appleSkin.groups.hudOverlay": "HUD Overlay",
+  "modules.appleSkin.groups.tooltip": "Tooltip",
+  
+  "modules.appleSkin.settings.showSaturationHudOverlay.name": "Show Saturation HUD Overlay",
+  "modules.appleSkin.settings.showSaturationHudOverlay.description": "Shows your current saturation level overlayed on the hunger bar",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.name": "Show Food Values HUD Overlay",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.description": "Shows the hunger (and saturation if showSaturationHudOverlay is true) that would be restored by food you are currently holding",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.name": "Show Food Health HUD Overlay",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.description": "Shows estimated health restored by food on the health bar",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.name": "Show Food Exhaustion HUD Underlay",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.description": "Shows your food exhaustion as a progress bar behind the hunger bar",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.name": "Show Vanilla Animations Overlay",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.description": "Health/hunger overlay will shake to match Minecraft's icon animations",
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.name": "Max HUD Overlay Flash Alpha",
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.description": "Alpha value of the flashing icons at their most visible point (1.0 = fully opaque, 0.0 = fully transparent)",
+  
+  "modules.appleSkin.settings.showFoodValuesInTooltip.name": "Show Food Values in Tooltip",
+  "modules.appleSkin.settings.showFoodValuesInTooltip.description": "Shows the hunger and saturation values of food in its tooltip while holding SHIFT",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.name": "Show Food Values in Tooltip Always",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.description": "Shows the hunger and saturation values of food in its tooltip automatically (without needing to hold SHIFT)",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.name": "Show Food Values HUD Overlay When Offhand",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.description": "Enables the hunger/saturation/health overlays for food in your off-hand",
+
   "modules.lightLevel.name": "Light Level",
   "modules.lightLevel.description": "Displays light levels on blocks with colored overlays to help prevent mob spawns",
 
