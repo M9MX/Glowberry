@@ -15,17 +15,14 @@ public class GlowberryMainClient implements ClientModInitializer
 	@Override
 	public void onInitializeClient()
 	{
-		LOGGER.info("[GlowberryMainClient] onInitializeClient called");
 		ClientSyncHandler.init();
 		// Don't initialize AppleSkin handlers directly - they should be controlled by the module
 		// HUDOverlayHandler.init(); 
 		// TooltipOverlayHandler.init();
 		
 		// Initialize trajectory preview networking and rendering
-		LOGGER.info("[GlowberryMainClient] Initializing trajectory preview");
 		PtpClient.initializeNetworking();
 		PtpClient.initializeRendering();
-		LOGGER.info("[GlowberryMainClient] Trajectory preview initialized");
 		
 		// Only register debug entry - it's not dependent on module activation
 		DebugScreenEntries.register(DebugInfoHudEntry.ENTRY_ID, new DebugInfoHudEntry());

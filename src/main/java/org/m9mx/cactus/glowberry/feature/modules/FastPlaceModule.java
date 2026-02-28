@@ -10,7 +10,7 @@ public class FastPlaceModule extends Module {
     private boolean fastPlaceActive = false;
 
     public FastPlaceModule(Category category) {
-        super("fastPlace", category, new Module.Options());
+        super("fastPlace", category, new Module.Options().set(Flag.SERVER_UNSAFE, true));
         if (INSTANCE == null) {
             synchronized (FastPlaceModule.class) {
                 if (INSTANCE == null) {
