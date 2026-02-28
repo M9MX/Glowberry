@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;

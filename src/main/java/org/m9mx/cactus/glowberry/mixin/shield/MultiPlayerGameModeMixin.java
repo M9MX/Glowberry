@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.mixin.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

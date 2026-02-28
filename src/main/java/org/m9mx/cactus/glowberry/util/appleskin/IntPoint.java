@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.appleskin;
-
+/**
+ * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
+ */
 public class IntPoint
 {
 	public int x;

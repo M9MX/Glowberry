@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.mixin.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import org.spongepowered.asm.mixin.Mixin;

@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.appleskin.helpers;
-
+/**
+ * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
+ */
 import net.minecraft.world.entity.player.Player;
 
 public class ExhaustionHelper

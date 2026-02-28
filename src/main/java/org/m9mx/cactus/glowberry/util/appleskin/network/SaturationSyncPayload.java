@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.appleskin.network;
-
+/**
+ * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
+ */
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

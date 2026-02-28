@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.mixin.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.PlayerItemInHandLayer;

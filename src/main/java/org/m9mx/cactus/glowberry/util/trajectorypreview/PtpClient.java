@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.trajectorypreview;
-
+/**
+ * Credits: https://github.com/maDU59/ProjectilesTrajectoryPreview
+ */
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

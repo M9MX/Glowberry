@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Iterator;

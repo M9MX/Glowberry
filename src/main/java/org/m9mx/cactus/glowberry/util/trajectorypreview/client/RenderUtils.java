@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.trajectorypreview.client;
-
+/**
+ * Credits: https://github.com/maDU59/ProjectilesTrajectoryPreview
+ */
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 

@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.trajectorypreview.main;
-
+/**
+ * Credits: https://github.com/maDU59/ProjectilesTrajectoryPreview
+ */
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

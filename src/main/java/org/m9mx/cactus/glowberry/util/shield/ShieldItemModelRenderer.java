@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.shield;
-
+/**
+ * Credits: https://github.com/Walksy/ShieldStatus
+ */
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;

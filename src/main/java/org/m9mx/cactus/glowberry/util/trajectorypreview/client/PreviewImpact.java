@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.trajectorypreview.client;
-
+/**
+ * Credits: https://github.com/maDU59/ProjectilesTrajectoryPreview
+ */
 import java.util.List;
 
 import net.minecraft.world.entity.Entity;

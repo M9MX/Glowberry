@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.trajectorypreview;
-
+/**
+ * Credits: https://github.com/maDU59/ProjectilesTrajectoryPreview
+ */
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 

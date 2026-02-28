@@ -1,5 +1,7 @@
 package org.m9mx.cactus.glowberry.util.appleskin.api.event;
-
+/**
+ * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
+ */
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.food.FoodProperties;
