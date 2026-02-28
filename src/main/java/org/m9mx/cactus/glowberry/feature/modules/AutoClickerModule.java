@@ -1,5 +1,10 @@
 package org.m9mx.cactus.glowberry.feature.modules;
 
+import org.lwjgl.glfw.GLFW;
+import org.m9mx.cactus.glowberry.accessor.IKeyBindingAccessor;
+import org.m9mx.cactus.glowberry.cactus.FloatSetting;
+import org.m9mx.cactus.glowberry.util.ActionBarUtil;
+
 import com.dwarslooper.cactus.client.event.EventHandler;
 import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
 import com.dwarslooper.cactus.client.feature.module.Category;
@@ -10,12 +15,7 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.KeybindSetting
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import com.dwarslooper.cactus.client.systems.key.KeyBind;
 
-import org.m9mx.cactus.glowberry.cactus.FloatSetting;
-import org.m9mx.cactus.glowberry.util.ActionBarUtil;
-
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
-import org.m9mx.cactus.glowberry.accessor.IKeyBindingAccessor;
 public class AutoClickerModule extends Module {
     public static AutoClickerModule INSTANCE;
 

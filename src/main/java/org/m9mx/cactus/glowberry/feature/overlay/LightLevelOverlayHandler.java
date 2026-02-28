@@ -1,24 +1,21 @@
 package org.m9mx.cactus.glowberry.feature.overlay;
 
-import net.lugo.overlaylib.Overlay;
-import net.lugo.overlaylib.managers.CachedOverlayManager;
-import net.lugo.overlaylib.util.OverlayRendererBlockData;
-import net.lugo.overlaylib.util.TextureSection;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import org.m9mx.cactus.glowberry.feature.modules.LightLevelModule;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class LightLevelOverlayHandler {
     private static final Minecraft MC = Minecraft.getInstance();
     private static boolean isActive = false;
-    private static Overlay overlay;
+    private static int blockRadius = 128;
 
     private static final Set<net.minecraft.world.level.block.Block> forbiddenBlocks = Set.of(
             Blocks.BEDROCK,
@@ -27,46 +24,50 @@ public class LightLevelOverlayHandler {
             Blocks.REPEATING_COMMAND_BLOCK
     );
 
-    private static final TextureSection.TextureSectionData lightLevelSpecificTextureSectionData = 
-            new TextureSection.TextureSectionData(16, 1);
-
-    private static final CachedOverlayManager overlayManager = new CachedOverlayManager((blockPos -> {
-        if (!shouldRenderOverlay(blockPos)) return OverlayRendererBlockData.NO_RENDER;
-
-        if (MC.level == null || MC.player == null) return OverlayRendererBlockData.NO_RENDER;
-
-        int lightLevel = MC.level.getBrightness(LightLayer.BLOCK, blockPos.above());
-        int threshold = LightLevelModule.INSTANCE.getThreshold();
-
-        // Hide safe areas if showSafeAreas is false
-        if (lightLevel >= threshold && !LightLevelModule.INSTANCE.shouldShowSafeAreas()) {
-            return OverlayRendererBlockData.NO_RENDER;
-        }
-
-        float[] colors = getColorFloats(lightLevel);
-
-        // Return block data with texture section for number overlay
-        return new OverlayRendererBlockData(blockPos, colors[0], colors[1], colors[2], 
-                Optional.of(new TextureSection(lightLevelSpecificTextureSectionData, lightLevel, 0)));
-    }));
+    // Store blocks to render: BlockPos -> light level
+    private static final Map<BlockPos, Integer> blocksToRender = new HashMap<>();
 
     public static void init() {
-        if (overlay == null) {
-            overlay = new Overlay(new LightLevelNumberRenderer(), 
-                    LightLevelModule.INSTANCE.getChunkScanRange(), overlayManager);
-            overlay.register();
-        }
-        setActive(true);
+        // We removed the frequent tick update - now handled by mixin with reduced frequency
+        // Initialize renderer
+        LightLevelRenderer.init();
     }
 
-    public static void setActive(boolean active) {
-        isActive = active;
-        if (overlay != null) {
-            overlay.setActive(active);
+    private static void updateBlocksInRadius() {
+        blocksToRender.clear();
+        
+        if (MC.player == null || MC.level == null) return;
+
+        BlockPos playerPos = MC.player.blockPosition();
+        int radiusSq = blockRadius * blockRadius;
+
+        // Scan all blocks within radius using spherical distance
+        for (int x = playerPos.getX() - blockRadius; x <= playerPos.getX() + blockRadius; x++) {
+            for (int z = playerPos.getZ() - blockRadius; z <= playerPos.getZ() + blockRadius; z++) {
+                // Quick 2D distance check to skip obvious cubes
+                int dx2 = (x - playerPos.getX());
+                int dz2 = (z - playerPos.getZ());
+                if (dx2 * dx2 + dz2 * dz2 > radiusSq) continue;
+
+                for (int y = playerPos.getY() - blockRadius; y <= playerPos.getY() + blockRadius; y++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+
+                    // Full 3D distance check
+                    int dx = x - playerPos.getX();
+                    int dy = y - playerPos.getY();
+                    int dz = z - playerPos.getZ();
+                    if (dx * dx + dy * dy + dz * dz > radiusSq) continue;
+
+                    if (shouldRenderBlock(pos)) {
+                        int lightLevel = MC.level.getBrightness(LightLayer.BLOCK, pos.above());
+                        blocksToRender.put(pos, lightLevel);
+                    }
+                }
+            }
         }
     }
 
-    public static boolean shouldRenderOverlay(BlockPos pos) {
+    private static boolean shouldRenderBlock(BlockPos pos) {
         if (MC.level == null || MC.player == null) return false;
 
         // Check if position is forbidden
@@ -83,36 +84,90 @@ public class LightLevelOverlayHandler {
             return false;
         }
 
+        int lightLevel = MC.level.getBrightness(LightLayer.BLOCK, above);
+        int threshold = LightLevelModule.INSTANCE.getThreshold();
+
+        // Only render if light level is below threshold (unsafe areas) or if safe areas should be shown
+        boolean isUnsafeArea = lightLevel < threshold;
+        boolean isSafeArea = lightLevel >= threshold;
+        
+        // If it's a safe area, only render if showSafeAreas is enabled
+        if (isSafeArea && !LightLevelModule.INSTANCE.shouldShowSafeAreas()) {
+            return false;
+        }
+
+        // At this point, we're either rendering an unsafe area (always) or a safe area (when enabled)
         return true;
     }
 
-    private static float[] getColorFloats(int lightLevel) {
-        int color = LightLevelModule.INSTANCE.getColorForLightLevel(lightLevel);
-        float r = ((color >> 16) & 0xFF) / 255.0f;
-        float g = ((color >> 8) & 0xFF) / 255.0f;
-        float b = (color & 0xFF) / 255.0f;
-        return new float[]{r, g, b};
-    }
-
-    public static void updateChunkScanRadius(int radius) {
-        if (overlay != null) {
-            overlay.setChunkScanRadius(radius);
+    public static void setActive(boolean active) {
+        isActive = active;
+        if (!active) {
+            blocksToRender.clear();
         }
     }
 
-    public static void clear(BlockPos pos) {
-        overlayManager.clearFromBlockPos(pos);
+    public static void updateChunkScanRadius(int radius) {
+        blockRadius = radius;
     }
 
-    public static void clear(SectionPos section) {
-        overlayManager.clear(section);
+    public static void clear(BlockPos pos) {
+        blocksToRender.remove(pos);
     }
 
     public static void clearAll() {
-        overlayManager.clearAll();
+        blocksToRender.clear();
     }
 
     public static boolean isActive() {
         return isActive;
+    }
+
+    // Getter for rendering
+    public static Map<BlockPos, Integer> getBlocksToRender() {
+        return blocksToRender;
+    }
+
+    public static int getColorForLightLevel(int lightLevel) {
+        return LightLevelModule.INSTANCE.getColorForLightLevel(lightLevel);
+    }
+    
+    /**
+     * Optimized version that reduces the frequency of expensive block scanning
+     */
+    public static void updateBlocksInRadiusOptimized() {
+        blocksToRender.clear();
+        
+        if (MC.player == null || MC.level == null) return;
+
+        BlockPos playerPos = MC.player.blockPosition();
+        int radius = LightLevelModule.INSTANCE.getChunkScanRange(); // Use the configured range instead of hardcoded value
+        int radiusSq = radius * radius;
+
+        // Scan all blocks within radius using spherical distance
+        for (int x = playerPos.getX() - radius; x <= playerPos.getX() + radius; x++) {
+            for (int z = playerPos.getZ() - radius; z <= playerPos.getZ() + radius; z++) {
+                // Quick 2D distance check to skip obvious cubes
+                int dx2 = (x - playerPos.getX());
+                int dz2 = (z - playerPos.getZ());
+                if (dx2 * dx2 + dz2 * dz2 > radiusSq) continue;
+
+                for (int y = playerPos.getY() - radius; y <= playerPos.getY() + radius; y++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+
+                    // Full 3D distance check
+                    int dx = x - playerPos.getX();
+                    int dy = y - playerPos.getY();
+                    int dz = z - playerPos.getZ();
+                    if (dx * dx + dy * dy + dz * dz > radiusSq) continue;
+
+                    if (shouldRenderBlock(pos)) {
+                        int lightLevel = MC.level.getBrightness(LightLayer.BLOCK, pos.above());
+                        // Optimize by only adding to render if it's significantly different from threshold
+                        blocksToRender.put(pos, lightLevel);
+                    }
+                }
+            }
+        }
     }
 }

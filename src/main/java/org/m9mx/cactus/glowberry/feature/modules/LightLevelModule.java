@@ -7,18 +7,27 @@ import com.dwarslooper.cactus.client.feature.module.Module;
 import com.dwarslooper.cactus.client.systems.config.settings.group.SettingGroup;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.ColorSetting;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.EnumSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.IntegerSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import org.m9mx.cactus.glowberry.feature.overlay.LightLevelOverlayHandler;
+import org.m9mx.cactus.glowberry.feature.overlay.LightLevelRenderer;
 import java.awt.Color;
 
 public class LightLevelModule extends Module {
 	public static LightLevelModule INSTANCE;
 
+	public enum OverlayType {
+		NUMBER,
+		BLOCK,
+		BOTH
+	}
+
 	private final SettingGroup generalGroup;
 	public final Setting<Boolean> showSafeAreas;
 	public final Setting<Integer> chunkScanRange;
 	public final Setting<Integer> threshold;
+	public final Setting<OverlayType> overlayType;
 	
 	private final SettingGroup colorGroup;
 	public final Setting<ColorSetting.ColorValue> unsafeColor;
@@ -29,17 +38,19 @@ public class LightLevelModule extends Module {
 		INSTANCE = this;
 		
 		this.generalGroup = this.settings.buildGroup("general");
-		this.showSafeAreas = this.generalGroup.add(new BooleanSetting("showSafeAreas", false));
-		this.chunkScanRange = this.generalGroup.add(new IntegerSetting("chunkScanRange", 8).min(1).max(32));
+		this.showSafeAreas = this.generalGroup.add(new BooleanSetting("showSafeAreas", true));
+		this.chunkScanRange = this.generalGroup.add(new IntegerSetting("chunkScanRange", 16).min(4).max(32));
 		this.threshold = this.generalGroup.add(new IntegerSetting("threshold", 1).min(0).max(15));
+		this.overlayType = this.generalGroup.add(new EnumSetting<>("overlayType", OverlayType.NUMBER));
 		
 		this.colorGroup = this.settings.buildGroup("colors");
 		this.unsafeColor = this.colorGroup.add(new ColorSetting("unsafeColor", new ColorSetting.ColorValue(new Color(255, 68, 68), false)));
-		this.safeColor = this.colorGroup.add(new ColorSetting("safeColor", new ColorSetting.ColorValue(new Color(68, 255, 68), false)));
+		this.safeColor = this.colorGroup.add(new ColorSetting("safeColor", new ColorSetting.ColorValue(new Color(0, 255, 100), false)));
 	}
 
 	@Override
 	public void onEnable() {
+		LightLevelRenderer.init();
 		LightLevelOverlayHandler.init();
 		LightLevelOverlayHandler.setActive(true);
 	}
@@ -80,5 +91,9 @@ public class LightLevelModule extends Module {
 	
 	public int getThreshold() {
 		return threshold.get();
+	}
+
+	public OverlayType getOverlayType() {
+		return overlayType.get();
 	}
 }

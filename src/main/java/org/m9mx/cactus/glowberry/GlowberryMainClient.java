@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.appleskin.client.DebugInfoHudEntry;
 import org.m9mx.cactus.glowberry.util.appleskin.network.ClientSyncHandler;
+import org.m9mx.cactus.glowberry.util.trajectorypreview.PtpClient;
 
 public class GlowberryMainClient implements ClientModInitializer
 {
@@ -14,10 +15,17 @@ public class GlowberryMainClient implements ClientModInitializer
 	@Override
 	public void onInitializeClient()
 	{
+		LOGGER.info("[GlowberryMainClient] onInitializeClient called");
 		ClientSyncHandler.init();
 		// Don't initialize AppleSkin handlers directly - they should be controlled by the module
 		// HUDOverlayHandler.init(); 
 		// TooltipOverlayHandler.init();
+		
+		// Initialize trajectory preview networking and rendering
+		LOGGER.info("[GlowberryMainClient] Initializing trajectory preview");
+		PtpClient.initializeNetworking();
+		PtpClient.initializeRendering();
+		LOGGER.info("[GlowberryMainClient] Trajectory preview initialized");
 		
 		// Only register debug entry - it's not dependent on module activation
 		DebugScreenEntries.register(DebugInfoHudEntry.ENTRY_ID, new DebugInfoHudEntry());

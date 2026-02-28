@@ -10,9 +10,14 @@ import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
 public class ClientSyncHandler
 {
 	public static boolean naturalRegeneration = true;
+	private static boolean initialized = false;
+
 	@Environment(EnvType.CLIENT)
 	public static void init()
 	{
+		if (initialized) return;
+		initialized = true;
+
 		// Register payload types on client side
 		PayloadTypeRegistry.playS2C().register(ExhaustionSyncPayload.TYPE, ExhaustionSyncPayload.CODEC);
 		PayloadTypeRegistry.playS2C().register(SaturationSyncPayload.TYPE, SaturationSyncPayload.CODEC);

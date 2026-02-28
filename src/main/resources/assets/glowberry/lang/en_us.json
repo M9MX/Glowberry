@@ -35,6 +35,11 @@
   "modules.lightLevel.settings.showSafeAreas.description": "When disabled, only shows light level 0 (most dangerous). When enabled, shows all light levels.",
   "modules.lightLevel.settings.chunkScanRange.name": "Scan Range",
   "modules.lightLevel.settings.chunkScanRange.description": "Distance in blocks around player to show light levels",
+  "modules.lightlevel.settings.overlayType.name": "Overlay Type",
+  "modules.lightlevel.settings.overlayType.description": "How to display light levels",
+  "modules.lightLevel.settings.overlayType.nUMBER": "Number",
+  "modules.lightLevel.settings.overlayType.bLOCK": "Block",
+  "modules.lightLevel.settings.overlayType.bOTH": "Both",
 
   "modules.lightLevel.groups.colors": "Colors",
   "modules.lightLevel.settings.unsafeColor.name": "Unsafe Color",
@@ -135,5 +140,67 @@
   "modules.shieldStatus.settings.usingColor.name": "Using Color",
   "modules.shieldStatus.settings.usingColor.description": "Color of the shield when in use",
   "modules.shieldStatus.settings.disabledColor.name": "Disabled Color",
-  "modules.shieldStatus.settings.disabledColor.description": "Color of the shield when disabled"
+  "modules.shieldStatus.settings.disabledColor.description": "Color of the shield when disabled",
+
+
+  "modules.trajectoryPreview.name": "Trajectory Preview",
+  "modules.trajectoryPreview.description": "Displays projectile trajectories and target information when holding throwable items",
+
+  "modules.trajectoryPreview.groups.trajectory": "Trajectory Display",
+  "modules.trajectoryPreview.settings.showTrajectory.name": "Show Trajectory",
+  "modules.trajectoryPreview.settings.showTrajectory.description": "Display the projectile trajectory path",
+  "modules.trajectoryPreview.settings.trajectoryColor.name": "Trajectory Color",
+  "modules.trajectoryPreview.settings.trajectoryColor.description": "Color of the trajectory line",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.name": "Trajectory Opacity",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.description": "Transparency of the trajectory line",
+  "modules.trajectoryPreview.settings.trajectoryStyle.name": "Trajectory Style",
+  "modules.trajectoryPreview.settings.trajectoryStyle.description": "Visual style of the trajectory line",
+
+  "modules.trajectoryPreview.groups.outline": "Target Outline",
+  "modules.trajectoryPreview.settings.outlineTargets.name": "Outline Targets",
+  "modules.trajectoryPreview.settings.outlineTargets.description": "Draw an outline around the impact target",
+  "modules.trajectoryPreview.settings.outlineColor.name": "Outline Color",
+  "modules.trajectoryPreview.settings.outlineColor.description": "Color of the target outline",
+  "modules.trajectoryPreview.settings.outlineOpacity.name": "Outline Opacity",
+  "modules.trajectoryPreview.settings.outlineOpacity.description": "Transparency of the target outline",
+
+  "modules.trajectoryPreview.groups.highlight": "Target Highlight",
+  "modules.trajectoryPreview.settings.highlightTargets.name": "Highlight Targets",
+  "modules.trajectoryPreview.settings.highlightTargets.description": "Highlight the impact target area",
+  "modules.trajectoryPreview.settings.highlightColor.name": "Highlight Color",
+  "modules.trajectoryPreview.settings.highlightColor.description": "Color of the target highlight",
+  "modules.trajectoryPreview.settings.highlightOpacity.name": "Highlight Opacity",
+  "modules.trajectoryPreview.settings.highlightOpacity.description": "Transparency of the target highlight",
+
+  "modules.trajectoryPreview.groups.features": "Features",
+  "modules.trajectoryPreview.settings.enableOffhand.name": "Enable Offhand",
+  "modules.trajectoryPreview.settings.enableOffhand.description": "Show trajectory preview for items in your off-hand",
+
+  "modules.trajectoryPreview.settings.showTrajectory.eNABLED": "Enabled",
+  "modules.trajectoryPreview.settings.showTrajectory.tARGET_IS_ENTITY": "Target Is Entity",
+  "modules.trajectoryPreview.settings.showTrajectory.dISABLED": "Disabled",
+
+  "modules.trajectoryPreview.settings.trajectoryOpacity.oPAQUE": "Opaque",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.tRANSPARENT": "Transparent",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.pULSING": "Pulsing",
+
+  "modules.trajectoryPreview.settings.trajectoryStyle.sOLID": "Solid",
+  "modules.trajectoryPreview.settings.trajectoryStyle.dASHED": "Dashed",
+  "modules.trajectoryPreview.settings.trajectoryStyle.dOTTED": "Dotted",
+
+  "modules.trajectoryPreview.settings.outlineTargets.eNABLED": "Enabled",
+  "modules.trajectoryPreview.settings.outlineTargets.dISABLED": "Disabled",
+  "modules.trajectoryPreview.settings.outlineTargets.tARGET_IS_ENTITY": "Target Is Entity",
+
+  "modules.trajectoryPreview.settings.outlineOpacity.oPAQUE": "Opaque",
+  "modules.trajectoryPreview.settings.outlineOpacity.pULSING": "Pulsing",
+  "modules.trajectoryPreview.settings.outlineOpacity.tRANSPERENT": "Transparent",
+
+  "modules.trajectoryPreview.settings.highlightTargets.eNABLED": "Enabled",
+  "modules.trajectoryPreview.settings.highlightTargets.tARGET_IS_ENTITY": "Target Is Entity",
+  "modules.trajectoryPreview.settings.highlightTargets.dISABLED": "Disabled",
+
+  "modules.trajectoryPreview.settings.highlightOpacity.tRANSPERENT": "Transparent",
+  "modules.trajectoryPreview.settings.highlightOpacity.oPAQUE": "Opaque",
+  "modules.trajectoryPreview.settings.highlightOpacity.pULSING": "Pulsing"
   }

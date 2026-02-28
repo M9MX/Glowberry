@@ -140,5 +140,66 @@
   "modules.shieldStatus.settings.usingColor.name": "In Benutzung Farbe",
   "modules.shieldStatus.settings.usingColor.description": "Farbe des Schildes, wenn es in Benutzung ist",
   "modules.shieldStatus.settings.disabledColor.name": "Deaktivierte Farbe",
-  "modules.shieldStatus.settings.disabledColor.description": "Farbe des Schildes, wenn es deaktiviert ist"
+  "modules.shieldStatus.settings.disabledColor.description": "Farbe des Schildes, wenn es deaktiviert ist",
+
+  "modules.trajectoryPreview.name": "Trajektorie-Vorschau",
+  "modules.trajectoryPreview.description": "Zeigt die Flugbahn von Projektilen und Zielinformationen an, wenn man Wurfgegenstände hält",
+
+  "modules.trajectoryPreview.groups.trajectory": "Trajektorie-Anzeige",
+  "modules.trajectoryPreview.settings.showTrajectory.name": "Trajektorie anzeigen",
+  "modules.trajectoryPreview.settings.showTrajectory.description": "Zeige den Flugbahn-Pfad des Projektils",
+  "modules.trajectoryPreview.settings.trajectoryColor.name": "Trajektorie-Farbe",
+  "modules.trajectoryPreview.settings.trajectoryColor.description": "Farbe der Trajektorie-Linie",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.name": "Trajektorie-Deckkraft",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.description": "Transparenz der Trajektorie-Linie",
+  "modules.trajectoryPreview.settings.trajectoryStyle.name": "Trajektorie-Stil",
+  "modules.trajectoryPreview.settings.trajectoryStyle.description": "Visueller Stil der Trajektorie-Linie",
+
+  "modules.trajectoryPreview.groups.outline": "Ziel-Kontur",
+  "modules.trajectoryPreview.settings.outlineTargets.name": "Ziele umreißen",
+  "modules.trajectoryPreview.settings.outlineTargets.description": "Zeichne eine Kontur um das Aufschlagziel",
+  "modules.trajectoryPreview.settings.outlineColor.name": "Kontur-Farbe",
+  "modules.trajectoryPreview.settings.outlineColor.description": "Farbe der Ziel-Kontur",
+  "modules.trajectoryPreview.settings.outlineOpacity.name": "Kontur-Deckkraft",
+  "modules.trajectoryPreview.settings.outlineOpacity.description": "Transparenz der Ziel-Kontur",
+
+  "modules.trajectoryPreview.groups.highlight": "Ziel-Hervorhebung",
+  "modules.trajectoryPreview.settings.highlightTargets.name": "Ziele hervorheben",
+  "modules.trajectoryPreview.settings.highlightTargets.description": "Hebe den Aufschlag-Zielbereich hervor",
+  "modules.trajectoryPreview.settings.highlightColor.name": "Hervorhebungs-Farbe",
+  "modules.trajectoryPreview.settings.highlightColor.description": "Farbe der Ziel-Hervorhebung",
+  "modules.trajectoryPreview.settings.highlightOpacity.name": "Hervorhebungs-Deckkraft",
+  "modules.trajectoryPreview.settings.highlightOpacity.description": "Transparenz der Ziel-Hervorhebung",
+
+  "modules.trajectoryPreview.groups.features": "Funktionen",
+  "modules.trajectoryPreview.settings.enableOffhand.name": "Nebenhand aktivieren",
+  "modules.trajectoryPreview.settings.enableOffhand.description": "Zeige Trajektorie-Vorschau für Gegenstände in deiner Nebenhand",
+
+  "modules.trajectoryPreview.settings.showTrajectory.eNABLED": "Aktiviert",
+  "modules.trajectoryPreview.settings.showTrajectory.tARGET_IS_ENTITY": "Ziel ist Wesen",
+  "modules.trajectoryPreview.settings.showTrajectory.dISABLED": "Deaktiviert",
+
+  "modules.trajectoryPreview.settings.trajectoryOpacity.oPAQUE": "Undurchsichtig",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.tRANSPARENT": "Transparent",
+  "modules.trajectoryPreview.settings.trajectoryOpacity.pULSING": "Pulsierend",
+
+  "modules.trajectoryPreview.settings.trajectoryStyle.sOLID": "Durchgezogen",
+  "modules.trajectoryPreview.settings.trajectoryStyle.dASHED": "Gestrichelt",
+  "modules.trajectoryPreview.settings.trajectoryStyle.dOTTED": "Gepunktet",
+
+  "modules.trajectoryPreview.settings.outlineTargets.eNABLED": "Aktiviert",
+  "modules.trajectoryPreview.settings.outlineTargets.dISABLED": "Deaktiviert",
+  "modules.trajectoryPreview.settings.outlineTargets.tARGET_IS_ENTITY": "Ziel ist Wesen",
+
+  "modules.trajectoryPreview.settings.outlineOpacity.oPAQUE": "Undurchsichtig",
+  "modules.trajectoryPreview.settings.outlineOpacity.pULSING": "Pulsierend",
+  "modules.trajectoryPreview.settings.outlineOpacity.tRANSPARENT": "Transparent",
+
+  "modules.trajectoryPreview.settings.highlightTargets.eNABLED": "Aktiviert",
+  "modules.trajectoryPreview.settings.highlightTargets.tARGET_IS_ENTITY": "Ziel ist Wesen",
+  "modules.trajectoryPreview.settings.highlightTargets.dISABLED": "Deaktiviert",
+
+  "modules.trajectoryPreview.settings.highlightOpacity.tRANSPARENT": "Transparent",
+  "modules.trajectoryPreview.settings.highlightOpacity.oPAQUE": "Undurchsichtig",
+  "modules.trajectoryPreview.settings.highlightOpacity.pULSING": "Pulsierend"
   }

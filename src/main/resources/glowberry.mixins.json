@@ -5,13 +5,13 @@
   "mixins": [
     "MinecraftAccessor",
     "InventoryAccessor",
+    "ClientTickOptimizerMixin",
 
     "appleskin.ServerPlayerEntityMixin",
     "appleskin.PlayerManagerMixin",
     "appleskin.HungerManagerMixin"
   ],
   "client": [
-    "ClientChunkCacheMixin",
     "LevelRendererMixin",
     "GameRendererMixin",
     "KeyMappingMixin",

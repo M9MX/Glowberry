@@ -14,8 +14,14 @@
     "icon": "assets/glowberry/icon.png",
     "environment": "client",
     "entrypoints": {
-        "cactus": [
+        "main": [
             "org.m9mx.cactus.glowberry.GlowberryMain"
+        ],
+        "client": [
+            "org.m9mx.cactus.glowberry.GlowberryMainClient"
+        ],
+        "cactus": [
+            "org.m9mx.cactus.glowberry.GlowberryCactus"
         ]
     },
     "mixins": [
@@ -26,8 +32,7 @@
         "minecraft": "~1.21.11",
         "java": ">=21",
         "cactus": ">=0.12.2",
-        "fabric-api": "*",
-        "overlaylib": "*"
+        "fabric-api": "*"
     },
     "suggests": {
         "jei": "*",

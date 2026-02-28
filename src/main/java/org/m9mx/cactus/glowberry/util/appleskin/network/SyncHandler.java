@@ -16,9 +16,7 @@ public class SyncHandler
 {
 	public static void init()
 	{
-		PayloadTypeRegistry.playS2C().register(ExhaustionSyncPayload.TYPE, ExhaustionSyncPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(SaturationSyncPayload.TYPE, SaturationSyncPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(NaturalRegenerationSyncPayload.TYPE, NaturalRegenerationSyncPayload.CODEC);
+		// Payload types are registered on client side by ClientSyncHandler
 		ServerTickEvents.END_WORLD_TICK.register(SyncHandler::onServerWorldTick);
 	}
 
