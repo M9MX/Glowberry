@@ -55,7 +55,7 @@ public class TrajectoryPreviewModule extends Module {
 	}
 
 	public TrajectoryPreviewModule(Category category) {
-		super("trajectoryPreview", category, new Module.Options());
+		super("trajectoryPreview", category, new Module.Options().set(Flag.SERVER_UNSAFE, true));
 		if (INSTANCE == null) {
 			synchronized (TrajectoryPreviewModule.class) {
 				if (INSTANCE == null) {

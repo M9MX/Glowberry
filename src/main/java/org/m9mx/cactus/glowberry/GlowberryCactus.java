@@ -1,18 +1,23 @@
 package org.m9mx.cactus.glowberry;
 
 import org.m9mx.cactus.glowberry.feature.commands.ExampleCommand;
+import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
+import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
+import org.m9mx.cactus.glowberry.feature.modules.AutoFishModule;
+import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
 import org.m9mx.cactus.glowberry.feature.modules.FastBreakModule;
 import org.m9mx.cactus.glowberry.feature.modules.FastPlaceModule;
+import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
 import org.m9mx.cactus.glowberry.feature.modules.LightLevelModule;
 import org.m9mx.cactus.glowberry.feature.modules.NoHurtcamModule;
-import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
-import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
-import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
+import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
-import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
@@ -20,9 +25,6 @@ import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
 
 import net.minecraft.world.item.Items;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class GlowberryCactus implements ICactusAddon {
 
@@ -48,11 +50,13 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> new AutoToolModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new HorseStatsModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new AutoClickerModule(GLOWBERRY_CATEGORY));
+		registryBus.register(Module.class, ctx -> new AutoFishModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TabListModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TotemCounterModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new AppleSkinModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
+		registryBus.register(Module.class, ctx -> new ScribbleModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		

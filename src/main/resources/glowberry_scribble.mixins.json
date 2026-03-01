@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "org.m9mx.cactus.glowberry.mixin.scribble",
+    "compatibilityLevel": "JAVA_17",
+    "client": [
+        "BookSignScreenMixin",
+        "ClientPacketListenerMixin",
+        "KeyboardHandlerMixin",
+        "LocalPlayerMixin",
+        "MenuScreensMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

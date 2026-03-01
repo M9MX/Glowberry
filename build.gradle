@@ -61,6 +61,10 @@ repositories {
      }
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/glowberry.accesswidener")
+}
+
 dependencies {
 	mappings loom.layered() {
          officialMojangMappings()
@@ -82,7 +86,6 @@ dependencies {
 
 
 }
-
 processResources {
 	inputs.property "version", project.version
 

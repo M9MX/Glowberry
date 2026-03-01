@@ -25,7 +25,8 @@
         ]
     },
     "mixins": [
-        "glowberry.mixins.json"
+        "glowberry.mixins.json",
+        "glowberry_scribble.mixins.json"
     ],
     "depends": {
         "fabricloader": ">=0.17.3",
