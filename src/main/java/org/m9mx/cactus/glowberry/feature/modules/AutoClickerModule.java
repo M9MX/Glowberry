@@ -109,6 +109,10 @@ public class AutoClickerModule extends Module {
     }
 
     private boolean isToggleKeyPressed() {
+        Minecraft mc = Minecraft.getInstance();
+        if (isScreenOpen(mc)) {
+			return false;
+		}
         try {
             Object keybind = this.toggleKeybind.get();
             if (keybind instanceof com.dwarslooper.cactus.client.systems.key.KeyBind) {
@@ -119,4 +123,8 @@ public class AutoClickerModule extends Module {
         }
         return false;
     }
+    
+    private boolean isScreenOpen(Minecraft mc) {
+		return mc.screen != null;
+	}
 }
