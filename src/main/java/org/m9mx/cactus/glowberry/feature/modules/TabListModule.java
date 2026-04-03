@@ -5,7 +5,7 @@ import com.dwarslooper.cactus.client.feature.module.Module;
 import com.dwarslooper.cactus.client.systems.config.settings.group.SettingGroup;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
-import net.fabricmc.loader.api.FabricLoader; // <-- new import
+import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 
 public class TabListModule extends Module {
     public static volatile TabListModule INSTANCE;
@@ -23,15 +23,13 @@ public class TabListModule extends Module {
             }
         }
 
-        // Detect external ping mod. Accept either common mod id variants.
-        boolean externalPingMod = FabricLoader.getInstance().isModLoaded("better-ping-display")
-                || FabricLoader.getInstance().isModLoaded("betterpingdisplay");
+        // Resolve compatibility through shared registry so future mod conflicts are data-only changes.
+        boolean hideShowPingSetting = IncompatibilityRegistry.isSettingBlocked("tabList", "showPing");
 
         this.sgGeneral = this.settings.buildGroup("general");
 
-        if (externalPingMod) {
-            // If an external ping display mod is present, do not add this setting to the UI.
-            // Create a local BooleanSetting with default false to avoid NPEs for callers.
+        if (hideShowPingSetting) {
+            // Setting is suppressed in UI; keep a local fallback instance to avoid null checks.
             this.showPing = new BooleanSetting("showPing", false);
         } else {
             // Normal behavior: add setting to UI (default true).

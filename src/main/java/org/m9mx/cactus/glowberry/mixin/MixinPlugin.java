@@ -1,6 +1,6 @@
 package org.m9mx.cactus.glowberry.mixin;
 
-import net.fabricmc.loader.api.FabricLoader;
+import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -24,21 +24,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        try {
-            if (mixinClassName != null) {
-                // Full qualified name of our mixin class
-                String ours = "org.m9mx.cactus.glowberry.mixin.PlayerTabOverlayMixin";
-                if (mixinClassName.equals(ours) || mixinClassName.endsWith(".PlayerTabOverlayMixin")) {
-                    boolean externalPingMod = FabricLoader.getInstance().isModLoaded("better-ping-display")
-                            || FabricLoader.getInstance().isModLoaded("betterpingdisplay");
-                    // If the external ping mod is present, skip applying our mixin.
-                    return !externalPingMod;
-                }
-            }
-        } catch (Throwable ignored) {
-            // If FabricLoader not present or check fails, allow the mixin to apply (fail open).
-        }
-        return true;
+        return !IncompatibilityRegistry.isMixinBlocked(mixinClassName);
     }
 
     @Override

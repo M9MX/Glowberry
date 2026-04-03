@@ -15,7 +15,7 @@ import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
-import org.m9mx.cactus.glowberry.feature.modules.WaypointsV2Module;
+import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +26,9 @@ import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
 
 import net.minecraft.world.item.Items;
+
+import java.util.Set;
+import java.util.function.Supplier;
 
 public class GlowberryCactus implements ICactusAddon {
 
@@ -44,25 +47,35 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
 		
 		// Register our modules inside the custom category
-		registryBus.register(Module.class, ctx -> new LightLevelModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new FastPlaceModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new FastBreakModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new NoHurtcamModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new AutoToolModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new HorseStatsModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new AutoClickerModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new AutoFishModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new TabListModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new TotemCounterModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new AppleSkinModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
-		registryBus.register(Module.class, ctx -> new ScribbleModule(GLOWBERRY_CATEGORY));
-		// registryBus.register(Module.class, ctx -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "fastPlace", () -> new FastPlaceModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "fastBreak", () -> new FastBreakModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "noHurtcam", () -> new NoHurtcamModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "autoTool", () -> new AutoToolModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "horseStats", () -> new HorseStatsModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "autoClicker", () -> new AutoClickerModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "autoFish", () -> new AutoFishModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "shieldStatus", () -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "tabList", () -> new TabListModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "totemCounter", () -> new TotemCounterModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "scribble", () -> new ScribbleModule(GLOWBERRY_CATEGORY));
+		// registerModule(registryBus, "waypointsV2", () -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		
 		LOGGER.info("Glowberry Addon successfully loaded!");
+	}
+
+	private void registerModule(RegistryBus registryBus, String moduleId, Supplier<Module> factory) {
+		if (IncompatibilityRegistry.isModuleBlocked(moduleId)) {
+			Set<String> blockingMods = IncompatibilityRegistry.blockingModsForModule(moduleId);
+			LOGGER.info("Skipping module '{}' due to incompatibility with loaded mod(s): {}", moduleId, blockingMods);
+			return;
+		}
+
+		registryBus.register(Module.class, ctx -> factory.get());
 	}
 
 	@Override
