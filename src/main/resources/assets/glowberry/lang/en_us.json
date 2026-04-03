@@ -315,5 +315,36 @@
   "modules.handItemModel.settings.offRotationZ.name": "Rotation Z",
   "modules.handItemModel.settings.offRotationZ.description": "Off hand rotation on Z axis (-60 to 60 degrees)",
   "modules.handItemModel.settings.offHandScale.name": "Scale",
-  "modules.handItemModel.settings.offHandScale.description": "Off hand scale (0.1 to 5.0)"
+  "modules.handItemModel.settings.offHandScale.description": "Off hand scale (0.1 to 5.0)",
+
+  "modules.waypointsV2.name": "Waypoints V2",
+  "modules.waypointsV2.description": "Create, edit, and manage location/block waypoints with configurable rendering and backups",
+
+  "modules.waypointsV2.groups.general": "General",
+  "modules.waypointsV2.settings.addWaypointKeybind.name": "Add Waypoint Key",
+  "modules.waypointsV2.settings.addWaypointKeybind.description": "Keybind to open the Create Waypoint screen",
+  "modules.waypointsV2.settings.openWaypointsKeybind.name": "Open Waypoints Key",
+  "modules.waypointsV2.settings.openWaypointsKeybind.description": "Keybind to open the Waypoints list screen",
+  "modules.waypointsV2.settings.addBlockKeybind.name": "Add Block Key",
+  "modules.waypointsV2.settings.addBlockKeybind.description": "Keybind used in block add mode to add the looked-at block",
+
+  "modules.waypointsV2.groups.renderDistance": "Render Distance",
+  "modules.waypointsV2.settings.maxRenderDistance.name": "Max Render Distance",
+  "modules.waypointsV2.settings.maxRenderDistance.description": "Maximum distance at which waypoints can render",
+
+  "modules.waypointsV2.groups.combiningDistance": "Combining Distance",
+  "modules.waypointsV2.settings.groupCombiningDistance.name": "Group Combining Distance",
+  "modules.waypointsV2.settings.groupCombiningDistance.description": "How close you must be to nearby grouped waypoints before they combine into one marker",
+
+  "modules.waypointsV2.groups.groupingAndVisibility": "Grouping & Visibility",
+  "modules.waypointsV2.settings.groupingRadius.name": "Grouping Radius",
+  "modules.waypointsV2.settings.groupingRadius.description": "Radius used to group nearby waypoints",
+  "modules.waypointsV2.settings.showThroughWalls.name": "Show Through Walls",
+  "modules.waypointsV2.settings.showThroughWalls.description": "Render waypoints even when blocked by terrain",
+  "modules.waypointsV2.settings.showInSpectatorMode.name": "Show In Spectator Mode",
+  "modules.waypointsV2.settings.showInSpectatorMode.description": "Keep waypoint rendering enabled while in spectator mode",
+  "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.name": "Render Only When HUD Enabled",
+  "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.description": "Hide waypoints when the HUD is hidden",
+
+  "glowberry.gui.macro.add_command_hint": "Start with / for commands, or use . / # for others"
   }

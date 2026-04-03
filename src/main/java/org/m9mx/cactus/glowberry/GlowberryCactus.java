@@ -15,6 +15,7 @@ import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.m9mx.cactus.glowberry.feature.modules.WaypointsV2Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,7 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> new AppleSkinModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
 		registryBus.register(Module.class, ctx -> new ScribbleModule(GLOWBERRY_CATEGORY));
+		// registryBus.register(Module.class, ctx -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		

@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package org.m9mx.cactus.glowberry.cactus;
 
 import com.dwarslooper.cactus.client.systems.config.CactusSettings;

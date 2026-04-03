@@ -1,6 +1,7 @@
 {
   "required": true,
   "package": "org.m9mx.cactus.glowberry.mixin",
+  "plugin": "org.m9mx.cactus.glowberry.mixin.MixinPlugin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MinecraftAccessor",
@@ -18,6 +19,7 @@
     "BreakMixin",
     "GuiHurtcamMixin",
     "GameRendererHurtcamMixin",
+    "FontInlineIconMixin",
     "AutoToolMixin",
     "HorseStatsMixin",
     "GuiAccessor",
@@ -42,7 +44,15 @@
     "totemcounter.TotemCounterPlayerTabOverlayMixin",
     "totemcounter.TotemCounterPlayerMixin",
     "totemcounter.TotemCounterChatComponentMixin",
-    "totemcounter.TotemCounterPlayerDeathMixin"
+    "totemcounter.TotemCounterPlayerDeathMixin",
+
+    "cactus.MixinMacroEditScreen",
+    "cactus.MixinCactusMacro",
+    "cactus.MixinMacroEntry",
+    "cactus.MixinMacroListWidget",
+    "cactus.MixinConfigHandler",
+    "cactus.MixinMacroManager",
+    "cactus.MixinChatScreen"
   ],
   "injectors": {
     "defaultRequire": 1,

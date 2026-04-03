@@ -1,0 +1,116 @@
+# Limited Code Use License Agreement (ModernConfig)
+
+This agreement is granted by:
+
+QWERTZexe
+https://github.com/QWERTZexe
+https://qwertz.app
+
+regarding code from the project:
+
+**ModernConfig**
+(https://github.com/QWERTZexe/ModernConfig)
+
+to:
+
+M9MX
+https://github.com/M9MX
+https://m9mx.kbab.lt
+
+Date: 2026-03-2026
+
+---
+
+## 1. Scope of Permission
+
+Permission is granted to use specific portions of code from the **ModernConfig** project (the "Licensed Material") in the recipient’s project.
+
+This permission applies **only to explicitly shared or agreed-upon portions of code**, not the entire ModernConfig project.
+
+---
+
+## 2. Ownership
+
+All rights to the Licensed Material remain with QWERTZexe.
+This agreement does **not transfer ownership or grant any broader rights** to the ModernConfig project.
+
+---
+
+## 3. Attribution Requirement
+
+The recipient must provide clear and visible attribution:
+
+* In all source files containing the Licensed Material, and
+* In a LICENSE file, README, or similar visible location
+
+Attribution must include:
+
+> Code from ModernConfig by QWERTZexe (https://github.com/QWERTZexe | https://qwertz.app)
+
+Attribution may not be removed or altered.
+
+---
+
+## 4. Use in Projects
+
+The Licensed Material may be used in:
+
+* Open source projects, OR
+* All Rights Reserved (ARR) projects
+
+**Attribution is required in all cases**, as defined in Section 3, and must not be removed.
+
+If used in an **ARR project**, the project must additionally include the following statement in its license, README, or legal notice:
+
+> Portions of this software are derived from ModernConfig by QWERTZexe and are used with permission, see [link to this file] for details.
+
+---
+
+## 5. Redistribution
+
+The recipient may modify and redistribute the Licensed Material **only as part of their project**.
+
+The Licensed Material may **not** be redistributed:
+
+* As a standalone package
+* As a competing or substitute library
+* In a way that misrepresents authorship
+
+---
+
+## 6. Revocation
+
+QWERTZexe reserves the right to revoke this permission at any time, for any reason.
+
+Upon revocation:
+
+* The recipient must remove all Licensed Material within **30 (thirty) days**
+* Continued use after that period is not permitted
+
+---
+
+## 7. No Warranty
+
+The Licensed Material is provided "AS IS", without warranty of any kind.
+
+---
+
+## 8. Limitation of Liability
+
+QWERTZexe shall not be held liable for any damages resulting from use of the Licensed Material.
+
+---
+
+## 9. Acceptance
+
+Use of the Licensed Material constitutes acceptance of this agreement.
+
+---
+
+## 10. Inclusion Requirement
+
+The Licensed Material must be accompanied by a complete and unmodified copy of this agreement within the recipient’s project.
+
+This copy must be included in a clearly identifiable location (e.g., `THIRD_PARTY_LICENSES/ModernConfig.txt`) and must remain accessible to users of the project.
+
+End of Agreement
