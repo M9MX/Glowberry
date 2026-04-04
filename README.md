@@ -88,14 +88,19 @@ The macro screen and internal system have been completely overhauled to support 
 
 ---
 
+## Support & Feature Requests
+If you find any incompatibilities or bugs, please report them through the GitHub Issue Tracker.
+
+**Want a specific feature added before Cactus updates to include it itself?** Feel free to contact me via Discord to discuss suggestions!
+
+* **GitHub Issue Tracker:** [Issues](https://github.com/M9MX/Glowberry/issues)
+* **Direct Contact:** [Discord Profile](https://discord.com/users/821825926944784477)
+
+---
+
 ## License
 **All Rights Reserved (ARR)**
 See the [License File](https://github.com/M9MX/Glowberry?tab=License-1-ov-file) for more details.
-
-## Support
-If you find any incompatibilities or bugs, please report them through the channels below.
-
-[**GitHub Issue Tracker**](https://github.com/M9MX/Glowberry/issues) • [**Contact via Discord**](https://discord.com/users/821825926944784477)
 
 <div align="center">
 Built for the Cactus Addon API.
