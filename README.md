@@ -9,12 +9,12 @@
 
 [**Report Bug**](https://github.com/M9MX/Glowberry/issues) • [**Developer Discord**](https://discord.com/users/821825926944784477)
 
-</div>
-
 ---
 
+</div>
+
 ## Introduction
-**Glowberry** is an expansive addon for the [Cactus Mod](https://modrinth.com/mod/cactus). While Cactus provides the foundation for quality-of-life enhancements and HUD customization, Glowberry extends this toolkit by adding specialized modules and upgrading existing features that Cactus does not include by default.
+**Glowberry** is an expansive addon for the [Cactus Mod](https://modrinth.com/mod/cactus). While Cactus provides a solid foundation for quality-of-life enhancements and HUD customization, Glowberry extends this toolkit by adding specialized modules and upgrading existing features that Cactus does not include by default.
 
 By using this addon, you agree to the [Cactus Terms of Service](https://modrinth.com/mod/cactus).
 
@@ -81,8 +81,10 @@ Glowberry requires the following dependencies to function:
 ## Cactus Mod Changes
 Glowberry modifies and enhances core Cactus systems to provide more power to the user:
 
-* **Reworked Macro System:** The macro screen and internal system have been overhauled. Macros now support standard chat messages, vanilla `/` commands, and Cactus `#` commands.
-* **String Triggers:** Added support for custom text triggers. For example, typing `.hello` in chat can be configured to execute any specific command or message automatically.
+### Reworked Macro System
+The macro screen and internal system have been completely overhauled to support more than just keybinds.
+* **Expanded Command Support:** Macros now support standard chat messages, vanilla `/` commands, and Cactus `#` commands.
+* **String Triggers:** Unlike the default Cactus system which only uses keybinds, Glowberry introduces **String Triggers**. You can set a macro to activate by typing a specific string (e.g., typing `.hello`) to automatically run any configured command or message.
 
 ---
 
