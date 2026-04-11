@@ -59,6 +59,10 @@
   "modules.noHurtcam.name": "No Hurtcam",
   "modules.noHurtcam.description": "Disables the screen shake effect when taking damage",
 
+  "modules.customEmojis.name": "Custom Emojis",
+  "modules.customEmojis.description": "Allows the player to add their own emojis to Cactus.",
+  "modules.customEmojis.groups.settings": "Settings",
+
   "modules.autoTool.name": "Auto Tool",
   "modules.autoTool.description": "Automatically switches to the best tool when mining blocks or attacking entities",
   "modules.autoTool.groups.tools": "Tool Categories",

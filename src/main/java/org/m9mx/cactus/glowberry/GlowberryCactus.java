@@ -15,18 +15,18 @@ import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.m9mx.cactus.glowberry.feature.modules.CustomEmojiModule;
 import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
+import com.dwarslooper.cactus.client.systems.emoji.EmojiManager;
+import com.dwarslooper.cactus.client.systems.emoji.EmojiCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
-
 import net.minecraft.world.item.Items;
-
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -38,15 +38,10 @@ public class GlowberryCactus implements ICactusAddon {
 
 	@Override
 	public void onInitialize(RegistryBus registryBus) {
-		// This is called when the addon is initialized. It provides a RegistryBus
-		// which will be used to register new features and content
-
 		LOGGER.info("Hello, Cactus!");
 
-		// Register our custom category first
 		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
-		
-		// Register our modules inside the custom category
+
 		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "fastPlace", () -> new FastPlaceModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "fastBreak", () -> new FastBreakModule(GLOWBERRY_CATEGORY));
@@ -61,10 +56,18 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "scribble", () -> new ScribbleModule(GLOWBERRY_CATEGORY));
-		// registerModule(registryBus, "waypointsV2", () -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
+		registerModule(registryBus, "customEmojis", () -> new CustomEmojiModule(GLOWBERRY_CATEGORY));
 
-		
+		try {
+			for (org.m9mx.cactus.glowberry.feature.EmojiCode myEmoji : org.m9mx.cactus.glowberry.feature.EmojiManager.EMOJIS) {
+				EmojiManager.getEmojis().add(new EmojiCode(myEmoji.name(), myEmoji.emoji()));
+			}
+			LOGGER.info("Successfully registered {} Glowberry emojis into Cactus!", org.m9mx.cactus.glowberry.feature.EmojiManager.EMOJIS.size());
+		} catch (Exception e) {
+			LOGGER.error("Glowberry failed to inject emojis into Cactus");
+		}
+
 		LOGGER.info("Glowberry Addon successfully loaded!");
 	}
 
@@ -79,12 +82,8 @@ public class GlowberryCactus implements ICactusAddon {
 	}
 
 	@Override
-	public void onLoadComplete() {
-		// This is called when Cactus is fully done initializing
-	}
+	public void onLoadComplete() {}
 
 	@Override
-	public void onShutdown() {
-		// This is called when the client is shutting down
-	}
+	public void onShutdown() {}
 }
