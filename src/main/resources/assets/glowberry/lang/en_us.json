@@ -143,7 +143,7 @@
   "modules.shieldStatus.settings.disabledColor.description": "Color of the shield when disabled",
 
 
-  "modules.trajectoryPreview.name": "Trajectory Preview",
+  "modules.trajectoryPreview.name": "View Trajectory",
   "modules.trajectoryPreview.description": "Displays projectile trajectories and target information when holding throwable items",
 
   "modules.trajectoryPreview.groups.trajectory": "Trajectory Display",
@@ -347,23 +347,21 @@
   "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.description": "Hide waypoints when the HUD is hidden",
 
   "modules.timer.name": "Timer",
-  "modules.timer.description": "A simple countdown that shows in your actionbar or your HUD.",
+  "modules.timer.description": "A simple countdown that shows in your HUD.    Hud Element Required to show in the HUD.",
   "modules.timer.groups.timer": "Timer Setup",
   "modules.timer.groups.general": "Settings",
   "modules.timer.settings.hours.name": "Hours",
   "modules.timer.settings.minutes.name": "Minutes",
   "modules.timer.settings.seconds.name": "Seconds",
   "modules.timer.settings.showMilliseconds.name": "Show Milliseconds?",
-  "modules.timer.settings.startTimer.name": "Start Timer Key",
-  "modules.timer.settings.pauseTimer.name": "Pause Timer Key",
+  "modules.timer.settings.startPauseTimer.name": "Start/Pause Timer Key",
   "modules.timer.settings.resetTimer.name": "Reset Timer Key",
 
   "modules.stopwatch.name": "Stopwatch",
-  "modules.stopwatch.description": "A simple stopwatch that shows in your actionbar or your HUD.",
+  "modules.stopwatch.description": "A simple stopwatch that shows in your actionbar or your HUD.   Hud Element Required to show in the HUD.",
   "modules.stopwatch.groups.general": "Settings",
   "modules.stopwatch.settings.showMilliseconds.name": "Show Milliseconds?",
-  "modules.stopwatch.settings.startStopwatch.name": "Start Stopwatch Key",
-  "modules.stopwatch.settings.pauseStopwatch.name": "Pause Stopwatch Key",
+  "modules.stopwatch.settings.startPauseStopwatch.name": "Start/Pause Stopwatch Key",
   "modules.stopwatch.settings.resetStopwatch.name": "Reset Stopwatch Key",
   "modules.stopwatch.settings.recordLap.name": "Lap Stopwatch Key",
 

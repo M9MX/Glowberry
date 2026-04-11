@@ -1,6 +1,7 @@
 package org.m9mx.cactus.glowberry.feature.hud;
 
 import com.dwarslooper.cactus.client.gui.hud.element.DynamicHudElement;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.ColorSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Inventory;
@@ -9,9 +10,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector2i;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
+    // Add origin enum for growth direction
+    public enum Origin {
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+    }
+    private Origin origin = Origin.TOP_LEFT;
+    public void setOrigin(Origin origin) { this.origin = origin; }
+    public Origin getOrigin() { return origin; }
+    // Track previous position for movement detection
+    private int prevX = -1, prevY = -1;
     // Represents a transient pickup/drop event
     private static class LogEntry {
         final Item item;
@@ -32,10 +44,22 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
 
     private static final long ENTRY_LIFETIME_MS = 3000;
 
+    // For deduplicating log output
+    private String lastLogMessage = null;
+    private void logIfChanged(String msg) {
+        if (!msg.equals(lastLogMessage)) {
+            System.out.println(msg);
+            lastLogMessage = msg;
+        }
+    }
+
     public PickUpLogHud() {
         super("pickup_log", Direction.Horizontal.size);
-        // No options, always right-aligned, transparent style
-        this.style.set(com.dwarslooper.cactus.client.gui.hud.element.HudElement.Style.Transparent);
+        this.style.set(com.dwarslooper.cactus.client.gui.hud.element.HudElement.Style.Default);
+        this.textColor.set(new ColorSetting.ColorValue(Color.WHITE, false)); // Default to white
+        // No anchor set, will use manual move()
+        // Default origin is BOTTOM_LEFT; HUD grows upwards from bottom left
+        this.origin = Origin.BOTTOM_LEFT;
     }
 
     @Override
@@ -48,6 +72,8 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
         return new PickUpLogHud();
     }
 
+    private boolean initializedInventory = false;
+
     public void onTick(Player player) {
         if (player == null) return;
         Inventory inv = player.getInventory();
@@ -57,6 +83,12 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
             if (!stack.isEmpty()) {
                 current.merge(stack.getItem(), stack.getCount(), Integer::sum);
             }
+        }
+        if (!initializedInventory) {
+            lastInventory.clear();
+            lastInventory.putAll(current);
+            initializedInventory = true;
+            return;
         }
         long now = System.currentTimeMillis();
         // Track changes
@@ -110,78 +142,141 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
         lastInventory.putAll(current);
     }
 
+    // Track previous HUD height for upward growth
+    private int prevHudHeight = -1;
+
     @Override
-    public void renderContent(GuiGraphics context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
-        // Only render if there are log entries or in editor mode
-        if (!inEditor && logEntries.isEmpty()) {
+    public void resize(int width, int height) {
+        int oldWidth = this.getSize().x();
+        int oldHeight = this.getSize().y();
+        // Don't resize/move if new size is 0 (prevents sliding off screen)
+        if (width == 0 || height == 0) {
             return;
         }
-        int entryHeight = 22;
+        super.resize(width, height);
+        // Adjust position so the selected origin stays fixed
+        switch (origin) {
+            case TOP_RIGHT:
+            case BOTTOM_RIGHT:
+                // Move left by width difference to keep right edge fixed
+                this.move(this.getRelativePosition().x() - (width - oldWidth),
+                          origin == Origin.TOP_RIGHT ? this.getRelativePosition().y() : this.getRelativePosition().y() - (height - oldHeight));
+                break;
+            case BOTTOM_LEFT:
+                this.move(this.getRelativePosition().x(), this.getRelativePosition().y() - (height - oldHeight));
+                break;
+            case TOP_LEFT:
+            default:
+                // No adjustment needed
+                break;
+        }
+        // Clamp position to screen bounds if possible (assume screen size is available)
+        // If you have access to screenWidth/screenHeight, clamp here
+        // Example (pseudo):
+        // int px = Math.max(0, Math.min(this.getRelativePosition().x(), screenWidth - width));
+        // int py = Math.max(0, Math.min(this.getRelativePosition().y(), screenHeight - height));
+        // this.move(px, py);
+    }
+
+    private static final String MAX_NAME = "Waxed Weathered Cut Copper Stairs";
+    private static final String MAX_COUNT = "+100x "; // Reserve space for up to 100x
+    private static final int ICON_SIZE = 16;
+    private static final int BG_PAD_X = 4;
+    private static final int BG_PAD_Y = 3;
+    private static final int ENTRY_HEIGHT = 22;
+    private int fixedBgWidth = -1;
+
+    private static int getRarityColor(ItemStack stack, int defaultColor) {
+        switch (stack.getRarity()) {
+            case UNCOMMON:
+                return 0xFFFFFF55; // Yellow (#FFFF55)
+            case RARE:
+                return 0xFF55FFFF; // Aqua/Cyan (#55FFFF)
+            case EPIC:
+                return 0xFFFF55FF; // Magenta (#FF55FF)
+            case COMMON:
+            default:
+                return defaultColor; // Use HUD's set color for common
+        }
+    }
+
+    @Override
+    public void renderContent(GuiGraphics context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
+        // Compute fixed width if not already done
+        if (fixedBgWidth == -1) {
+            int countWidth = Minecraft.getInstance().font.width(MAX_COUNT); // Use widest possible count
+            int nameWidth = Minecraft.getInstance().font.width(MAX_NAME);
+            fixedBgWidth = countWidth + nameWidth + ICON_SIZE + BG_PAD_X * 2 + 6;
+        }
+        boolean hasEntries = !logEntries.isEmpty();
+        int bgWidth = fixedBgWidth;
+        int bgHeight;
         List<LogEntry> renderEntries;
-        if (inEditor) {
-            // Show example entries in editor mode
-            renderEntries = new ArrayList<>();
-            renderEntries.add(new LogEntry(net.minecraft.world.item.Items.DIAMOND, 5, System.currentTimeMillis()));
-            renderEntries.add(new LogEntry(net.minecraft.world.item.Items.STICK, -2, System.currentTimeMillis()));
+        if (!hasEntries) {
+            // If empty, set size as if there was one item
+            bgHeight = (ENTRY_HEIGHT - 3) + BG_PAD_Y * 2;
+            renderEntries = Collections.emptyList();
         } else {
             renderEntries = logEntries;
+            bgHeight = renderEntries.size() * (ENTRY_HEIGHT - 3) + BG_PAD_Y * 2;
         }
-        int bgPadX = 4; // reduced padding for tighter background
-        int bgPadY = 3;
-        int iconSize = 16; // slightly smaller icon
-        int drawY = y + height - 24;
-        for (int i = 0; i < renderEntries.size(); i++) {
-            LogEntry entry = renderEntries.get(i);
+        this.resize(bgWidth, bgHeight);
+        // In editor, ensure minimum size so HUD is always visible
+        int editorW = bgWidth, editorH = bgHeight;
+        if (inEditor && !hasEntries) {
+            editorH = Math.max(height, 24);
+            this.resize(editorW, editorH);
+            // For right-side origins, anchor to right edge
+            if (origin == Origin.TOP_RIGHT || origin == Origin.BOTTOM_RIGHT) {
+                x = x + width - editorW;
+            }
+        }
+        if (!hasEntries && !inEditor) {
+            // No entries, not in editor: just reserve space, don't render anything
+            return;
+        }
+        int n = renderEntries.size();
+        // Use origin to determine where to start drawing
+        for (int i = 0; i < n; i++) {
+            LogEntry entry = renderEntries.get(origin == Origin.TOP_LEFT || origin == Origin.TOP_RIGHT ? i : (n - 1 - i));
             ItemStack stack = new ItemStack(entry.item);
             String countStr = (entry.netCount > 0 ? "+" : "") + entry.netCount + "x ";
             String nameStr = stack.getHoverName().getString();
-            int countWidth = Minecraft.getInstance().font.width(countStr);
-            int nameWidth = Minecraft.getInstance().font.width(nameStr);
-            int textWidth = countWidth + nameWidth;
-            int bgWidth = textWidth + iconSize + bgPadX * 2 + 6;
-            int bgHeight = iconSize + bgPadY * 2 - 4;
-            int bgX = x + width - bgWidth - 3;
-            int bgY = drawY - i * entryHeight - 2; // move background 2px up
-            // Draw background with rounded corners using Cactus HUD style
-            context.blitSprite(
-                net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED,
-                com.dwarslooper.cactus.client.gui.hud.element.HudElement.BACKGROUND,
-                bgX, bgY, bgWidth, bgHeight,
-                net.minecraft.util.ARGB.color(224, 0, 0, 0)
-            );
-            // Draw item icon 2px higher
-            context.renderFakeItem(stack, bgX + bgPadX, bgY + bgPadY - 2);
-            // Get rarity color (fallback to white)
-            int rarityColor = 0xFFFFFFFF;
-            try {
-                java.lang.reflect.Method getRarity = stack.getClass().getMethod("getRarity");
-                Object rarity = getRarity.invoke(stack);
-                if (rarity != null) {
-                    java.lang.reflect.Field colorField = rarity.getClass().getDeclaredField("color");
-                    colorField.setAccessible(true);
-                    rarityColor = colorField.getInt(rarity);
-                }
-            } catch (Exception ignored) {}
-            // Count color: green for +, red for -
+            int countWidth = Minecraft.getInstance().font.width(MAX_COUNT); // Use widest possible count
+            int nameWidth = Minecraft.getInstance().font.width(MAX_NAME);   // Use fixed width
+            int totalTextWidth = countWidth + nameWidth;
+            int drawY;
+            if (origin == Origin.TOP_LEFT || origin == Origin.TOP_RIGHT) {
+                drawY = y + BG_PAD_Y + (ENTRY_HEIGHT - 3) * i;
+            } else {
+                drawY = y + height - BG_PAD_Y - (ENTRY_HEIGHT - 3) * (i + 1);
+            }
+            int rightEdge = x + width - BG_PAD_X - 2;
+            int textY = drawY + 4;
+            int textX = rightEdge - totalTextWidth;
+            int iconX = textX - ICON_SIZE - 3;
+            context.renderFakeItem(stack, iconX, drawY);
             int countColor = entry.netCount > 0 ? 0xFF55FF55 : 0xFFFF5555;
-            int textY = bgY + bgPadY + 2; // move text 2px up
-            int textX = bgX + bgPadX + iconSize + 3;
-            // Draw count
-            context.drawString(Minecraft.getInstance().font, countStr, textX, textY, countColor, false);
-            // Draw name right after count
-            context.drawString(Minecraft.getInstance().font, nameStr, textX + countWidth, textY, rarityColor, false);
+            int textColor = getRarityColor(stack, this.textColor.get().color());
+            context.drawString(Minecraft.getInstance().font, countStr, textX, textY + 2, countColor, true);
+            context.drawString(Minecraft.getInstance().font, nameStr, textX + countWidth, textY + 2, textColor, true);
         }
     }
 
 
     enum Direction {
-        Vertical(new Vector2i(22, 76)),
-        Horizontal(new Vector2i(200, 76));
-
+        Vertical(new Vector2i(1, 1)),
+        Horizontal(new Vector2i(1, 1));
         final Vector2i size;
 
         Direction(Vector2i size) {
             this.size = size;
         }
+    }
+
+    // Placeholder for background check
+    private boolean isCactusBackgroundVisible() {
+        // TODO: Implement actual check for Cactus HUD background visibility
+        return false;
     }
 }

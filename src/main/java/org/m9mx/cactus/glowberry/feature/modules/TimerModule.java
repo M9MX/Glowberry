@@ -25,8 +25,7 @@ public class TimerModule extends Module {
     public final Setting<Integer> minutes;
     public final Setting<Integer> seconds;
     public final Setting<Boolean> showMilliseconds;
-    public final Setting<KeyBind> startKeybind;
-    public final Setting<KeyBind> pauseKeybind;
+    public final Setting<KeyBind> startPauseKeybind;
     public final Setting<KeyBind> resetKeybind;
 
     // set true if hud element is enabled
@@ -61,8 +60,7 @@ public class TimerModule extends Module {
         this.seconds = sgTimer.add(new IntegerSetting("seconds", 30).min(0).max(59));
 
         this.showMilliseconds = sgGeneral.add(new BooleanSetting("showMilliseconds", true));
-        this.startKeybind = sgGeneral.add(new KeybindSetting("startTimer", KeyBind.of(GLFW.GLFW_KEY_UNKNOWN)));
-        this.pauseKeybind = sgGeneral.add(new KeybindSetting("pauseTimer", KeyBind.of(GLFW.GLFW_KEY_UNKNOWN)));
+        this.startPauseKeybind = sgGeneral.add(new KeybindSetting("startPauseTimer", KeyBind.of(GLFW.GLFW_KEY_UNKNOWN)));
         this.resetKeybind = sgGeneral.add(new KeybindSetting("resetTimer", KeyBind.of(GLFW.GLFW_KEY_UNKNOWN)));
     }
 
@@ -81,16 +79,21 @@ public class TimerModule extends Module {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.screen != null) return;
 
-        boolean currentStart = isKeyPressed(startKeybind);
-        boolean currentPause = isKeyPressed(pauseKeybind);
+        boolean currentStartPause = isKeyPressed(startPauseKeybind);
         boolean currentReset = isKeyPressed(resetKeybind);
 
-        if (currentStart && !lastStartState) handleStart();
-        if (currentPause && !lastPauseState) handlePause();
+        if (currentStartPause && !lastStartState) {
+            if (state == TimerState.IDLE || state == TimerState.FINISHED) {
+                handleStart();
+            } else if (state == TimerState.RUNNING) {
+                handlePause();
+            } else if (state == TimerState.PAUSED) {
+                handleStart();
+            }
+        }
         if (currentReset && !lastResetState) resetTimer();
 
-        lastStartState = currentStart;
-        lastPauseState = currentPause;
+        lastStartState = currentStartPause;
         lastResetState = currentReset;
 
         if (state == TimerState.RUNNING) {
@@ -103,9 +106,7 @@ public class TimerModule extends Module {
             }
         }
 
-        if (!elementHUD) {
-            ActionBarUtil.sendActionBarMessage(buildActionBarText());
-        }
+        // Action bar display removed
     }
 
     private String buildActionBarText() {
@@ -122,7 +123,7 @@ public class TimerModule extends Module {
         return sb.toString();
     }
 
-    private String formatTime(long millis) {
+    public String formatTime(long millis) {
         long totalSecs = millis / 1000;
         long h = totalSecs / 3600;
         long m = (totalSecs % 3600) / 60;
@@ -180,7 +181,6 @@ public class TimerModule extends Module {
         remainingMillisAtPause = 0;
         startTimeMillis = 0;
         lastStartState = false;
-        lastPauseState = false;
         lastResetState = false;
     }
 

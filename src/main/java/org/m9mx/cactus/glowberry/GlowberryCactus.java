@@ -20,6 +20,7 @@ import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
 import org.m9mx.cactus.glowberry.feature.modules.TimerModule;
 import org.m9mx.cactus.glowberry.feature.modules.StopwatchModule;
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
+import org.m9mx.cactus.glowberry.feature.hud.TimerStopwatchHudElement;
 import org.m9mx.cactus.glowberry.feature.modules.*;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
@@ -69,6 +70,7 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
 
 		registryBus.register(HudElement.class, ctx -> new PickUpLogHud());
+		registryBus.register(HudElement.class, ctx -> new TimerStopwatchHudElement());
 
 		// Register our modules inside the custom category
 		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(GLOWBERRY_CATEGORY));
