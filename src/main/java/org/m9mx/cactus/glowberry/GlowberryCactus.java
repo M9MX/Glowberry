@@ -16,6 +16,8 @@ import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.m9mx.cactus.glowberry.feature.modules.TimerModule;
+import org.m9mx.cactus.glowberry.feature.modules.StopwatchModule;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
 import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
@@ -78,6 +80,8 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "scribble", () -> new ScribbleModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "timer", () -> new TimerModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(GLOWBERRY_CATEGORY));
 		// registerModule(registryBus, "waypointsV2", () -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
