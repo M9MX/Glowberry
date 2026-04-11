@@ -1,5 +1,6 @@
 package org.m9mx.cactus.glowberry;
 
+import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import org.m9mx.cactus.glowberry.feature.commands.ExampleCommand;
 import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
