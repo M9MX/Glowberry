@@ -1,21 +1,10 @@
 package org.m9mx.cactus.glowberry;
 
+import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import org.m9mx.cactus.glowberry.feature.commands.ExampleCommand;
-import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
-import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
-import org.m9mx.cactus.glowberry.feature.modules.AutoFishModule;
-import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
-import org.m9mx.cactus.glowberry.feature.modules.FastBreakModule;
-import org.m9mx.cactus.glowberry.feature.modules.FastPlaceModule;
-import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
-import org.m9mx.cactus.glowberry.feature.modules.LightLevelModule;
-import org.m9mx.cactus.glowberry.feature.modules.NoHurtcamModule;
-import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
-import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
-import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
-import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
-import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
+import org.m9mx.cactus.glowberry.feature.modules.*;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
 import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
@@ -62,6 +51,8 @@ public class GlowberryCactus implements ICactusAddon {
 
 		// Register our custom category first
 		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
+
+		registryBus.register(HudElement.class, ctx -> new PickUpLogHud());
 		
 		// Register our modules inside the custom category
 		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(GLOWBERRY_CATEGORY));

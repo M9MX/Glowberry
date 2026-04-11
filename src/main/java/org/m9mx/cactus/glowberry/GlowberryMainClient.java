@@ -3,6 +3,10 @@ package org.m9mx.cactus.glowberry;
 import com.dwarslooper.cactus.client.feature.macro.MacroManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents; // Added this
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.Minecraft;
+import com.dwarslooper.cactus.client.gui.hud.HudManager;
+import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Import your manager
@@ -11,6 +15,7 @@ import org.m9mx.cactus.glowberry.util.appleskin.network.ClientSyncHandler;
 import org.m9mx.cactus.glowberry.util.trajectorypreview.PtpClient;
 import org.m9mx.cactus.glowberry.util.waypointsv2.render.WaypointsV2Renderer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
+import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 
 public class GlowberryMainClient implements ClientModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -44,5 +49,16 @@ public class GlowberryMainClient implements ClientModInitializer {
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			GlowberryMacroManager.saveToFile();
 		}));
+
+		// Register PickUpLogHud tick hook
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player != null) {
+				for (HudElement<?> element : HudManager.getInstance().getElements()) {
+					if (element instanceof PickUpLogHud) {
+						((PickUpLogHud) element).onTick(client.player);
+					}
+				}
+			}
+		});
 	}
 }

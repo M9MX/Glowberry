@@ -249,7 +249,8 @@ public class HUDOverlayHandler
 			Identifier backgroundSprite = TextureHelper.getFoodTexture(useRottenTextures, FoodType.EMPTY);
 
 			// very faint background
-			var bgColor = ColorHelper.argbFromRGBA(1.0F, 1.0F, 1.0F, alpha * 0.25F);
+			// Remove background box by making it fully transparent
+			var bgColor = ColorHelper.argbFromRGBA(1.0F, 1.0F, 1.0F, 0.0F);
 			context.blitSprite(RenderPipelines.GUI_TEXTURED, backgroundSprite, x, y, iconSize, iconSize, bgColor);
 
 			boolean isHalf = i * 2 + 1 == modifiedFood;
@@ -288,7 +289,8 @@ public class HUDOverlayHandler
 			Identifier backgroundSprite = TextureHelper.getHeartTexture(isHardcore, HeartType.CONTAINER);
 
 			// very faint background
-			var bgColor = ColorHelper.argbFromRGBA(1.0F, 1.0F, 1.0F, alpha * 0.25F);
+			// Remove background box by making it fully transparent
+			var bgColor = ColorHelper.argbFromRGBA(1.0F, 1.0F, 1.0F, 0.0F);
 			context.blitSprite(RenderPipelines.GUI_TEXTURED, backgroundSprite, x, y, iconSize, iconSize, bgColor);
 
 			boolean isHalf = i * 2 + 1 == fixedModifiedHealth;

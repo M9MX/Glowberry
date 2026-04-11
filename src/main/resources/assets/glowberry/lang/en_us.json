@@ -346,5 +346,7 @@
   "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.name": "Render Only When HUD Enabled",
   "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.description": "Hide waypoints when the HUD is hidden",
 
-  "glowberry.gui.macro.add_command_hint": "Start with / for commands, or use . / # for others"
+  "glowberry.gui.macro.add_command_hint": "Start with / for commands, or use . / # for others",
+
+  "hud.elements.pickup_log.name": "Pickup Log"
 }
