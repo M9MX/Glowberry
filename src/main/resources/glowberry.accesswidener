@@ -44,3 +44,4 @@ accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
 accessible field net/minecraft/client/gui/components/AbstractWidget width I
 accessible method net/minecraft/client/gui/components/AbstractSelectionList addEntry (Lnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)I
 accessible method net/minecraft/client/gui/components/AbstractSelectionList removeEntry (Lnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;

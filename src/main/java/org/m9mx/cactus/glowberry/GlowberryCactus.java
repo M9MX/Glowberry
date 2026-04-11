@@ -1,5 +1,6 @@
 package org.m9mx.cactus.glowberry;
 
+import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import org.m9mx.cactus.glowberry.feature.commands.ExampleCommand;
 import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
@@ -15,10 +16,9 @@ import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
+import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
+import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
 import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
@@ -26,11 +26,28 @@ import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
 
 import net.minecraft.world.item.Items;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public class GlowberryCactus implements ICactusAddon {
+	// Utility to get the name of a Setting via reflection
+	private static String getSettingName(Object setting) {
+		try {
+			var field = setting.getClass().getSuperclass().getDeclaredField("name");
+			field.setAccessible(true);
+			return (String) field.get(setting);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Glowberry (Cactus Addon)");
 
@@ -64,8 +81,45 @@ public class GlowberryCactus implements ICactusAddon {
 		// registerModule(registryBus, "waypointsV2", () -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
-		
-		LOGGER.info("Glowberry Addon successfully loaded!");
+		// Always clear previously injected custom emojis before injecting
+		com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().removeIf(
+			emoji -> emoji instanceof com.dwarslooper.cactus.client.systems.emoji.EmojiCode &&
+			!(org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager.EMOJIS.contains(emoji))
+		);
+		File emojiFile = new File("cactus/glowberry/glowberry_emojis.txt");
+		if (!emojiFile.exists()) {
+			createDefaultEmojiFile(emojiFile);
+		}
+		injectEmojisFromFile(emojiFile);
+		// Always inject built-in emojis
+		for (EmojiCode myEmoji : EmojiManager.EMOJIS) {
+			com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().add(
+				new com.dwarslooper.cactus.client.systems.emoji.EmojiCode(myEmoji.name(), myEmoji.emoji())
+			);
+		}
+	}
+
+	private void createDefaultEmojiFile(File emojiFile) {
+		try {
+			File parent = emojiFile.getParentFile();
+			if (parent != null && !parent.exists()) {
+				parent.mkdirs();
+			}
+			String defaultContent = "# Glowberry Custom Emojis\n# Usage: code=emoji\nL=★\nsmile=☺\n";
+			Files.writeString(emojiFile.toPath(), defaultContent, StandardCharsets.UTF_8);
+		} catch (IOException ignored) {}
+	}
+
+	private void injectEmojisFromFile(File emojiFile) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(emojiFile), StandardCharsets.UTF_8))) {
+			Properties prop = new Properties();
+			prop.load(reader);
+			for (var entry : prop.entrySet()) {
+				String name = entry.getKey().toString().trim();
+				String emoji = entry.getValue().toString().trim();
+				com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().add(new com.dwarslooper.cactus.client.systems.emoji.EmojiCode(name, emoji));
+			}
+		} catch (IOException ignored) {}
 	}
 
 	private void registerModule(RegistryBus registryBus, String moduleId, Supplier<Module> factory) {
@@ -88,3 +142,4 @@ public class GlowberryCactus implements ICactusAddon {
 		// This is called when the client is shutting down
 	}
 }
+
