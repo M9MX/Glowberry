@@ -346,10 +346,6 @@
   "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.name": "Render Only When HUD Enabled",
   "modules.waypointsV2.settings.renderOnlyWhenHudEnabled.description": "Hide waypoints when the HUD is hidden",
 
-  "modules.customEmojis.name": "Custom Emojis",
-  "modules.customEmojis.description": "Allows the player to add their own emojis to Cactus.",
-  "modules.customEmojis.groups.settings": "Settings",
-
   "modules.timer.name": "Timer",
   "modules.timer.description": "A simple countdown that shows in your actionbar or your HUD.",
   "modules.timer.groups.timer": "Timer Setup",
