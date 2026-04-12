@@ -367,5 +367,8 @@
 
   "glowberry.gui.macro.add_command_hint": "Start with / for commands, or use . / # for others",
 
-  "hud.elements.pickup_log.name": "Pickup Log"
+  "hud.elements.pickup_log.name": "Pickup Log",
+
+  "hud.elements.text.presets.glowberry_time_24h": "Time (24h, e.g. 17:41)",
+  "hud.elements.text.presets.glowberry_time_12h": "Time (12h, e.g. 05:41 PM)"
 }

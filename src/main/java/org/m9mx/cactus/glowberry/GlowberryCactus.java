@@ -24,6 +24,7 @@ import org.m9mx.cactus.glowberry.feature.hud.TimerStopwatchHudElement;
 import org.m9mx.cactus.glowberry.feature.modules.*;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
+import org.m9mx.cactus.glowberry.util.cactus.placeholders.GlowberryPlaceholders;
 import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
@@ -65,7 +66,7 @@ public class GlowberryCactus implements ICactusAddon {
 		// which will be used to register new features and content
 
 		LOGGER.info("Hello, Cactus!");
-
+		GlowberryPlaceholders.register(registryBus);
 		// Register our custom category first
 		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
 
