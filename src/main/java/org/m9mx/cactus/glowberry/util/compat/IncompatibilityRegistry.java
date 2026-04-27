@@ -34,6 +34,10 @@ public final class IncompatibilityRegistry {
                     .modAlias("betterpingdisplay", "pingview")
                     .mixin("PlayerTabOverlayMixin")
                     .setting("tabList", "showPing")
+                    .build(),
+            mod("nmc") // No Mining Cooldown
+                    .mixin("BreakMixin")
+                    .module("fastBreak")
                     .build()
     );
 
