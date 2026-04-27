@@ -38,6 +38,10 @@ public final class IncompatibilityRegistry {
             mod("nmc") // No Mining Cooldown
                     .mixin("BreakMixin")
                     .module("fastBreak")
+                    .build(),
+            mod("shuffle") // https://modrinth.com/mod/shuffle
+                    .mixin("ShufflePlacementMixin")
+                    .module("shuffle")
                     .build()
     );
 

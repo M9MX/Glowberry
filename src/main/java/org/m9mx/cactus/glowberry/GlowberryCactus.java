@@ -82,6 +82,7 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "horseStats", () -> new HorseStatsModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "autoClicker", () -> new AutoClickerModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "autoFish", () -> new AutoFishModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "shuffle", () -> new ShuffleModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "shieldStatus", () -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "tabList", () -> new TabListModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "totemCounter", () -> new TotemCounterModule(GLOWBERRY_CATEGORY));

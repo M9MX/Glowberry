@@ -78,6 +78,9 @@
 
   "modules.fastPlace.groups.general": "General",
 
+  "modules.shuffle.name": "Shuffle",
+  "modules.shuffle.description": "After placing a block, switches to a random different hotbar block slot",
+
   "modules.handItemModel.name": "Hand Item Model",
   "modules.handItemModel.description": "Customize hand and item positioning, rotation, and scale in first-person view",
 

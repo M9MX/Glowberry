@@ -17,6 +17,7 @@
     "GameRendererMixin",
     "KeyMappingMixin",
     "BreakMixin",
+    "ShufflePlacementMixin",
     "GuiHurtcamMixin",
     "GameRendererHurtcamMixin",
     "AutoToolMixin",
