@@ -52,7 +52,8 @@
     "cactus.MixinMacroListWidget",
     "cactus.MixinConfigHandler",
     "cactus.MixinMacroManager",
-    "cactus.MixinChatScreen"
+    "cactus.MixinChatScreen",
+    "cactus.MixinAddHudElementScreen"
   ],
   "injectors": {
     "defaultRequire": 1,
