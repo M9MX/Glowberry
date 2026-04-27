@@ -19,7 +19,6 @@
     "BreakMixin",
     "GuiHurtcamMixin",
     "GameRendererHurtcamMixin",
-    "FontInlineIconMixin",
     "AutoToolMixin",
     "HorseStatsMixin",
     "GuiAccessor",

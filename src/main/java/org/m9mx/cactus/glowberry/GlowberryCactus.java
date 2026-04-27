@@ -90,7 +90,6 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "scribble", () -> new ScribbleModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "timer", () -> new TimerModule(GLOWBERRY_CATEGORY));
 		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(GLOWBERRY_CATEGORY));
-		// registerModule(registryBus, "waypointsV2", () -> new WaypointsV2Module(GLOWBERRY_CATEGORY));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		// Always clear previously injected custom emojis before injecting

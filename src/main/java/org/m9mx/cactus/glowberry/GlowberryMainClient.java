@@ -13,7 +13,6 @@ import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Imp
 import org.m9mx.cactus.glowberry.util.appleskin.client.DebugInfoHudEntry;
 import org.m9mx.cactus.glowberry.util.appleskin.network.ClientSyncHandler;
 import org.m9mx.cactus.glowberry.util.trajectorypreview.PtpClient;
-import org.m9mx.cactus.glowberry.util.waypointsv2.render.WaypointsV2Renderer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 
@@ -25,7 +24,6 @@ public class GlowberryMainClient implements ClientModInitializer {
 		ClientSyncHandler.init();
 		PtpClient.initializeNetworking();
 		PtpClient.initializeRendering();
-		WaypointsV2Renderer.init();
 		GlowberryMacroManager.load();
 		DebugScreenEntries.register(DebugInfoHudEntry.ENTRY_ID, new DebugInfoHudEntry());
 
