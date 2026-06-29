@@ -3,7 +3,7 @@
 # Glowberry
 **The Ultimate Utility Addon for Cactus Mod**
 
-[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.11-66cdaa?style=flat-square&logo=minecraft)](https://modrinth.com/mod/glowberry)
+[![Minecraft Version](https://img.shields.io/badge/Minecraft-26.1-66cdaa?style=flat-square&logo=minecraft)](https://modrinth.com/mod/glowberry)
 [![Platform](https://img.shields.io/badge/Platform-Fabric-black?style=flat-square&logo=fabric)](https://fabricmc.net/)
 [![License](https://img.shields.io/badge/License-ARR-red?style=flat-square)](https://github.com/M9MX/Glowberry?tab=License-1-ov-file)
 
