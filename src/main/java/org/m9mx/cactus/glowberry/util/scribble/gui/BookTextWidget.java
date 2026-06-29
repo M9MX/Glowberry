@@ -7,7 +7,7 @@ package org.m9mx.cactus.glowberry.util.scribble.gui;
 
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
@@ -51,22 +51,20 @@ public class BookTextWidget implements TextArea<Component> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         if (!visible)
             return;
 
         this.hovered = guiGraphics.containsPointInScissor(mouseX, mouseY)
                 && this.areCoordinatesInRectangle(mouseX, mouseY);
 
-        ActiveTextCollector textCollector = guiGraphics.textRenderer(GuiGraphics.HoveredTextEffects.TOOLTIP_AND_CURSOR);
+        ActiveTextCollector textCollector = guiGraphics.textRenderer(GuiGraphicsExtractor.HoveredTextEffects.TOOLTIP_AND_CURSOR);
         textCollector.defaultParameters(textCollector.defaultParameters().withOpacity(this.dimmed ? 0.3f : 1f));
-        this.visitText(textCollector);
-    }
 
-    private void visitText(ActiveTextCollector activeTextCollector) {
-        int lines = Math.min(this.height / this.font.lineHeight, this.lines.size());
-        for (int i = 0; i < lines; ++i) {
-            activeTextCollector.accept(this.x, this.y + i * font.lineHeight, this.lines.get(i));
+        // Loop and collect lines directly here
+        int maxLines = Math.min(this.height / this.font.lineHeight, this.lines.size());
+        for (int i = 0; i < maxLines; ++i) {
+            textCollector.accept(this.x, this.y + (i * this.font.lineHeight), this.lines.get(i));
         }
     }
 
@@ -75,7 +73,13 @@ public class BookTextWidget implements TextArea<Component> {
         if (event.button() == 0) {
             ActiveTextCollector.ClickableStyleFinder clickableStyleFinder
                     = new ActiveTextCollector.ClickableStyleFinder(this.font, (int) event.x(), (int) event.y());
-            this.visitText(clickableStyleFinder);
+
+            // Feed lines directly into the finder
+            int maxLines = Math.min(this.height / this.font.lineHeight, this.lines.size());
+            for (int i = 0; i < maxLines; ++i) {
+                // Feeds lines into the tracker matching layout positions
+                clickableStyleFinder.accept(this.x, this.y + (i * this.font.lineHeight), this.lines.get(i));
+            }
 
             Style style = clickableStyleFinder.result();
             if (style != null && style.getClickEvent() != null) {
@@ -86,6 +90,7 @@ public class BookTextWidget implements TextArea<Component> {
 
         return TextArea.super.mouseClicked(event, dbl);
     }
+
 
     @Override
     public void setText(Component text) {

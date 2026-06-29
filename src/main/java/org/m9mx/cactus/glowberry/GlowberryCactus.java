@@ -11,7 +11,6 @@ import org.m9mx.cactus.glowberry.feature.modules.FastBreakModule;
 import org.m9mx.cactus.glowberry.feature.modules.FastPlaceModule;
 import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
 import org.m9mx.cactus.glowberry.feature.modules.LightLevelModule;
-import org.m9mx.cactus.glowberry.feature.modules.NoHurtcamModule;
 import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
@@ -31,9 +30,6 @@ import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
-
-import net.minecraft.world.item.Items;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -56,9 +52,17 @@ public class GlowberryCactus implements ICactusAddon {
 		}
 	}
 
-	public static final Logger LOGGER = LoggerFactory.getLogger("Glowberry (Cactus Addon)");
+	// Single static cached instance to ensure registration matches completely
+	private static Category cachedCategory;
 
-	private static final Category GLOWBERRY_CATEGORY = new Category("glowberry", Items.GLOW_BERRIES.getDefaultInstance());
+	public static Category getCategory() {
+		if (cachedCategory == null) {
+			cachedCategory = new Category("glowberry", net.minecraft.world.item.Items.GLOW_BERRIES);
+		}
+		return cachedCategory;
+	}
+
+	public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger("Glowberry (Cactus Addon)");
 
 	@Override
 	public void onInitialize(RegistryBus registryBus) {
@@ -67,36 +71,35 @@ public class GlowberryCactus implements ICactusAddon {
 
 		LOGGER.info("Hello, Cactus!");
 		GlowberryPlaceholders.register(registryBus);
-		// Register our custom category first
-		registryBus.register(Category.class, (list, ctx) -> list.add(GLOWBERRY_CATEGORY));
+
+		registryBus.register(Category.class, (list, ctx) -> list.add(getCategory()));
 
 		registryBus.register(HudElement.class, ctx -> new PickUpLogHud());
 		registryBus.register(HudElement.class, ctx -> new TimerStopwatchHudElement());
 
 		// Register our modules inside the custom category
-		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "fastPlace", () -> new FastPlaceModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "fastBreak", () -> new FastBreakModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "noHurtcam", () -> new NoHurtcamModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "autoTool", () -> new AutoToolModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "horseStats", () -> new HorseStatsModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "autoClicker", () -> new AutoClickerModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "autoFish", () -> new AutoFishModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "shuffle", () -> new ShuffleModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "shieldStatus", () -> new ShieldStatusModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "tabList", () -> new TabListModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "totemCounter", () -> new TotemCounterModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "scribble", () -> new ScribbleModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "timer", () -> new TimerModule(GLOWBERRY_CATEGORY));
-		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(GLOWBERRY_CATEGORY));
+		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(getCategory()));
+		registerModule(registryBus, "fastPlace", () -> new FastPlaceModule(getCategory()));
+		registerModule(registryBus, "fastBreak", () -> new FastBreakModule(getCategory()));
+		registerModule(registryBus, "autoTool", () -> new AutoToolModule(getCategory()));
+		registerModule(registryBus, "horseStats", () -> new HorseStatsModule(getCategory()));
+		registerModule(registryBus, "autoClicker", () -> new AutoClickerModule(getCategory()));
+		registerModule(registryBus, "autoFish", () -> new AutoFishModule(getCategory()));
+		registerModule(registryBus, "shuffle", () -> new ShuffleModule(getCategory()));
+		registerModule(registryBus, "shieldStatus", () -> new ShieldStatusModule(getCategory()));
+		registerModule(registryBus, "tabList", () -> new TabListModule(getCategory()));
+		registerModule(registryBus, "totemCounter", () -> new TotemCounterModule(getCategory()));
+		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(getCategory()));
+		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(getCategory()));
+		registerModule(registryBus, "scribble", () -> new ScribbleModule(getCategory()));
+		registerModule(registryBus, "timer", () -> new TimerModule(getCategory()));
+		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(getCategory()));
 		registryBus.register(Command.class, ctx -> new ExampleCommand());
 
 		// Always clear previously injected custom emojis before injecting
 		com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().removeIf(
-			emoji -> emoji instanceof com.dwarslooper.cactus.client.systems.emoji.EmojiCode &&
-			!(org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager.EMOJIS.contains(emoji))
+				emoji -> emoji instanceof com.dwarslooper.cactus.client.systems.emoji.EmojiCode &&
+						!(org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager.EMOJIS.contains(emoji))
 		);
 		File emojiFile = new File("cactus/glowberry/glowberry_emojis.txt");
 		if (!emojiFile.exists()) {
@@ -106,7 +109,7 @@ public class GlowberryCactus implements ICactusAddon {
 		// Always inject built-in emojis
 		for (EmojiCode myEmoji : EmojiManager.EMOJIS) {
 			com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().add(
-				new com.dwarslooper.cactus.client.systems.emoji.EmojiCode(myEmoji.name(), myEmoji.emoji())
+					new com.dwarslooper.cactus.client.systems.emoji.EmojiCode(myEmoji.name(), myEmoji.emoji())
 			);
 		}
 	}
@@ -154,4 +157,3 @@ public class GlowberryCactus implements ICactusAddon {
 		// This is called when the client is shutting down
 	}
 }
-

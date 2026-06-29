@@ -14,12 +14,10 @@
   ],
   "client": [
     "LevelRendererMixin",
-    "GameRendererMixin",
+    "MinecraftMixin",
     "KeyMappingMixin",
     "BreakMixin",
     "ShufflePlacementMixin",
-    "GuiHurtcamMixin",
-    "GameRendererHurtcamMixin",
     "AutoToolMixin",
     "HorseStatsMixin",
     "GuiAccessor",

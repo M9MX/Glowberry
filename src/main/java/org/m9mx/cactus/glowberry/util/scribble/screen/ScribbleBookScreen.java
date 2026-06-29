@@ -10,7 +10,7 @@ import org.m9mx.cactus.glowberry.util.scribble.gui.PageNumberWidget;
 import org.m9mx.cactus.glowberry.util.scribble.gui.TextArea;
 import org.m9mx.cactus.glowberry.util.scribble.gui.button.IconButtonWidget;
 import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
@@ -192,8 +192,8 @@ public abstract class ScribbleBookScreen<T> extends Screen {
 
     //region Rendering and dimensions
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderBackground(guiGraphics, i, j, f);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+        super.extractBackground(guiGraphics, i, j, f);
 
         int textureSize = this.pagesToShow == 1 ? 256 : 512;
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, backgroundTexture, this.getBackgroundX(), this.getBackgroundY(),

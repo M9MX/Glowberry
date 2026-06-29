@@ -7,7 +7,7 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.EnumSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.IntegerSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -264,7 +264,7 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
     }
 
     @Override
-    public void renderContent(GuiGraphics context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
+    public void renderContent(GuiGraphicsExtractor context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
         Minecraft mc       = Minecraft.getInstance();
         boolean shorten    = shortenThousands.get();
         boolean formatting = allowItemFormatting.get();
@@ -298,8 +298,8 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
             int countX = PAD_X + ICON_SIZE + ICON_TEXT_GAP;
             int nameX  = countX + phCountW + COUNT_NAME_GAP;
             int textY  = PAD_Y + ICON_VPAD + (ICON_SIZE - mc.font.lineHeight) / 2;
-            context.drawString(mc.font, "+10x", countX, textY, 0xFF55FF55);
-            context.drawString(mc.font, "Example Item", nameX, textY, 0xFFFFFFFF);
+            context.text(mc.font, "+10x", countX, textY, 0xFF55FF55);
+            context.text(mc.font, "Example Item", nameX, textY, 0xFFFFFFFF);
 
             pose.popMatrix();
             return;
@@ -364,15 +364,15 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
             int nameX     = countX + maxCountWidth + COUNT_NAME_GAP;
             int textY     = iconY + (ICON_SIZE - mc.font.lineHeight) / 2;
 
-            context.renderFakeItem(displayStack, itemIconX, iconY);
+            context.fakeItem(displayStack, itemIconX, iconY);
 
             int countColor = entry.netCount > 0 ? 0xFF55FF55 : 0xFFFF5555;
-            context.drawString(mc.font, countStr, countX, textY, countColor);
+            context.text(mc.font, countStr, countX, textY, countColor);
 
             if (formatting) {
-                context.drawString(mc.font, resolveDisplayName(entry.representative), nameX, textY, getRarityColor(entry.representative, this.textColor.get().color()));
+                context.text(mc.font, resolveDisplayName(entry.representative), nameX, textY, getRarityColor(entry.representative, this.textColor.get().color()));
             } else {
-                context.drawString(mc.font, entry.representative.getHoverName().getString(), nameX, textY, getRarityColor(entry.representative, this.textColor.get().color()));
+                context.text(mc.font, entry.representative.getHoverName().getString(), nameX, textY, getRarityColor(entry.representative, this.textColor.get().color()));
             }
         }
 

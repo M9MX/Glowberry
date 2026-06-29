@@ -7,7 +7,7 @@ package org.m9mx.cactus.glowberry.mixin.totemcounter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -26,10 +26,11 @@ public class TotemCounterGuiMixin {
     @Final
     private Minecraft minecraft;
 
-    private static final ItemStack TOTEM = new ItemStack(Items.TOTEM_OF_UNDYING);
-
-    @Inject(method = "renderPlayerHealth", at = @At("RETURN"))
-    private void renderCounter(GuiGraphics graphics, CallbackInfo ci) {
+    private static ItemStack getTotemStack() {
+        return new ItemStack(net.minecraft.world.item.Items.TOTEM_OF_UNDYING);
+    }
+    @Inject(method = "extractPlayerHealth", at = @At("RETURN"))
+    private void renderCounter(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         if (minecraft.player == null) return;
         if (TotemCounterModule.INSTANCE == null || !TotemCounterModule.INSTANCE.active()) return;
         if (!TotemCounterModule.INSTANCE.displayEnabled.get()) return;
@@ -48,11 +49,11 @@ public class TotemCounterGuiMixin {
 
         // Draw totem icon
         graphics.pose().pushMatrix();
-        graphics.renderItem(TOTEM, x, y);
+        graphics.item(getTotemStack(), x, y);
 
         // Draw count text
         int textX = x + 20;
-        graphics.drawString(textRenderer, text, textX, y + 4, TotemCounterModule.getColor(count));
+        graphics.text(textRenderer, text, textX, y + 4, TotemCounterModule.getColor(count));
         graphics.pose().popMatrix();
     }
 }

@@ -15,17 +15,17 @@ public class Ptp {
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 
 	public static void initialize() {
-		// Register payload types
-		PayloadTypeRegistry.playC2S().register(HANDSHAKE_C2SPayload.ID, HANDSHAKE_C2SPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(HANDSHAKE_S2CPayload.ID, HANDSHAKE_S2CPayload.CODEC);
+		// Register payload types using the modern mapping names
+		PayloadTypeRegistry.serverboundPlay().register(HANDSHAKE_C2SPayload.ID, HANDSHAKE_C2SPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(HANDSHAKE_S2CPayload.ID, HANDSHAKE_S2CPayload.CODEC);
 
 		// Register server-side handshake receiver
 		ServerPlayNetworking.registerGlobalReceiver(HANDSHAKE_C2SPayload.ID,
-			(payload, context) -> {
-				// Send back a reply packet
-				ServerPlayNetworking.send(context.player(), new HANDSHAKE_S2CPayload("Is installed on server"));
-				LOGGER.info("[TrajectoryPreview] Sending handshake to player...");
-			});
+				(payload, context) -> {
+					// Send back a reply packet
+					ServerPlayNetworking.send(context.player(), new HANDSHAKE_S2CPayload("Is installed on server"));
+					LOGGER.info("[TrajectoryPreview] Sending handshake to player...");
+				});
 
 		LOGGER.info("[TrajectoryPreview] Server-side networking initialized!");
 	}

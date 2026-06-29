@@ -113,7 +113,7 @@ public class ProjectileInfo {
             ChargedProjectiles chargedProjectilesComponent = itemStack.get(DataComponents.CHARGED_PROJECTILES);
 
             if(chargedProjectilesComponent != null){
-                for (ItemStack projectile : chargedProjectilesComponent.getItems()) {
+                for (ItemStack projectile : chargedProjectilesComponent.itemCopies()) {
                     if (projectile.is(Items.FIREWORK_ROCKET)) {
                         vel = player.getViewVector(tickProgress).scale(1.6F);
                         gravity = 0;

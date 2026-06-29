@@ -2,7 +2,7 @@ package org.m9mx.cactus.glowberry.mixin.appleskin;
 /**
  * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
  */
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,22 +14,22 @@ import org.m9mx.cactus.glowberry.util.appleskin.client.HUDOverlayHandler;
 @Mixin(Gui.class)
 public class InGameHudMixin
 {
-	@Inject(at = @At("HEAD"), method = "renderFood")
-	private void renderFoodPre(GuiGraphics guiGraphics, Player player, int left, int top, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "extractFood")
+	private void renderFoodPre(GuiGraphicsExtractor guiGraphics, Player player, int left, int top, CallbackInfo info)
 	{
 		if (HUDOverlayHandler.INSTANCE != null)
 			HUDOverlayHandler.INSTANCE.onPreRenderFood(guiGraphics, player, left, top);
 	}
 
-	@Inject(at = @At("RETURN"), method = "renderFood")
-	private void renderFoodPost(GuiGraphics guiGraphics, Player player, int left, int top, CallbackInfo info)
+	@Inject(at = @At("RETURN"), method = "extractFood")
+	private void renderFoodPost(GuiGraphicsExtractor guiGraphics, Player player, int left, int top, CallbackInfo info)
 	{
 		if (HUDOverlayHandler.INSTANCE != null)
 			HUDOverlayHandler.INSTANCE.onRenderFood(guiGraphics, player, left, top);
 	}
 
-	@Inject(at = @At("RETURN"), method = "renderHearts")
-	private void renderHeartsPost(GuiGraphics guiGraphics, Player player, int x, int y, int height, int regeneratingHeartCount, float absorption, int food, int maxHearts, int halfHeartIndex, boolean blinking, CallbackInfo info)
+	@Inject(at = @At("RETURN"), method = "extractHearts")
+	private void renderHeartsPost(GuiGraphicsExtractor guiGraphics, Player player, int x, int y, int height, int regeneratingHeartCount, float absorption, int food, int maxHearts, int halfHeartIndex, boolean blinking, CallbackInfo info)
 	{
 		if (HUDOverlayHandler.INSTANCE != null)
 			HUDOverlayHandler.INSTANCE.onRenderHealth(guiGraphics, player, x, y, height, regeneratingHeartCount, 20.0F, 20, 20, (int) absorption, blinking);

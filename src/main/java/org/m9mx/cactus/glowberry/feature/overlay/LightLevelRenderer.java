@@ -2,8 +2,8 @@ package org.m9mx.cactus.glowberry.feature.overlay;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,18 +33,18 @@ public class LightLevelRenderer {
         initialized = true;
 
         // Register to render after entities
-        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
+        LevelRenderEvents.AFTER_SOLID_FEATURES.register(context -> {
             if (LightLevelOverlayHandler.isActive() && MC.player != null && MC.level != null) {
                 renderLightLevelOverlays(context);
             }
         });
     }
 
-    private static void renderLightLevelOverlays(WorldRenderContext context) {
+    private static void renderLightLevelOverlays(LevelRenderContext context) {
         Map<BlockPos, Integer> blocksToRender = LightLevelOverlayHandler.getBlocksToRender();
         if (blocksToRender.isEmpty()) return;
 
-        PoseStack poseStack = context.matrices();
+        PoseStack poseStack = context.poseStack();
         Vec3 camPos = MC.gameRenderer.getMainCamera().position();
 
         poseStack.pushPose();
@@ -55,7 +55,7 @@ public class LightLevelRenderer {
         
         if (overlayType == LightLevelModule.OverlayType.BLOCK || overlayType == LightLevelModule.OverlayType.BOTH) {
             // Render block overlays (colored hitboxes)
-            VertexConsumer blockOverlayConsumer = context.consumers().getBuffer(RenderTypes.debugFilledBox());
+            VertexConsumer blockOverlayConsumer = context.bufferSource().getBuffer(RenderTypes.debugFilledBox());
             
             for (Map.Entry<BlockPos, Integer> entry : blocksToRender.entrySet()) {
                 BlockPos pos = entry.getKey();
@@ -68,7 +68,7 @@ public class LightLevelRenderer {
         
         if (overlayType == LightLevelModule.OverlayType.NUMBER || overlayType == LightLevelModule.OverlayType.BOTH) {
             // Render number overlays (textured numbers)
-            VertexConsumer numberOverlayConsumer = context.consumers().getBuffer(RenderTypes.entityTranslucent(NUMBERS_TEXTURE));
+            VertexConsumer numberOverlayConsumer = context.bufferSource().getBuffer(RenderTypes.entityTranslucent(NUMBERS_TEXTURE));
             
             for (Map.Entry<BlockPos, Integer> entry : blocksToRender.entrySet()) {
                 BlockPos pos = entry.getKey();

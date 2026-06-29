@@ -19,7 +19,7 @@ public class SyncHandler
 	public static void init()
 	{
 		// Payload types are registered on client side by ClientSyncHandler
-		ServerTickEvents.END_WORLD_TICK.register(SyncHandler::onServerWorldTick);
+		ServerTickEvents.END_LEVEL_TICK.register(SyncHandler::onServerWorldTick);
 	}
 
 	/*

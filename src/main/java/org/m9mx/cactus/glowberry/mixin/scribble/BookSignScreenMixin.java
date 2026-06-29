@@ -11,7 +11,7 @@ import org.m9mx.cactus.glowberry.util.scribble.SetReturnScreen;
 import org.m9mx.cactus.glowberry.util.scribble.screen.ScribbleBookScreen;
 import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -70,14 +70,14 @@ public abstract class BookSignScreenMixin extends Screen implements SetReturnScr
     // When rendering, we translate the matrices of the draw context to draw the text further down if needed.
     // Note that this happens after the parent screen render, so only the text in the book is shifted.
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", shift = At.Shift.AFTER))
-    public void translateRender(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    public void translateRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         graphics.pose().pushMatrix();
         graphics.pose().translate(0f, scribble$getYOffset());
     }
 
     // At the end of rendering, we need to pop those matrices we pushed.
     @Inject(method = "render", at = @At(value = "RETURN"))
-    public void popRender(GuiGraphics graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    public void popRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         graphics.pose().popMatrix();
     }
 

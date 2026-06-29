@@ -6,7 +6,7 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.EnumSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.IntegerSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.feature.modules.TimerModule;
 import org.m9mx.cactus.glowberry.feature.modules.StopwatchModule;
@@ -144,7 +144,7 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
     }
 
     @Override
-    public void renderContent(GuiGraphics context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
+    public void renderContent(GuiGraphicsExtractor context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
         TimerModule timer         = TimerModule.INSTANCE;
         StopwatchModule stopwatch = StopwatchModule.INSTANCE;
 
@@ -273,7 +273,7 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
 
             int curX = lineX;
             for (Segment seg : line.segments) {
-                context.drawString(mc.font, seg.text, curX, textY, seg.color);
+                context.text(mc.font, seg.text, curX, textY, seg.color);
                 curX += mc.font.width(seg.text);
             }
             textY += LINE_HEIGHT;

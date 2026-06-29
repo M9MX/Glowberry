@@ -21,9 +21,9 @@ public class ClientSyncHandler
 		initialized = true;
 
 		// Register payload types on client side
-		PayloadTypeRegistry.playS2C().register(ExhaustionSyncPayload.TYPE, ExhaustionSyncPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(SaturationSyncPayload.TYPE, SaturationSyncPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(NaturalRegenerationSyncPayload.TYPE, NaturalRegenerationSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(ExhaustionSyncPayload.TYPE, ExhaustionSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(SaturationSyncPayload.TYPE, SaturationSyncPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(NaturalRegenerationSyncPayload.TYPE, NaturalRegenerationSyncPayload.CODEC);
 
 		ClientPlayNetworking.registerGlobalReceiver(ExhaustionSyncPayload.TYPE, (payload, context) -> {
 			context.client().execute(() -> {

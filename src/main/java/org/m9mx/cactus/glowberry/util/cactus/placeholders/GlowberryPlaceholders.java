@@ -58,7 +58,7 @@ public class GlowberryPlaceholders {
     private static long getCurrentMcTimeTicks() {
         try {
             // CactusConstants.mc.level.getDayTime() is the usual way
-            return com.dwarslooper.cactus.client.util.CactusConstants.mc.level.getDayTime();
+            return com.dwarslooper.cactus.client.util.CactusConstants.mc.level.getOverworldClockTime();
         } catch (Exception e) {
             return 0;
         }

@@ -15,7 +15,7 @@ public final class IncompatibilityRegistry {
 
     private static final List<Rule> RULES = List.of(
             mod("accurateblockplacement")
-                    .mixin("BreakMixin", "GameRendererMixin")
+                    .mixin("BreakMixin", "MinecraftMixin")
                     .module("fastPlace", "fastBreak")
                     .setting("fastPlace", "enabled")
                     .setting("fastBreak", "enabled")

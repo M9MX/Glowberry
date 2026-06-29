@@ -1,15 +1,19 @@
 package org.m9mx.cactus.glowberry.mixin;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +23,12 @@ import java.util.List;
  */
 @Mixin(PlayerTabOverlay.class)
 public class PlayerTabOverlayMixin {
+    @Final
+    @Shadow
+    private Minecraft minecraft;
 
-    @ModifyConstant(method = "render", constant = @Constant(intValue = 13))
+    // Targets the proper modern state mapping
+    @ModifyConstant(method = "extractRenderState", constant = @Constant(intValue = 13))
     private int modifySpace(int original) {
         if (TabListModule.INSTANCE != null && TabListModule.INSTANCE.active() && TabListModule.INSTANCE.showPing.get()) {
             return getMaxFontSize();
@@ -28,6 +36,7 @@ public class PlayerTabOverlayMixin {
         return original;
     }
 
+    @Unique
     private int getMaxFontSize() {
         int maxPing = getPlayerInfos()
                 .stream()
@@ -35,25 +44,23 @@ public class PlayerTabOverlayMixin {
                 .map(latency -> latency <= 0 ? 999 : latency)
                 .max()
                 .orElse(0);
-        
+
         String displayText = (maxPing == 0 ? "???" : maxPing) + "ms";
-        return Minecraft.getInstance().font.width(" " + displayText) + 3;
+        return minecraft.font.width(" " + displayText) + 3;
     }
 
-    /**
-     * Overwrite the renderPingIcon method to display ping as text instead of icon
-     */
-    @Overwrite
-    public void renderPingIcon(GuiGraphics guiGraphics, int width, int posX, int posY, PlayerInfo playerInfo) {
+    // Swapped from @Overwrite to an clean @Inject with cancel()
+    @Inject(method = "extractPingIcon", at = @At("HEAD"), cancellable = true)
+    public void renderPingIcon(GuiGraphicsExtractor guiGraphics, int width, int posX, int posY, PlayerInfo playerInfo, CallbackInfo ci) {
         if (TabListModule.INSTANCE == null || !TabListModule.INSTANCE.active() || !TabListModule.INSTANCE.showPing.get()) {
-            // If module is disabled, render default ping icon (do nothing here, let vanilla handle it)
+            // Let vanilla execute if module is disabled
             return;
         }
 
         int latency = playerInfo.getLatency();
         String latencyText = latency <= 0 ? "???" : String.valueOf(latency);
         String text = latencyText + "ms";
-        
+
         int color = 0xFF808080; // Gray default
         if (latency > 0) {
             if (latency < 150) {
@@ -68,18 +75,14 @@ public class PlayerTabOverlayMixin {
                 color = 0xFF000000; // Black
             }
         }
-        
-        int textWidth = Minecraft.getInstance().font.width(text);
+
+        int textWidth = minecraft.font.width(text);
         int renderX = posX + width - textWidth - 3;
-        
-        guiGraphics.drawString(
-            Minecraft.getInstance().font,
-            text,
-            renderX,
-            posY,
-            color,
-            false
-        );
+
+        guiGraphics.text(minecraft.font, text, renderX, posY, color, false);
+
+        // Cancel the execution context so vanilla doesn't render its signal bars over our numbers
+        ci.cancel();
     }
 
     @Shadow

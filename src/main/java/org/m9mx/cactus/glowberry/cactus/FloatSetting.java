@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
@@ -157,27 +157,40 @@ public class FloatSetting extends Setting<Float> {
 
         public Widget() {
             super();
-            this.isSlider = FloatSetting.this.getEditorStyle() == FloatSetting.EditorStyle.Slider;
+            this.isSlider = FloatSetting.this.getEditorStyle() == EditorStyle.Slider;
             this.widget = new EditBox(this.textRenderer, this.widgetWidth, 20, Component.empty());
-            this.widget.setFilter((s) -> s.isEmpty() || s.matches("^-?\\d*\\.?\\d*$"));
+
+            // Set the initial value first so our responder has a baseline text track
             this.widget.setValue(FloatSetting.this.get().toString());
+
+            // Create a local single-element array to track the last valid string input state across lambda updates
+            final String[] lastValidValue = { FloatSetting.this.get().toString() };
+
             this.widget.setResponder((s) -> {
-                boolean invalid = s.isEmpty() || s.equals("-");
-                float f = Float.NaN;
-
-                try {
-                    f = Float.parseFloat(s);
-                } catch (NumberFormatException var5) {
+                // If it's empty or a negative sign, color it red but let them keep typing the rest of the float
+                if (s.isEmpty() || s.equals("-")) {
+                    this.widget.setTextColor(-43691); // Red text indicator
+                    return;
                 }
 
-                if (f >= FloatSetting.this.getMin() && f <= FloatSetting.this.getMax() && !invalid) {
-                    this.widget.setTextColor(-2039584);
-                    this.setValue(f);
-                } else {
-                    this.widget.setTextColor(-43691);
+                // Validate formatting and character restrictions manually via RegEx
+                if (s.matches("^-?\\d*\\.?\\d*$")) {
+                    try {
+                        float f = Float.parseFloat(s);
+                        // Check if the number lies within bounds
+                        if (f >= FloatSetting.this.getMin() && f <= FloatSetting.this.getMax()) {
+                            this.widget.setTextColor(-2039584); // Normal text color
+                            this.setValue(f);
+                            lastValidValue[0] = s; // Save as the fallback rollback position
+                            return;
+                        }
+                    } catch (NumberFormatException ignored) {}
                 }
 
+                // If the character typed is completely invalid, reject it and roll back the text box entry
+                this.widget.setValue(lastValidValue[0]);
             });
+
             this.widget.moveCursorToStart(false);
             this.widget.moveCursorToEnd(false);
         }
@@ -186,13 +199,13 @@ public class FloatSetting extends Setting<Float> {
             return RenderUtils.SLIDER_HANDLE_TEXTURES.get(true, this.isHovered && mouseX > this.getX() + this.widgetPosX());
         }
 
-        public void wrappedRender(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        public void wrappedRender(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
             Font var10001 = this.textRenderer;
             MutableComponent var10002 = Component.literal(this.isSlider ? "↔" : "T").withStyle(this.isToggleHovered((double)mouseX, (double)mouseY) ? ChatFormatting.WHITE : ChatFormatting.GRAY);
             int var10003 = this.widgetPosX() - 8;
             int var10004 = this.getHeight();
             Objects.requireNonNull(this.textRenderer);
-            context.drawCenteredString(var10001, var10002, var10003, (var10004 - 9) / 2 + 1, -1);
+            context.centeredText(var10001, var10002, var10003, (var10004 - 9) / 2 + 1, -1);
             if (this.isSlider) {
                 context.blitSprite(RenderPipelines.GUI_TEXTURED, RenderUtils.SLIDER_TEXTURES.enabled(), this.widgetPosX(), 0, this.widgetWidth, this.getHeight());
                 context.blitSprite(RenderPipelines.GUI_TEXTURED, this.getHandleTexture(mouseX), this.widgetPosX() + (int)((double)(Mth.clamp(this.value, FloatSetting.this.getSliderMin(), FloatSetting.this.getSliderMax()) - FloatSetting.this.getSliderMin()) / (double)this.sliderDifference() * (double)(this.widgetWidth - 8)), 0, 8, this.height);
@@ -201,13 +214,13 @@ public class FloatSetting extends Setting<Float> {
                 var10003 = this.width - this.widgetWidth / 2;
                 var10004 = this.getHeight();
                 Objects.requireNonNull(this.textRenderer);
-                context.drawCenteredString(var10001, var6, var10003, (var10004 - 9) / 2 + 1, Color.WHITE.getRGB());
+                context.centeredText(var10001, var6, var10003, (var10004 - 9) / 2 + 1, Color.WHITE.getRGB());
             } else {
                 this.widget.setWidth(this.widgetWidth);
                 context.pose().pushMatrix();
                 context.pose().translate((float)(-this.getX()), (float)(-this.getY()));
                 this.widget.setPosition(this.getX() + this.width - this.widget.getWidth(), this.getY());
-                this.widget.render(context, mouseX, mouseY, delta);
+                this.widget.extractWidgetRenderState(context, mouseX, mouseY, delta);
                 context.pose().popMatrix();
             }
 

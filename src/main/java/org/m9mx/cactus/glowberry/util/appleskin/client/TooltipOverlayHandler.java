@@ -4,13 +4,12 @@ package org.m9mx.cactus.glowberry.util.appleskin.client;
  */
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.PlainTextContents;
-import net.minecraft.util.FormattedCharSink;
 import net.minecraft.util.StringDecomposer;
 import net.minecraft.world.item.component.Consumable;
 import net.minecraft.world.food.FoodProperties;
@@ -164,8 +163,9 @@ public class TooltipOverlayHandler
             return Math.max(hungerBarLength, saturationBarLength);
         }
 
+        // Inside your public static class FoodOverlay block:
         @Override
-        public void renderImage(Font textRenderer, int x, int y, int width, int height, GuiGraphics guiGraphics)
+        public void extractImage(Font textRenderer, int x, int y, int w, int h, GuiGraphicsExtractor guiGraphics)
         {
             if (TooltipOverlayHandler.INSTANCE != null)
                 TooltipOverlayHandler.INSTANCE.onRenderTooltip(guiGraphics, this, x, y, textRenderer);
@@ -251,7 +251,7 @@ public class TooltipOverlayHandler
         }
     }
 
-    public void onRenderTooltip(GuiGraphics guiGraphics, FoodOverlay foodOverlay, int toolTipX, int toolTipY, Font textRenderer)
+    public void onRenderTooltip(GuiGraphicsExtractor guiGraphics, FoodOverlay foodOverlay, int toolTipX, int toolTipY, Font textRenderer)
     {
         // When matrixStack or tooltip is null an unknown exception occurs.
         // If ModConfig.INSTANCE is null then we're probably still in She init phase
@@ -326,7 +326,7 @@ public class TooltipOverlayHandler
             matrixStack.translate(x, y);
             matrixStack.scale(0.75f, 0.75f);
             //contex.drawTextWithShadow(textRenderer, foodOverlay.hungerBarsText, 2, 2, 0xFFAAAAAA);
-            guiGraphics.drawString(textRenderer, foodOverlay.hungerBarsText, 2, 2, 0xFFAAAAAA);
+            guiGraphics.text(textRenderer, foodOverlay.hungerBarsText, 2, 2, 0xFFAAAAAA);
             matrixStack.popMatrix();
         }
 
@@ -357,7 +357,7 @@ public class TooltipOverlayHandler
             matrixStack.translate(x, y);
             matrixStack.scale(0.75f, 0.75f);
             //contex.drawTextWithShadow(textRenderer, foodOverlay.saturationBarsText, 2, 1, 0xFFAAAAAA);
-            guiGraphics.drawString(textRenderer, foodOverlay.saturationBarsText, 2, 1, 0xFFAAAAAA);
+            guiGraphics.text(textRenderer, foodOverlay.saturationBarsText, 2, 1, 0xFFAAAAAA);
             matrixStack.popMatrix();
         }
     }

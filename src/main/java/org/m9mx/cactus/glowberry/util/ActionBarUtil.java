@@ -10,7 +10,8 @@ public class ActionBarUtil {
     
     public static void sendActionBarMessage(String message) {
         if (mc.player != null) {
-            mc.player.displayClientMessage(Component.literal(message), true);
+            //mc.player.sendSystemMessage(Component.literal(message), true);
+            mc.gui.setOverlayMessage(Component.literal(message), false);
         }
     }
 

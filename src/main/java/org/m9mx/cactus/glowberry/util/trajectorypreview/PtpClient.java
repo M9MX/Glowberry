@@ -19,7 +19,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -37,7 +37,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import org.m9mx.cactus.glowberry.util.trajectorypreview.main.HandshakeNetworking.HANDSHAKE_C2SPayload;
 import org.m9mx.cactus.glowberry.util.trajectorypreview.main.HandshakeNetworking.HANDSHAKE_S2CPayload;
 
@@ -73,14 +73,14 @@ public class PtpClient {
 
 	public static void initializeRendering() {
 		LOGGER.info("[TrajectoryPreview] Registering render event");
-		WorldRenderEvents.AFTER_ENTITIES.register(context -> {
+		LevelRenderEvents.AFTER_SOLID_FEATURES.register(context -> {
 			LOGGER.debug("[TrajectoryPreview] Render event fired");
 			renderOverlay(context);
 		});
 		LOGGER.info("[TrajectoryPreview] Render event registered");
 	}
 
-	public static void renderOverlay(WorldRenderContext context) {
+	public static void renderOverlay(LevelRenderContext context) {
 		// Check if module is active
 		if (TrajectoryPreviewModule.INSTANCE == null) {
 			LOGGER.debug("[TrajectoryPreview] INSTANCE is null");
@@ -123,7 +123,7 @@ public class PtpClient {
 		showProjectileTrajectory(context, player, projectileInfoList, handMultiplier);
 	}
 
-	private static void showProjectileTrajectory(WorldRenderContext context, Player player, List<ProjectileInfo> projectileInfoList, int handMultiplier) {
+	private static void showProjectileTrajectory(LevelRenderContext context, Player player, List<ProjectileInfo> projectileInfoList, int handMultiplier) {
 		float tickProgress = client.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		Vec3 eye = player.getEyePosition(tickProgress);
 
@@ -193,14 +193,14 @@ public class PtpClient {
 		return right.scale(handMultiplier * offset.x).add(up.scale(offset.y)).add(forward.scale(offset.z)).add(eye.subtract(startPos));
 	}
 
-	private static void renderTrajectory(WorldRenderContext context, List<Vec3> trajectoryPoints, Vec3 handToEyeDelta, int color, boolean hasHit) {
+	private static void renderTrajectory(LevelRenderContext context, List<Vec3> trajectoryPoints, Vec3 handToEyeDelta, int color, boolean hasHit) {
 		if (trajectoryPoints == null || trajectoryPoints.isEmpty()) {
 			return;
 		}
 
-		VertexConsumer lineConsumer = context.consumers().getBuffer(RenderTypes.lines());
+		VertexConsumer lineConsumer = context.bufferSource().getBuffer(RenderTypes.lines());
 		Vec3 cam = client.gameRenderer.getMainCamera().position();
-		PoseStack matrices = context.matrices();
+		PoseStack matrices = context.poseStack();
 		matrices.pushPose();
 		matrices.translate(-cam.x, -cam.y, -cam.z);
 

@@ -5,7 +5,7 @@ import com.dwarslooper.cactus.client.gui.widget.CButtonWidget;
 import com.dwarslooper.cactus.client.util.CactusConstants;
 import com.dwarslooper.cactus.client.util.game.render.RenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -59,12 +59,12 @@ public class PlaceholderBrowserScreen extends CScreen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         if (this.width != lastWidth || this.height != lastHeight) {
             this.init();
         }
 
-        super.render(context, mouseX, mouseY, delta);
+        super.extractRenderState(context, mouseX, mouseY, delta);
 
         if (this.listWidget != null) {
             int boxWidth = (int)((this.width / 3.0) * 1.2);
@@ -75,14 +75,14 @@ public class PlaceholderBrowserScreen extends CScreen {
             RenderUtils.drawText(context, "§6§nExample Value", x + colW + 5, 62, -1);
             RenderUtils.drawText(context, "§6§nDescription", x + (colW * 2) + 5, 62, -1);
 
-            this.listWidget.render(context, mouseX, mouseY, delta);
+            this.listWidget.extractRenderState(context, mouseX, mouseY, delta);
         }
 
         // Draw this LAST so it stays on top without needing complex 3D math
         renderCopyNotification(context);
     }
 
-    private void renderCopyNotification(GuiGraphics context) {
+    private void renderCopyNotification(GuiGraphicsExtractor context) {
         if (copyTimestamp == -1) return;
         long elapsed = System.currentTimeMillis() - copyTimestamp;
         if (elapsed > 2000) { copyTimestamp = -1; return; }
@@ -97,7 +97,7 @@ public class PlaceholderBrowserScreen extends CScreen {
         // Simplified rendering: No translate, just straight draw calls
         context.fill(toastX, toastY, toastX + toastW, toastY + 16, (alphaInt << 24));
         int textColor = (alphaInt << 24) | 0x55FF55;
-        context.drawCenteredString(CactusConstants.mc.font, "§aCopied to Clipboard!", this.width / 2, toastY + 4, textColor);
+        context.centeredText(CactusConstants.mc.font, "§aCopied to Clipboard!", this.width / 2, toastY + 4, textColor);
     }
 
     private class PlaceholderListWidget extends ContainerObjectSelectionList<PlaceholderEntry> {
@@ -122,7 +122,7 @@ public class PlaceholderBrowserScreen extends CScreen {
         public PlaceholderEntry(PlaceholderInfo info) { this.info = info; }
 
         @Override
-        public void renderContent(@NotNull GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void extractContent(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             // Using Screen math directly so it works perfectly even on the very first frame
             int boxWidth = (int)((PlaceholderBrowserScreen.this.width / 3.0) * 1.2);
             int x = (PlaceholderBrowserScreen.this.width - boxWidth) / 2;
@@ -137,7 +137,7 @@ public class PlaceholderBrowserScreen extends CScreen {
             drawPingPongText(context, "§7" + info.description(), x + (colW * 2) + 2, y + 8, colW - 10);
         }
 
-        private void drawPingPongText(GuiGraphics context, String text, int x, int y, int maxWidth) {
+        private void drawPingPongText(GuiGraphicsExtractor context, String text, int x, int y, int maxWidth) {
             int textWidth = CactusConstants.mc.font.width(text);
             if (textWidth <= maxWidth) {
                 RenderUtils.drawText(context, text, x, y, -1);

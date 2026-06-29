@@ -3,7 +3,7 @@ package org.m9mx.cactus.glowberry.util.appleskin.api.event;
  * Credits: https://github.com/squeek502/AppleSkin/tree/1.21.11-fabric
  */
 import net.fabricmc.fabric.api.event.Event;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import org.m9mx.cactus.glowberry.util.appleskin.api.handler.EventHandler;
@@ -29,7 +29,7 @@ public class TooltipOverlayEvent
 	 */
 	public static class Render extends TooltipOverlayEvent
 	{
-		public Render(ItemStack itemStack, int x, int y, GuiGraphics context, FoodProperties defaultFood, FoodProperties modifiedFood)
+		public Render(ItemStack itemStack, int x, int y, GuiGraphicsExtractor context, FoodProperties defaultFood, FoodProperties modifiedFood)
 		{
 			super(itemStack, defaultFood, modifiedFood);
 			this.context = context;
@@ -39,7 +39,7 @@ public class TooltipOverlayEvent
 
 		public int x;
 		public int y;
-		public GuiGraphics context;
+		public GuiGraphicsExtractor context;
 
 		public static Event<EventHandler<Render>> EVENT = EventHandler.createArrayBacked();
 	}

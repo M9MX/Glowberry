@@ -9,7 +9,7 @@ import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
@@ -60,19 +60,19 @@ public class PageNumberWidget extends AbstractWidget {
         this.afterCursor = Component.empty();
     }
 
-    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float deltaTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float deltaTicks) {
         if (this.isFocused()) {
             int x = this.getX() + this.width;
 
             x -= this.font.width(this.afterCursor);
-            graphics.drawString(this.font, this.afterCursor, x, this.getY(), CommonColors.BLACK, false);
+            graphics.text(this.font, this.afterCursor, x, this.getY(), CommonColors.BLACK, false);
 
             int cursorX = x;
             x -= this.font.width(this.input);
-            graphics.drawString(this.font, this.input, x, this.getY(), CommonColors.BLACK, false);
+            graphics.text(this.font, this.input, x, this.getY(), CommonColors.BLACK, false);
 
             x -= this.font.width(this.beforeCursor);
-            graphics.drawString(this.font, this.beforeCursor, x, this.getY(), CommonColors.BLACK, false);
+            graphics.text(this.font, this.beforeCursor, x, this.getY(), CommonColors.BLACK, false);
 
             if ((Util.getMillis() - this.lastSwitchFocusTime) / 300L % 2L == 0L) {
                 graphics.fill(cursorX, this.getY() - 1, cursorX + 1, this.getY() + 1 + font.lineHeight, CommonColors.BLACK);
@@ -82,7 +82,7 @@ public class PageNumberWidget extends AbstractWidget {
 
             Component text = this.isHovered() ? this.hoverText : this.text;
             int textWidth = font.width(text);
-            graphics.drawString(this.font, text, this.getX() + this.width - textWidth, this.getY(), color, false);
+            graphics.text(this.font, text, this.getX() + this.width - textWidth, this.getY(), color, false);
         }
 
         if (this.isHovered()) {
@@ -97,12 +97,17 @@ public class PageNumberWidget extends AbstractWidget {
 
     @Override
     public boolean charTyped(CharacterEvent event) {
-        if (event.modifiers() != 0)
+        // REMOVED: event.modifiers() check completely, as it's no longer inside CharacterEvent
+
+        // Keeps your number-only rule ('0' to '9')
+        if (event.codepoint() < '0' || event.codepoint() > '9') {
             return false;
-        if (event.codepoint() < '0' || event.codepoint() > '9')
+        }
+
+        // Keeps your length constraint
+        if (this.input.length() >= 2 && !(this.input.equals("10") && event.codepoint() == '0')) {
             return false;
-        if (this.input.length() >= 2 && !(this.input.equals("10") && event.codepoint() == '0'))
-            return false;
+        }
 
         this.input += event.codepointAsString();
         return true;
