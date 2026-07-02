@@ -2,7 +2,9 @@ package org.m9mx.cactus.glowberry;
 
 import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
-import org.m9mx.cactus.glowberry.feature.commands.ExampleCommand;
+import org.m9mx.cactus.glowberry.feature.commands.CalculatorCommand;
+import org.m9mx.cactus.glowberry.feature.commands.ShareCommand;
+import org.m9mx.cactus.glowberry.feature.commands.PrivateShareCommand;
 import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoFishModule;
@@ -94,7 +96,10 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "scribble", () -> new ScribbleModule(getCategory()));
 		registerModule(registryBus, "timer", () -> new TimerModule(getCategory()));
 		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(getCategory()));
-		registryBus.register(Command.class, ctx -> new ExampleCommand());
+		registryBus.register(Command.class, ctx -> new CalculatorCommand("calc"));
+		registryBus.register(Command.class, ctx -> new CalculatorCommand("calculator"));
+		registryBus.register(Command.class, ctx -> new ShareCommand());
+		registryBus.register(Command.class, ctx -> new PrivateShareCommand());
 
 		// Always clear previously injected custom emojis before injecting
 		com.dwarslooper.cactus.client.systems.emoji.EmojiManager.getEmojis().removeIf(
