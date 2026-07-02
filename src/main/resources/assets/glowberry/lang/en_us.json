@@ -81,6 +81,18 @@
   "modules.shuffle.name": "Shuffle",
   "modules.shuffle.description": "After placing a block, switches to a random different hotbar block slot",
 
+  "modules.shuffle.groups.general": "General",
+
+  "modules.shuffle.settings.toggleKeybind.name": "Toggle Key",
+  "modules.shuffle.settings.toggleKeybind.description": "Key to toggle shuffle on/off",
+  "modules.shuffle.settings.useWeightedRandom.name": "Use Weighted Random",
+  "modules.shuffle.settings.useWeightedRandom.description": "Use item count as weight for random selection (more items = higher chance)",
+  "modules.shuffle.settings.playSoundEffects.name": "Play Sound Effects",
+  "modules.shuffle.settings.playSoundEffects.description": "Play sounds when toggling shuffle on/off",
+
+  "modules.shuffle.enabled": "§aShuffle enabled",
+  "modules.shuffle.disabled": "§cShuffle disabled",
+
   "modules.handItemModel.name": "Hand Item Model",
   "modules.handItemModel.description": "Customize hand and item positioning, rotation, and scale in first-person view",
 
@@ -363,6 +375,10 @@
   "modules.waypointsV2.settings.showThroughWalls.name": "Show Through Walls",
   "modules.waypointsV2.settings.showThroughWalls.description": "Render waypoints even when blocked by terrain",
 
+  "commands.calc.description": "In-chat calculator: math (+ - * / % ^ pow root sqrt), variables (stack/shulker/double/ans/pi/e), coordinate convert, item breakdown, and session history. Type #calc usage for full help.",
+  "command.calc.description": "In-chat calculator: math (+ - * / % ^ pow root sqrt), variables (stack/shulker/double/ans/pi/e), coordinate convert, item breakdown, and session history. Type #calc usage for full help.",
+  "commands.calculator.description": "In-chat calculator: math (+ - * / % ^ pow root sqrt), variables (stack/shulker/double/ans/pi/e), coordinate convert, item breakdown, and session history. Type #calc usage for full help.",
+  "command.calculator.description": "In-chat calculator: math (+ - * / % ^ pow root sqrt), variables (stack/shulker/double/ans/pi/e), coordinate convert, item breakdown, and session history. Type #calc usage for full help.",
   "glowberry.gui.macro.add_command_hint": "Start with / for commands, or use . / # for others",
 
   "hud.elements.pickup_log.name": "Pickup Log",

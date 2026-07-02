@@ -40,6 +40,9 @@ accessible field net/minecraft/client/gui/components/MultiLineEditBox$Builder sh
 # FIXME: For some reason, this is not accessible but only sometimes??
 accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
 
+#other
+accessible field net/minecraft/world/level/Level random Lnet/minecraft/util/RandomSource;
+
 #Cactus Modify Mixins Required Access Widener
 accessible field net/minecraft/client/gui/components/AbstractWidget width I
 accessible method net/minecraft/client/gui/components/AbstractSelectionList addEntry (Lnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)I
