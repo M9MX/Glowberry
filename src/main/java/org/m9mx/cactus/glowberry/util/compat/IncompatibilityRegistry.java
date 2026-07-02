@@ -15,7 +15,7 @@ public final class IncompatibilityRegistry {
 
     private static final List<Rule> RULES = List.of(
             mod("accurateblockplacement")
-                    .mixin("BreakMixin", "MinecraftMixin")
+                    .mixin("FastBreakMixin", "FastPlaceTickMixin")
                     .module("fastPlace", "fastBreak")
                     .setting("fastPlace", "enabled")
                     .setting("fastBreak", "enabled")
@@ -32,11 +32,11 @@ public final class IncompatibilityRegistry {
                     .build(),
             mod("better-ping-display")
                     .modAlias("betterpingdisplay", "pingview")
-                    .mixin("PlayerTabOverlayMixin")
+                    .mixin("TabListPingMixin")
                     .setting("tabList", "showPing")
                     .build(),
             mod("nmc") // No Mining Cooldown
-                    .mixin("BreakMixin")
+                    .mixin("FastBreakMixin")
                     .module("fastBreak")
                     .build(),
             mod("shuffle") // https://modrinth.com/mod/shuffle

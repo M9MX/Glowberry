@@ -2,7 +2,7 @@ package org.m9mx.cactus.glowberry.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import org.m9mx.cactus.glowberry.mixin.GuiAccessor;
+import org.m9mx.cactus.glowberry.mixin.util.GuiAccessor;
 
 public class ActionBarUtil {
     

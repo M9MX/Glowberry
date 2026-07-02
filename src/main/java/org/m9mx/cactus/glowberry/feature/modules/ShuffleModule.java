@@ -22,7 +22,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import org.lwjgl.glfw.GLFW;
-import org.m9mx.cactus.glowberry.mixin.InventoryAccessor;
+import org.m9mx.cactus.glowberry.mixin.Modules.Shuffle.ShufflePlacementMixin;
+import org.m9mx.cactus.glowberry.mixin.util.InventoryAccessor;
 import org.m9mx.cactus.glowberry.util.ActionBarUtil;
 
 import java.util.function.BiFunction;
@@ -99,7 +100,7 @@ public class ShuffleModule extends Module {
     }
 
     /**
-     * Called from {@link org.m9mx.cactus.glowberry.mixin.ShufflePlacementMixin}
+     * Called from {@link ShufflePlacementMixin}
      * when a block placement is detected and the module is active.
      */
     public void onBlockPlaced() {
