@@ -1,107 +1,95 @@
-<div align="center">
+# 🌌 Glowberry
+> **The Ultimate Utility Addon for Cactus Mod**
 
-# Glowberry
-**The Ultimate Utility Addon for Cactus Mod**
+Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus Mod](https://modrinth.com/mod/cactus) ecosystem. It injects high-performance utility modules, modern HUD enhancements, and direct quality-of-life upgrades into your game.
 
-[![Minecraft Version](https://img.shields.io/badge/Minecraft-26.1-66cdaa?style=flat-square&logo=minecraft)](https://modrinth.com/mod/glowberry)
-[![Platform](https://img.shields.io/badge/Platform-Fabric-black?style=flat-square&logo=fabric)](https://fabricmc.net/)
-[![License](https://img.shields.io/badge/License-ARR-red?style=flat-square)](https://github.com/M9MX/Glowberry?tab=License-1-ov-file)
-
-[**Report Bug**](https://github.com/M9MX/Glowberry/issues) • [**Developer Discord**](https://discord.com/users/821825926944784477)
+[![Platform: Fabric](https://img.shields.io/badge/Platform-Fabric-black?style=for-the-badge&logo=fabric&logoColor=white)](https://fabricmc.net/)
+[![Requires: Fabric API](https://img.shields.io/badge/Requires-Fabric_API-blue?style=for-the-badge&logo=fabric&logoColor=white)](https://modrinth.com/mod/fabric-api)
 
 ---
 
-</div>
+## 📅 Version Matrix
 
-## Introduction
-**Glowberry** is an expansive addon for the [Cactus Mod](https://modrinth.com/mod/cactus). While Cactus provides a solid foundation for quality-of-life enhancements and HUD customization, Glowberry extends this toolkit by adding specialized modules and upgrading existing features that Cactus does not include by default.
+### Minecraft `26.1.x`
+* **Glowberry Version:** `1.5.0`+
+* **Required Cactus:** `0.13`+
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/Tb9xjOAV/glowberry-1.5.1.jar?mr_download_reason=standalone)
 
-By using this addon, you agree to the [Cactus Terms of Service](https://modrinth.com/mod/cactus).
-
----
-
-## Requirements
-Glowberry requires the following dependencies to function:
-
-| Dependency | Link |
-| :--- | :--- |
-| **Cactus Mod** | [**Download**](https://modrinth.com/mod/cactus) |
-| **Fabric API** | [**Download**](https://modrinth.com/mod/fabric-api) |
+### Minecraft `1.21.11`
+* **Glowberry Version:** `1.5.0`+
+* **Required Cactus:** `0.13`+
+* **Download:** [Get Legacy Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/fSkHiLZU/glowberry-1.4.1.jar?mr_download_reason=standalone)
 
 > [!IMPORTANT]
-> **Overlay Lib:** Required for version `1.0` only. Version `1.1` and above no longer require this library.
+> **Overlay Lib Dependency:** Required *only* if you are running legacy version `1.0`. Version `1.1` and above is entirely standalone.
 
 ---
 
-## Features
+## 🛠️ Feature Modules
 
-<details open>
-<summary><b>PvP Modules</b></summary>
-<br>
+### 📺 Interface & HUD
+* **`Pickup Log`** — A sleek, real-time visual feed showing exactly what items enter or leave your inventory.
+* **`Timer / Stopwatch`** — Pins precise time-tracking and countdown utilities directly onto your primary screen overlay.
 
-| Module | Function |
-| :--- | :--- |
-| **AutoClicker** | Configurable CPS for automated attack or use actions. |
-| **NoHurtCam** | Disables camera shake effects for better visual clarity in combat. |
-| **ShieldStatus** | HUD overlay showing shield states for yourself and others. |
-| **TotemCounter** | Tracks inventory totems and enemy pops in the Tab list. |
-| **Trajectory** | Visual preview path for arrows, snowballs, and eggs. |
+### ⚔️ Tactical Combat (PvP)
+* **`NoHurtCam`** — Strips away aggressive screen-shake and blood-red tints to keep your vision clear under fire.
+* **`ShieldStatus`** — A live overlay tracking enemy shield durability, active blocks, and cooldown windows.
+* **`TotemCounter`** — Tracks your internal storage and prints exact enemy Totem pops straight into the player list.
 
-</details>
+### 🌲 Survival Mechanics
+* **`AppleSkin`** — Integrates saturation, hunger depletion, and exhaustion statistics directly into your hotbar graphics.
+* **`AutoTool`** — Evaluates blocks instantly and hot-swaps your slot to the mathematically optimal tool.
+* **`FastPlace`** `⚠️ Server Unsafe` — Completely removes the internal tick delay for placing blocks.
+* **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values.
+* **`LightLevel`** — Projects a visual grid across blocks to map out potential hostile mob spawning spots.
+* **`Shuffle`** — Dynamically scrambles blocks across your active hotbar to build realistic, random texture patterns.
+* **`TabList`** — Upgrades the classic server list by displaying raw, exact numerical ping updates.
+
+### 💡 Utility & Sandbox
+* **`BookEdit`** — Unlocks full rich-text formatting, allowing standard color codes (`&` / `§`) right inside writable books.
+* **`FastBreak`** — Fully eliminates the vanilla block reset timer for instantaneous breaking while in Creative Mode.
 
 <details>
-<summary><b>Survival Modules</b></summary>
+<summary>📦 Cheats Content Pack <strong><em>(Hidden — Enable in Cactus Settings)</em></strong></summary>
+
 <br>
 
-| Module | Function |
-| :--- | :--- |
-| **AppleSkin** | HUD integration for saturation, exhaustion, and food values. |
-| **AutoFish** | Automatically reels and casts the fishing rod. |
-| **AutoTool** | Selects the best tool in your hotbar for the block being broken. |
-| **FastPlace** | Removes the placement delay for rapid building. |
-| **HorseStats** | Shows speed, jump height, and health while riding. |
-| **LightLevel** | Identifies mob spawn areas via numerical or block overlays. |
-| **TabList** | Enhances the player list with numerical ping indicators. |
+Modules in this pack are disabled by default. To show them, go to <strong>Cactus Settings → Content Packs → Cheats</strong> and toggle it on.
+
+* **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates.
+* **`AutoFish`** `⚠️ Server Unsafe` — Automates the full cast-and-reel cycle using precise audio/packet cues.
+* **`Trajectory`** `⚠️ Server Unsafe` — Draws real-time physics vectors for arrows, snowballs, and eggs.
 
 </details>
 
-<details>
-<summary><b>Creative & Utility</b></summary>
-<br>
-
-| Module | Function |
-| :--- | :--- |
-| **BookEdit** | Supports color codes (&/§) and enhanced book editing. |
-| **FastBreak** | Removes block breaking delay in Creative mode. |
-
-</details>
+### 💻 Client Commands
+* **`Calc / Calculator`** `✨ 1.5.1+` — Runs an advanced internal math compiler directly through your chat box. Supports variables like `pi`, `e`, and `ans` (previous answer), item-to-stack math breakdowns (`stack`, `shulker`), coordinate conversion using a `Current` location shortcut, and full operation history tracking.
+* **`PrivateShare / Share`** `✨ 1.5.1+` — Allows you to safely broadcast your exact location data to other targeted players on the server.
 
 ---
 
-## Cactus Mod Changes
-Glowberry modifies and enhances core Cactus systems to provide more power to the user:
+## ⚡ Core Engine Upgrades
 
-### Reworked Macro System
-The macro screen and internal system have been completely overhauled to support more than just keybinds.
-* **Expanded Command Support:** Macros now support standard chat messages, vanilla `/` commands, and Cactus `#` commands.
-* **String Triggers:** Unlike the default Cactus system which only uses keybinds, Glowberry introduces **String Triggers**. You can set a macro to activate by typing a specific string (e.g., typing `.hello`) to automatically run any configured command or message.
+### 🔄 Reworked Macro Matrix
+We scrapped the original macro framework and rebuilt it with a versatile input handler.
+* **Multi-Format Input:** Bind text strings, vanilla `/` commands, or native Cactus `#` instructions seamlessly to a single key.
+* **String Event Triggers:** Automate your workflow. Program specific macros to fire instantly the split-second a matching word or phrase is detected in game chat.
 
----
-
-## Support & Feature Requests
-If you find any incompatibilities or bugs, please report them through the GitHub Issue Tracker.
-
-**Want a specific feature added before Cactus updates to include it itself?** Feel free to contact me via Discord to discuss suggestions!
-
-* **GitHub Issue Tracker:** [Issues](https://github.com/M9MX/Glowberry/issues)
-* **Direct Contact:** [Discord Profile](https://discord.com/users/821825926944784477)
+### 🔍 Built-in Placeholder Browser
+No more documentation digging. Access an integrated, searchable glossary containing every active macro key.
+* **Smart Categorization:** Instantly sort through Player, World, System, and Server variables.
+* **Copy on Click:** Selecting any variable copies its precise `{key}` identifier straight to your clipboard for immediate use.
 
 ---
 
-## License
-**All Rights Reserved (ARR)**
-See the [License File](https://github.com/M9MX/Glowberry?tab=License-1-ov-file) for more details.
+## 💬 Connect & Report
 
+Found an edge-case bug or want to suggest a new utility module? Let us know:
+
+🌌 [**GitHub Issue Tracker**](https://github.com/M9MX/Glowberry/issues)  
+💬 Connect with me on Discord: [**Open Profile Link**](https://discord.com/users/821825926944784477) or add me to friends (**Username:** `m9mx`)
+
+---
 <div align="center">
-Built for the Cactus Addon API.
+<small>Glowberry is an independent addon. By installation, you remain bound to the overarching Cactus Terms of Service.</small>
 </div>
