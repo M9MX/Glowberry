@@ -30,14 +30,19 @@ import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
+import com.dwarslooper.cactus.client.feature.content.ContentPack;
+import com.dwarslooper.cactus.client.feature.content.ContentPackManager;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
+import com.dwarslooper.cactus.client.feature.module.ModuleManager;
+import net.minecraft.world.item.Items;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -72,6 +77,7 @@ public class GlowberryCactus implements ICactusAddon {
 		// which will be used to register new features and content
 
 		LOGGER.info("Hello, Cactus!");
+
 		GlowberryPlaceholders.register(registryBus);
 
 		registryBus.register(Category.class, (list, ctx) -> list.add(getCategory()));
@@ -152,9 +158,66 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> factory.get());
 	}
 
+	private static final Class<?>[] CHEAT_MODULE_CLASSES = {
+		AutoClickerModule.class,
+		AutoFishModule.class,
+		TrajectoryPreviewModule.class
+	};
+
 	@Override
 	public void onLoadComplete() {
-		// This is called when Cactus is fully done initializing
+		// Register our Cheats content pack after Cactus is fully initialized
+		ContentPackManager contentPackManager = ContentPackManager.get();
+		if (contentPackManager != null) {
+			ContentPack cheatsPack = new ContentPack(
+				"glowberry_cheats",
+				ContentPack.ActivationPolicy.DEFAULT_DISABLED,
+				Items.COMMAND_BLOCK
+			);
+			contentPackManager.registerPack(cheatsPack);
+
+			// Apply initial state and listen for toggle changes
+			syncCheatModules(cheatsPack.isEnabled());
+			cheatsPack.setChangedListener(pack -> syncCheatModules(pack.isEnabled()));
+
+			LOGGER.info("Registered 'Cheats' content pack");
+		} else {
+			LOGGER.warn("ContentPackManager not available, skipping Cheats content pack registration");
+		}
+	}
+
+	private void syncCheatModules(boolean enabled) {
+		ModuleManager moduleManager = ModuleManager.get();
+		if (moduleManager == null) return;
+
+		Map<Class<? extends Module>, Module> modules = moduleManager.getModules();
+		Category category = getCategory();
+
+		if (enabled) {
+			// Re-add modules if missing (pack was toggled on)
+			addCheatModule(modules, AutoClickerModule.class, () -> new AutoClickerModule(category));
+			addCheatModule(modules, AutoFishModule.class, () -> new AutoFishModule(category));
+			addCheatModule(modules, TrajectoryPreviewModule.class, () -> new TrajectoryPreviewModule(category));
+		} else {
+			// Remove modules (pack was toggled off)
+			for (Class<?> clazz : CHEAT_MODULE_CLASSES) {
+				Module removed = modules.remove(clazz);
+				if (removed != null) {
+					if (removed.active()) {
+						removed.toggle();
+					}
+					LOGGER.info("Hidden module '{}' because Cheats content pack is disabled", removed.getDisplayName());
+				}
+			}
+		}
+	}
+
+	private void addCheatModule(Map<Class<? extends Module>, Module> modules, Class<? extends Module> clazz, Supplier<Module> factory) {
+		if (!modules.containsKey(clazz)) {
+			Module module = factory.get();
+			modules.put(clazz, module);
+			LOGGER.info("Shown module '{}' because Cheats content pack is enabled", module.getDisplayName());
+		}
 	}
 
 	@Override

@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
 import org.m9mx.cactus.glowberry.util.trajectorypreview.client.RenderUtils;
@@ -44,7 +42,6 @@ import org.m9mx.cactus.glowberry.util.trajectorypreview.main.HandshakeNetworking
 public class PtpClient {
 
 	private static final Minecraft client = Minecraft.getInstance();
-	public static final Logger LOGGER = LogManager.getLogger("trajectoryPreview");
 	private static boolean serverHasMod = false;
 
 	public static void initializeNetworking() {
@@ -60,40 +57,32 @@ public class PtpClient {
 
 			// Send handshake to server
 			ClientPlayNetworking.send(new HANDSHAKE_C2SPayload("Check if is installed on server"));
-			LOGGER.info("[TrajectoryPreview] Sending handshake to server...");
 		});
 
 		// Receive handshake reply
 		ClientPlayNetworking.registerGlobalReceiver(HANDSHAKE_S2CPayload.ID,
 			(payload, context) -> {
-				LOGGER.info("[TrajectoryPreview] Received handshake from server!");
 				serverHasMod = true;
 		});
 	}
 
 	public static void initializeRendering() {
-		LOGGER.info("[TrajectoryPreview] Registering render event");
 		LevelRenderEvents.AFTER_SOLID_FEATURES.register(context -> {
-			LOGGER.debug("[TrajectoryPreview] Render event fired");
 			renderOverlay(context);
 		});
-		LOGGER.info("[TrajectoryPreview] Render event registered");
 	}
 
 	public static void renderOverlay(LevelRenderContext context) {
 		// Check if module is active
 		if (TrajectoryPreviewModule.INSTANCE == null) {
-			LOGGER.debug("[TrajectoryPreview] INSTANCE is null");
 			return;
 		}
 		if (!TrajectoryPreviewModule.INSTANCE.active()) {
-			LOGGER.debug("[TrajectoryPreview] Module not active");
 			return;
 		}
 
 		Player player = client.player;
 		if (player == null) {
-			LOGGER.debug("[TrajectoryPreview] Player is null");
 			return;
 		}
 
@@ -101,25 +90,20 @@ public class PtpClient {
 		int handMultiplier = client.options.mainHand().get() == HumanoidArm.RIGHT ? 1 : -1;
 
 		List<ProjectileInfo> projectileInfoList = ProjectileInfo.getItemsInfo(itemStack, player, true);
-		LOGGER.debug("[TrajectoryPreview] Main hand projectiles: {}", projectileInfoList.size());
 		
 		if (projectileInfoList.isEmpty()) {
 			if (!TrajectoryPreviewModule.INSTANCE.enableOffhand.get()) {
-				LOGGER.debug("[TrajectoryPreview] Offhand disabled");
 				return;
 			}
 
 			itemStack = player.getOffhandItem();
 			handMultiplier = -handMultiplier;
 			projectileInfoList = ProjectileInfo.getItemsInfo(itemStack, player, false);
-			LOGGER.debug("[TrajectoryPreview] Offhand projectiles: {}", projectileInfoList.size());
 
 			if (projectileInfoList.isEmpty()) {
-				LOGGER.debug("[TrajectoryPreview] No projectiles found");
 				return;
 			}
 		}
-		LOGGER.debug("[TrajectoryPreview] Rendering {} projectiles", projectileInfoList.size());
 		showProjectileTrajectory(context, player, projectileInfoList, handMultiplier);
 	}
 

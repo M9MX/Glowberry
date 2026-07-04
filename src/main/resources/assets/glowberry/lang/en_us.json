@@ -312,7 +312,7 @@
   "modules.trajectoryPreview.settings.highlightOpacity.description": "Transparency of the target highlight",
   "modules.trajectoryPreview.settings.highlightOpacity.oPAQUE": "Opaque",
   "modules.trajectoryPreview.settings.highlightOpacity.pULSING": "Pulsing",
-  "modules.trajectoryPreview.settings.highlightOpacity.tRANSPERENT": "Transparent",
+  "modules.trajectoryPreview.settings.highlightOpacity.tRANSPARENT": "Transparent",
   "modules.trajectoryPreview.settings.highlightTargets.name": "Highlight Targets",
   "modules.trajectoryPreview.settings.highlightTargets.description": "Highlight the impact target area",
   "modules.trajectoryPreview.settings.highlightTargets.dISABLED": "Disabled",
@@ -324,7 +324,7 @@
   "modules.trajectoryPreview.settings.outlineOpacity.description": "Transparency of the target outline",
   "modules.trajectoryPreview.settings.outlineOpacity.oPAQUE": "Opaque",
   "modules.trajectoryPreview.settings.outlineOpacity.pULSING": "Pulsing",
-  "modules.trajectoryPreview.settings.outlineOpacity.tRANSPERENT": "Transparent",
+  "modules.trajectoryPreview.settings.outlineOpacity.tRANSPARENT": "Transparent",
   "modules.trajectoryPreview.settings.outlineTargets.name": "Outline Targets",
   "modules.trajectoryPreview.settings.outlineTargets.description": "Draw an outline around the impact target",
   "modules.trajectoryPreview.settings.outlineTargets.dISABLED": "Disabled",
@@ -418,5 +418,8 @@
   "hud.elements.timer_stopwatch.settings.scale.description": "Size of the element as a percentage (100 = default size)",
 
   "hud.elements.text.presets.glowberry_time_24h": "Time (24h, e.g. 17:41)",
-  "hud.elements.text.presets.glowberry_time_12h": "Time (12h, e.g. 05:41 PM)"
+  "hud.elements.text.presets.glowberry_time_12h": "Time (12h, e.g. 05:41 PM)",
+
+  "content_packs.glowberry_cheats.name": "Cheats",
+  "content_packs.glowberry_cheats.description": "Gameplay-affecting modules that may be considered unfair on some servers"
 }
