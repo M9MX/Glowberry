@@ -47,7 +47,8 @@
     "cactus.MixinConfigHandler",
     "cactus.MixinMacroManager",
     "cactus.MixinChatScreen",
-    "cactus.MixinAddHudElementScreen"
+    "cactus.MixinAddHudElementScreen",
+    "util.UpdateNotificationMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

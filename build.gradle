@@ -89,6 +89,25 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": inputs.properties.version
 	}
+
+	doLast {
+		def resourceDir = sourceSets.main.output.resourcesDir
+		if (resourceDir != null) {
+			resourceDir.mkdirs()
+			def props = new Properties()
+			project.properties.each { k, v ->
+				if (k.toString().startsWith("final_mod_version-")) {
+					props.setProperty(k.toString(), v.toString())
+				}
+			}
+			if (!props.isEmpty()) {
+				def file = new File(resourceDir, "final_versions.properties")
+				file.withOutputStream { out ->
+					props.store(out, "Auto-generated: final Glowberry versions per Cactus version")
+				}
+			}
+		}
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
