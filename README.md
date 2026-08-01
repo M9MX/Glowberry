@@ -11,13 +11,13 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ## 📅 Version Matrix
 
 ### Minecraft `26.1.x`
-* **Glowberry Version:** `1.5.0`+
+* **Glowberry Version:** `1.5.2`+
 * **Required Cactus:** `0.13`+
 * **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/Tb9xjOAV/glowberry-1.5.1.jar?mr_download_reason=standalone)
 
 ### Minecraft `1.21.11`
-* **Glowberry Version:** `1.5.0`+
-* **Required Cactus:** `0.13`+
+* **Glowberry Version:** `1.4.1`+
+* **Required Cactus:** `0.12.2`+
 * **Download:** [Get Legacy Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/fSkHiLZU/glowberry-1.4.1.jar?mr_download_reason=standalone)
 
 > [!IMPORTANT]
@@ -32,13 +32,16 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 * **`Timer / Stopwatch`** — Pins precise time-tracking and countdown utilities directly onto your primary screen overlay.
 
 ### ⚔️ Tactical Combat (PvP)
+* **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates.
 * **`NoHurtCam`** — Strips away aggressive screen-shake and blood-red tints to keep your vision clear under fire.
 * **`ShieldStatus`** — A live overlay tracking enemy shield durability, active blocks, and cooldown windows.
 * **`TotemCounter`** — Tracks your internal storage and prints exact enemy Totem pops straight into the player list.
+* **`Trajectory`** `⚠️ Server Unsafe` — Draws real-time physics vectors for arrows, snowballs, and eggs.
 
 ### 🌲 Survival Mechanics
 * **`AppleSkin`** — Integrates saturation, hunger depletion, and exhaustion statistics directly into your hotbar graphics.
 * **`AutoTool`** — Evaluates blocks instantly and hot-swaps your slot to the mathematically optimal tool.
+* **`AutoFish`** `⚠️ Server Unsafe` — Automates the full cast-and-reel cycle using precise audio/packet cues.
 * **`FastPlace`** `⚠️ Server Unsafe` — Completely removes the internal tick delay for placing blocks.
 * **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values.
 * **`LightLevel`** — Projects a visual grid across blocks to map out potential hostile mob spawning spots.
@@ -48,19 +51,6 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ### 💡 Utility & Sandbox
 * **`BookEdit`** — Unlocks full rich-text formatting, allowing standard color codes (`&` / `§`) right inside writable books.
 * **`FastBreak`** — Fully eliminates the vanilla block reset timer for instantaneous breaking while in Creative Mode.
-
-<details>
-<summary>📦 Cheats Content Pack <strong><em>(Hidden — Enable in Cactus Settings)</em></strong></summary>
-
-<br>
-
-Modules in this pack are disabled by default. To show them, go to <strong>Cactus Settings → Content Packs → Cheats</strong> and toggle it on.
-
-* **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates.
-* **`AutoFish`** `⚠️ Server Unsafe` — Automates the full cast-and-reel cycle using precise audio/packet cues.
-* **`Trajectory`** `⚠️ Server Unsafe` — Draws real-time physics vectors for arrows, snowballs, and eggs.
-
-</details>
 
 ### 💻 Client Commands
 * **`Calc / Calculator`** `✨ 1.5.1+` — Runs an advanced internal math compiler directly through your chat box. Supports variables like `pi`, `e`, and `ans` (previous answer), item-to-stack math breakdowns (`stack`, `shulker`), coordinate conversion using a `Current` location shortcut, and full operation history tracking.
