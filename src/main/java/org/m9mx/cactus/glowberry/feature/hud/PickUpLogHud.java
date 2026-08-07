@@ -97,14 +97,16 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
 
     private int findSnapshot(ItemStack needle) {
         for (int i = 0; i < lastInventoryStacks.size(); i++) {
-            if (ItemStack.isSameItemSameComponents(lastInventoryStacks.get(i), needle)) return i;
+            // Compare by item type only so in-place changes like durability loss, renames
+            // or enchanting don't show up as a false "-1 +1" of the same item.
+            if (ItemStack.isSameItem(lastInventoryStacks.get(i), needle)) return i;
         }
         return -1;
     }
 
     private LogEntry findLogEntry(ItemStack needle) {
         for (LogEntry e : logEntries) {
-            if (ItemStack.isSameItemSameComponents(e.representative, needle)) return e;
+            if (ItemStack.isSameItem(e.representative, needle)) return e;
         }
         return null;
     }
@@ -120,7 +122,9 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
             if (stack.isEmpty()) continue;
             boolean found = false;
             for (int j = 0; j < currentStacks.size(); j++) {
-                if (ItemStack.isSameItemSameComponents(currentStacks.get(j), stack)) {
+                // Merge stacks of the same item type regardless of components so that
+                // durability/rename/enchant changes don't split them into separate entries.
+                if (ItemStack.isSameItem(currentStacks.get(j), stack)) {
                     currentCounts.set(j, currentCounts.get(j) + stack.getCount());
                     found = true;
                     break;
@@ -155,7 +159,7 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
             ItemStack stack = lastInventoryStacks.get(i);
             boolean stillPresent = false;
             for (ItemStack cs : currentStacks) {
-                if (ItemStack.isSameItemSameComponents(cs, stack)) { stillPresent = true; break; }
+                if (ItemStack.isSameItem(cs, stack)) { stillPresent = true; break; }
             }
             if (!stillPresent) applyDiff(stack, -lastInventoryCounts.get(i), now);
         }
