@@ -36,15 +36,6 @@ import java.util.stream.Collectors;
 public class RichText implements FormattedText {
     public static final RichText EMPTY = new RichText(List.of());
 
-    // 26.2: ChatFormatting.isFormat() was removed; these are the format modifiers
-    private static final Set<ChatFormatting> FORMAT_MODIFIERS = Set.of(
-            ChatFormatting.OBFUSCATED,
-            ChatFormatting.BOLD,
-            ChatFormatting.STRIKETHROUGH,
-            ChatFormatting.UNDERLINE,
-            ChatFormatting.ITALIC
-    );
-
     private final List<Segment> segments;
 
     /**
@@ -102,7 +93,7 @@ public class RichText implements FormattedText {
                         text = new StringBuilder();
                     }
 
-                    if (FORMAT_MODIFIERS.contains(formatting)) {
+                    if (formatting.isFormat()) {
                         modifiers.add(formatting);
                     } else if (formatting == ChatFormatting.RESET) {
                         // We get rid of any RESET color codes, as they act weirdly in books.
@@ -164,24 +155,20 @@ public class RichText implements FormattedText {
      * @return the formatting code best representing the given text color.
      */
     private static ChatFormatting formattingFromTextColor(TextColor color) {
-        // If the color matches one of the legacy formatting colors, look it up directly.
-        // (26.2: ChatFormatting.getByName() was removed; use TextColor.fromLegacyFormat() instead)
-        for (ChatFormatting formatting : ChatFormatting.values()) {
-            if (color.equals(TextColor.fromLegacyFormat(formatting))) {
-                return formatting;
-            }
+        // If the color has a name, we can look it up directly.
+        ChatFormatting byName = ChatFormatting.getByName(color.serialize());
+        if (byName != null) {
+            return byName;
         }
 
         // Otherwise, let's find the closest matching color.
         ChatFormatting closest = ChatFormatting.BLACK;
         int distance = Integer.MAX_VALUE;
         for (ChatFormatting formatting : ChatFormatting.values()) {
-            // 26.2: ChatFormatting.getColor() was removed; get the value via TextColor instead
-            TextColor formattingColor = TextColor.fromLegacyFormat(formatting);
-            if (formattingColor == null) {
+            Integer colorValue = formatting.getColor();
+            if (colorValue == null) {
                 continue;
             }
-            int colorValue = formattingColor.getValue();
 
             // Find the Euclidean distance between the two colors (without taking the square root).
             int dr = Math.abs((colorValue >> 16 & 0xff) - (color.getValue() >> 16 & 0xff));
@@ -512,8 +499,7 @@ public class RichText implements FormattedText {
             }
 
             // Sort the modifiers so they're always in the same order, so the output is predictable.
-            // 26.2: ChatFormatting.getChar() was removed; sort by name instead.
-            modifiersToAdd.sort(Comparator.comparing(ChatFormatting::name));
+            modifiersToAdd.sort(Comparator.comparingInt(ChatFormatting::getChar));
             for (ChatFormatting format : modifiersToAdd) {
                 out.append(format);
             }

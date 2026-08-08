@@ -33,18 +33,6 @@ public class GlowberryPlaceholders {
             )
         );
 
-        // Register world day count placeholder (how many full 24000-tick days have passed)
-        bus.register(PlaceholderHandler.PlaceholderRegistration.class, ctx ->
-            new PlaceholderHandler.PlaceholderRegistration(
-                "glowberry.world.days",
-                new PlaceholderHandler.StaticPlaceholderValue(
-                    () -> String.valueOf(getWorldDayCount()),
-                    "12",
-                    () -> true
-                )
-            )
-        );
-
         // Register presets for both time formats
         bus.register(PresetConfig.class, ctx ->
             new PresetConfig<>(
@@ -64,15 +52,6 @@ public class GlowberryPlaceholders {
                 ))
             )
         );
-        bus.register(PresetConfig.class, ctx ->
-            new PresetConfig<>(
-                MultiLineTextElement.class,
-                "glowberry_world_days",
-                (e) -> e.lines.set(List.of(
-                    "Day: {glowberry.world.days}"
-                ))
-            )
-        );
     }
 
     // Helper to get current MC time in ticks (returns 0 if not available)
@@ -83,11 +62,6 @@ public class GlowberryPlaceholders {
         } catch (Exception e) {
             return 0;
         }
-    }
-
-    // How many full Minecraft days (24000 ticks each) the world has existed
-    private static long getWorldDayCount() {
-        return getCurrentMcTimeTicks() / 24000L;
     }
 
     // Convert MC ticks to LocalTime (MC day = 24000 ticks, 0 ticks = 6:00 AM)

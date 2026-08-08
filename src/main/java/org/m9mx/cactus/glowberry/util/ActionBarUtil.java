@@ -11,17 +11,17 @@ public class ActionBarUtil {
     public static void sendActionBarMessage(String message) {
         if (mc.player != null) {
             //mc.player.sendSystemMessage(Component.literal(message), true);
-            mc.gui.hud.setOverlayMessage(Component.literal(message), false);
+            mc.gui.setOverlayMessage(Component.literal(message), false);
         }
     }
 
     public static void sendActionBarMessageWithDuration(String message, int duration) {
         if (mc.gui != null) {
-            mc.gui.hud.setOverlayMessage(Component.literal(message), false);
+            mc.gui.setOverlayMessage(Component.literal(message), false);
             
             // This is the "Magic" part:
-            // 26.2: overlayMessageTime moved from Gui to Hud, so cast hud to our Accessor
-            ((GuiAccessor) mc.gui.hud).setOverlayMessageTime(duration);
+            // Cast the Gui to our Accessor to set the private field
+            ((GuiAccessor) mc.gui).setOverlayMessageTime(duration);
         }
     }
 }

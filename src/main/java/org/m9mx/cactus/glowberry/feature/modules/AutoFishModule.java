@@ -92,7 +92,7 @@ public class AutoFishModule extends Module {
 
     private void processFishing(Minecraft mc) {
         // Check if inventory is open and stop if setting enabled
-        if (stopOnInventoryOpen.get() && mc.gui.screen != null && !(mc.gui.screen instanceof ChatScreen)) {
+        if (stopOnInventoryOpen.get() && mc.screen != null && !(mc.screen instanceof ChatScreen)) {
             stopAutoFishing();
             ActionBarUtil.sendActionBarMessage("§cAutoFish disabled! Opened GUI!");
             return;
@@ -206,6 +206,6 @@ public class AutoFishModule extends Module {
         return this.isAutoFishing;
     }
     	private boolean isScreenOpen(Minecraft mc) {
-		return mc.gui.screen != null;
+		return mc.screen != null;
 	}
 }

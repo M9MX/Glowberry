@@ -39,6 +39,7 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 * **`Trajectory`** `⚠️ Server Unsafe` — Draws real-time physics vectors for arrows, snowballs, and eggs.
 
 ### 🌲 Survival Mechanics
+* **`AppleSkin`** — Integrates saturation, hunger depletion, and exhaustion statistics directly into your hotbar graphics.
 * **`AutoTool`** — Evaluates blocks instantly and hot-swaps your slot to the mathematically optimal tool.
 * **`AutoFish`** `⚠️ Server Unsafe` — Automates the full cast-and-reel cycle using precise audio/packet cues.
 * **`FastPlace`** `⚠️ Server Unsafe` — Completely removes the internal tick delay for placing blocks.

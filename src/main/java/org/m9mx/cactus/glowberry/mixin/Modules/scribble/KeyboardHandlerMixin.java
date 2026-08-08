@@ -32,7 +32,7 @@ public class KeyboardHandlerMixin {
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GameNarrator;isActive()Z"))
     public boolean isNarratorActive(GameNarrator instance, Operation<Boolean> original, @Local(argsOnly = true) KeyEvent event) {
         ScribbleModule module = ScribbleModule.INSTANCE;
-        if (module != null && module.active() && minecraft.gui.screen instanceof ScribbleBookEditScreen && !event.hasShiftDown()) {
+        if (module != null && module.active() && minecraft.screen instanceof ScribbleBookEditScreen && !event.hasShiftDown()) {
             return false;
         } else {
             return original.call(instance);

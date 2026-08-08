@@ -7,7 +7,6 @@ package org.m9mx.cactus.glowberry.util.scribble.gui.button;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -35,13 +34,12 @@ public class ColorSwatchWidget extends AbstractButton {
             graphics.fill(getX(), getY(), getX() + width, getY() + height, isHoveredOrFocused() ? 0xffffffff : 0xffa0a0a0);
         }
 
-        // 26.2: ChatFormatting.getColor() was removed; get the value via TextColor instead.
-        TextColor textColor = TextColor.fromLegacyFormat(this.color);
-        if (textColor == null) {
+        Integer color = this.color.getColor();
+        if (color == null) {
             return;
         }
 
-        int color = textColor.getValue() | 0xff000000;
+        color = color | 0xff000000;
         graphics.fill(getX() + 1, getY() + 1, getX() + width - 1, getY() + height - 1, color);
     }
 

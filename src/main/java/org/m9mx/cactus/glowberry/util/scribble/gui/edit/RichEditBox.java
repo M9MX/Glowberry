@@ -8,7 +8,6 @@ import org.m9mx.cactus.glowberry.util.scribble.history.command.Command;
 import org.m9mx.cactus.glowberry.util.scribble.history.command.EditCommand;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.MultilineTextField;
@@ -31,15 +30,6 @@ import java.util.function.Consumer;
 
 @NullMarked
 public class RichEditBox extends MultiLineEditBox implements TextArea<RichText> {
-    // 26.2: ChatFormatting.isFormat() was removed; these are the format modifiers
-    private static final Set<ChatFormatting> FORMAT_MODIFIERS = Set.of(
-            ChatFormatting.OBFUSCATED,
-            ChatFormatting.BOLD,
-            ChatFormatting.STRIKETHROUGH,
-            ChatFormatting.UNDERLINE,
-            ChatFormatting.ITALIC
-    );
-
     private final @Nullable Runnable onInvalidateFormat;
     private final @Nullable Consumer<Command> onHistoryPush;
 
@@ -89,7 +79,7 @@ public class RichEditBox extends MultiLineEditBox implements TextArea<RichText> 
             command.executeEdit(textField);
             this.pushHistory(command);
         } else {
-            if (FORMAT_MODIFIERS.contains(formatting)) {
+            if (formatting.isFormat()) {
                 if (active) {
                     this.modifiers.add(formatting);
                 } else {
@@ -107,9 +97,8 @@ public class RichEditBox extends MultiLineEditBox implements TextArea<RichText> 
         if (this.color == null) {
             return CommonColors.BLACK;
         } else {
-            // 26.2: ChatFormatting.getColor() was removed; get the value via TextColor instead.
             //noinspection DataFlowIssue: the color variable is never a modifier.
-            return 0xff000000 | TextColor.fromLegacyFormat(this.color).getValue();
+            return 0xff000000 | this.color.getColor();
         }
     }
 

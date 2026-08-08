@@ -1,6 +1,31 @@
 {
   "module_categories.glowberry": "Glowberry",
 
+  "modules.appleSkin.name": "AppleSkin",
+  "modules.appleSkin.description": "Adds various food-related HUD improvements",
+
+  "modules.appleSkin.groups.hudOverlay": "HUD Overlay",
+  "modules.appleSkin.groups.tooltip": "Tooltip",
+
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.name": "Max HUD Overlay Flash Alpha",
+  "modules.appleSkin.settings.maxHudOverlayFlashAlpha.description": "Alpha value of the flashing icons at their most visible point (1.0 = fully opaque, 0.0 = fully transparent)",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.name": "Show Food Exhaustion HUD Underlay",
+  "modules.appleSkin.settings.showFoodExhaustionHudUnderlay.description": "Shows your food exhaustion as a progress bar behind the hunger bar",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.name": "Show Food Health HUD Overlay",
+  "modules.appleSkin.settings.showFoodHealthHudOverlay.description": "Shows estimated health restored by food on the health bar",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.name": "Show Food Values HUD Overlay",
+  "modules.appleSkin.settings.showFoodValuesHudOverlay.description": "Shows the hunger (and saturation if showSaturationHudOverlay is true) that would be restored by food you are currently holding",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.name": "Show Food Values HUD Overlay When Offhand",
+  "modules.appleSkin.settings.showFoodValuesHudOverlayWhenOffhand.description": "Enables the hunger/saturation/health overlays for food in your off-hand",
+  "modules.appleSkin.settings.showFoodValuesInTooltip.name": "Show Food Values in Tooltip",
+  "modules.appleSkin.settings.showFoodValuesInTooltip.description": "Shows the hunger and saturation values of food in its tooltip while holding SHIFT",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.name": "Show Food Values in Tooltip Always",
+  "modules.appleSkin.settings.showFoodValuesInTooltipAlways.description": "Shows the hunger and saturation values of food in its tooltip automatically (without needing to hold SHIFT)",
+  "modules.appleSkin.settings.showSaturationHudOverlay.name": "Show Saturation HUD Overlay",
+  "modules.appleSkin.settings.showSaturationHudOverlay.description": "Shows your current saturation level overlayed on the hunger bar",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.name": "Show Vanilla Animations Overlay",
+  "modules.appleSkin.settings.showVanillaAnimationsOverlay.description": "Health/hunger overlay will shake to match Minecraft's icon animations",
+
   "modules.autoClicker.name": "Auto Clicker",
   "modules.autoClicker.description": "Automatically clicks at a set attack speed when enabled",
 
@@ -109,6 +134,14 @@
   "modules.handItemModel.settings.offRotationY.description": "Off hand rotation on Y axis (-60 to 60 degrees)",
   "modules.handItemModel.settings.offRotationZ.name": "Rotation Z",
   "modules.handItemModel.settings.offRotationZ.description": "Off hand rotation on Z axis (-60 to 60 degrees)",
+
+  "modules.horseStats.name": "Horse Stats",
+  "modules.horseStats.description": "Displays horse statistics when mounting a horse in the action bar",
+
+  "modules.horseStats.groups.general": "General",
+
+  "modules.horseStats.settings.displayDuration.name": "Display Duration",
+  "modules.horseStats.settings.displayDuration.description": "How many seconds to display horse stats in the action bar",
 
   "modules.lightLevel.name": "Light Level",
   "modules.lightLevel.description": "Displays light levels on blocks with colored overlays to help prevent mob spawns",
@@ -246,16 +279,6 @@
   "modules.timer.settings.showMilliseconds.name": "Show Milliseconds?",
   "modules.timer.settings.startPauseTimer.name": "Start/Pause Timer Key",
 
-  "modules.toggleSprint.name": "Toggle Sprint",
-  "modules.toggleSprint.description": "Press the sprint key once to keep sprinting without holding it, or sprint automatically while moving",
-
-  "modules.toggleSprint.groups.general": "General",
-
-  "modules.toggleSprint.settings.toggleKeybind.name": "Toggle Sprint Key",
-  "modules.toggleSprint.settings.toggleKeybind.description": "Key to toggle sprint on/off",
-  "modules.toggleSprint.settings.alwaysSprint.name": "Always Sprint",
-  "modules.toggleSprint.settings.alwaysSprint.description": "Sprint automatically whenever moving forward",
-
   "modules.totemcounter.name": "Totem Counter",
   "modules.totemcounter.description": "Displays your totem count on screen and tracks enemy totem pops in tab list",
 
@@ -379,114 +402,6 @@
   "hud.elements.pickup_log.settings.shortenThousands.name": "Shorten Thousands",
   "hud.elements.pickup_log.settings.shortenThousands.description": "Display counts of 1000 or more in shorthand (e.g. 1.2k instead of 1200)",
 
-  "hud.elements.toggle_sprint.name": "Toggle Sprint",
-  "hud.elements.toggle_sprint.description": "Shows whether you are currently sprinting",
-
-  "hud.elements.toggle_sprint.groups.general": "General",
-
-  "hud.elements.toggle_sprint.settings.alignment.name": "Alignment",
-  "hud.elements.toggle_sprint.settings.alignment.description": "Horizontal alignment of text within the element",
-  "hud.elements.toggle_sprint.settings.alignment.cENTER": "Center",
-  "hud.elements.toggle_sprint.settings.alignment.lEFT": "Left",
-  "hud.elements.toggle_sprint.settings.alignment.rIGHT": "Right",
-  "hud.elements.toggle_sprint.settings.alwaysShow.name": "Always Show",
-  "hud.elements.toggle_sprint.settings.alwaysShow.description": "Keep the element visible even when the Toggle Sprint module is off",
-  "hud.elements.toggle_sprint.settings.scale.name": "Scale",
-  "hud.elements.toggle_sprint.settings.scale.description": "Size of the element as a percentage (100 = default size)",
-
-  "hud.elements.horse_stats.name": "Horse Stats",
-  "hud.elements.horse_stats.description": "Displays the stats (speed, jump, health) of the horse you are riding",
-
-  "hud.elements.horse_stats.groups.general": "General",
-
-  "hud.elements.horse_stats.settings.alignment.name": "Alignment",
-  "hud.elements.horse_stats.settings.alignment.description": "Horizontal alignment of text within the element",
-  "hud.elements.horse_stats.settings.alignment.cENTER": "Center",
-  "hud.elements.horse_stats.settings.alignment.lEFT": "Left",
-  "hud.elements.horse_stats.settings.alignment.rIGHT": "Right",
-  "hud.elements.horse_stats.settings.alwaysShow.name": "Always Show",
-  "hud.elements.horse_stats.settings.alwaysShow.description": "Keep the element visible even when you are not on a horse (shows the last known stats)",
-  "hud.elements.horse_stats.settings.scale.name": "Scale",
-  "hud.elements.horse_stats.settings.scale.description": "Size of the element as a percentage (100 = default size)",
-  "hud.elements.horse_stats.settings.showHealth.name": "Show Health",
-  "hud.elements.horse_stats.settings.showHealth.description": "Display the horse's max health",
-  "hud.elements.horse_stats.settings.showJump.name": "Show Jump",
-  "hud.elements.horse_stats.settings.showJump.description": "Display the horse's jump height in blocks",
-  "hud.elements.horse_stats.settings.showSpeed.name": "Show Speed",
-  "hud.elements.horse_stats.settings.showSpeed.description": "Display the horse's movement speed in blocks per second",
-  "hud.elements.horse_stats.settings.orientation.name": "Orientation",
-  "hud.elements.horse_stats.settings.orientation.description": "Lay the stats out on one line (horizontal) or one line per stat (vertical)",
-  "hud.elements.horse_stats.settings.orientation.hORIZONTAL": "Horizontal",
-  "hud.elements.horse_stats.settings.orientation.vERTICAL": "Vertical",
-
-  "hud.elements.waila.name": "Waila (What Am I Looking At)",
-  "hud.elements.waila.description": "Shows the name and details of the block or entity you are looking at",
-
-  "hud.elements.waila.groups.general": "General",
-
-  "hud.elements.waila.settings.alignment.name": "Alignment",
-  "hud.elements.waila.settings.alignment.description": "Horizontal alignment of text within the element",
-  "hud.elements.waila.settings.alignment.cENTER": "Center",
-  "hud.elements.waila.settings.alignment.lEFT": "Left",
-  "hud.elements.waila.settings.alignment.rIGHT": "Right",
-  "hud.elements.waila.settings.scale.name": "Scale",
-  "hud.elements.waila.settings.scale.description": "Size of the element as a percentage (100 = default size)",
-  "hud.elements.waila.settings.showBlockProperties.name": "Show Block Properties",
-  "hud.elements.waila.settings.showBlockProperties.description": "Display the properties of the looked-at block (facing, lit, etc.)",
-  "hud.elements.waila.settings.showBreakingBar.name": "Show Breaking Bar",
-  "hud.elements.waila.settings.showBreakingBar.description": "Show a progress bar while breaking the looked-at block",
-  "hud.elements.waila.settings.showHealth.name": "Show Health",
-  "hud.elements.waila.settings.showHealth.description": "Display the health of living entities you look at",
-  "hud.elements.waila.settings.showOwner.name": "Show Owner",
-  "hud.elements.waila.settings.showOwner.description": "Display the owner of tameable mobs you look at, or their tamed status when the owner isn't available",
-  "hud.elements.waila.settings.showType.name": "Show Type",
-  "hud.elements.waila.settings.showType.description": "Display the entity type name (e.g. Zombie, Cow)",
-  "hud.elements.waila.settings.showVillagerProfession.name": "Show Villager Profession",
-  "hud.elements.waila.settings.showVillagerProfession.description": "Display the profession of villagers you look at (e.g. librarian, farmer)",
-  "hud.elements.waila.settings.showHorseStats.name": "Show Horse Stats",
-  "hud.elements.waila.settings.showHorseStats.description": "Display speed, jump height and health of horses you look at",
-  "hud.elements.waila.settings.showHardness.name": "Show Hardness",
-  "hud.elements.waila.settings.showHardness.description": "Display the hardness of the looked-at block",
-  "hud.elements.waila.settings.showRequiredTool.name": "Show Required Tool",
-  "hud.elements.waila.settings.showRequiredTool.description": "Show the tool (with its tier) that breaks the looked-at block fastest, next to the block name",
-  "hud.elements.waila.settings.showAge.name": "Show Baby / Adult",
-  "hud.elements.waila.settings.showAge.description": "Show whether the looked-at creature is a baby or an adult",
-  "hud.elements.waila.settings.showPotionEffects.name": "Show Potion Effects",
-  "hud.elements.waila.settings.showPotionEffects.description": "Display the active potion effects of the looked-at entity (e.g. Speed II), colored by effect",
-  "hud.elements.waila.settings.showRedstone.name": "Show Redstone Signal",
-  "hud.elements.waila.settings.showRedstone.description": "Display the redstone signal strength powering the looked-at block",
-  "hud.elements.waila.settings.showCoordinates.name": "Show Coordinates",
-  "hud.elements.waila.settings.showCoordinates.description": "Display the X/Y/Z position of the looked-at block",
-  "hud.elements.waila.settings.showNicheInfo.name": "Show Special Block Info",
-  "hud.elements.waila.settings.showNicheInfo.description": "Display special info for block entities: beehive bee count, jukebox disc, sign text, spawner mob",
-
-  "hud.elements.armor_hud.name": "Armor HUD+",
-  "hud.elements.armor_hud.description": "Displays your equipped armor and held item with durability bars",
-
-  "hud.elements.armor_hud.groups.general": "General",
-
-  "hud.elements.armor_hud.settings.alignment.name": "Alignment",
-  "hud.elements.armor_hud.settings.alignment.description": "Horizontal alignment of text within the element",
-  "hud.elements.armor_hud.settings.alignment.cENTER": "Center",
-  "hud.elements.armor_hud.settings.alignment.lEFT": "Left",
-  "hud.elements.armor_hud.settings.alignment.rIGHT": "Right",
-  "hud.elements.armor_hud.settings.colorDurability.name": "Color Durability",
-  "hud.elements.armor_hud.settings.colorDurability.description": "Color the durability text by condition: green when high, orange when medium, red when low",
-  "hud.elements.armor_hud.settings.durabilityFormat.name": "Durability Format",
-  "hud.elements.armor_hud.settings.durabilityFormat.description": "Show durability as a percentage or as a number (remaining/max)",
-  "hud.elements.armor_hud.settings.durabilityFormat.nUMBER": "Number",
-  "hud.elements.armor_hud.settings.durabilityFormat.pERCENT": "Percentage",
-  "hud.elements.armor_hud.settings.orientation.name": "Orientation",
-  "hud.elements.armor_hud.settings.orientation.description": "Lay the pieces out in a row (horizontal) or one per line (vertical)",
-  "hud.elements.armor_hud.settings.orientation.hORIZONTAL": "Horizontal",
-  "hud.elements.armor_hud.settings.orientation.vERTICAL": "Vertical",
-  "hud.elements.armor_hud.settings.scale.name": "Scale",
-  "hud.elements.armor_hud.settings.scale.description": "Size of the element as a percentage (100 = default size)",
-  "hud.elements.armor_hud.settings.showDurability.name": "Show Durability",
-  "hud.elements.armor_hud.settings.showDurability.description": "Display the durability value for each piece",
-  "hud.elements.armor_hud.settings.showHeldItem.name": "Show Held Item",
-  "hud.elements.armor_hud.settings.showHeldItem.description": "Also display the item in your main hand with the same durability display",
-
   "hud.elements.timer_stopwatch.name": "Timer & Stopwatch",
   "hud.elements.timer_stopwatch.description": "Displays the Timer and Stopwatch modules together in a single HUD element",
 
@@ -504,7 +419,6 @@
 
   "hud.elements.text.presets.glowberry_time_24h": "Time (24h, e.g. 17:41)",
   "hud.elements.text.presets.glowberry_time_12h": "Time (12h, e.g. 05:41 PM)",
-  "hud.elements.text.presets.glowberry_world_days": "World Days (e.g. 12)",
 
   "content_packs.glowberry_cheats.name": "Cheats",
   "content_packs.glowberry_cheats.description": "Gameplay-affecting modules that may be considered unfair on some servers"

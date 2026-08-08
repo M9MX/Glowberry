@@ -32,9 +32,9 @@
     "accessWidener" : "glowberry.accesswidener",
     "depends": {
         "fabricloader": ">=0.19.3",
-        "minecraft": "~26.2",
+        "minecraft": "~26.1",
         "java": ">=21",
-        "cactus": ">=0.14",
+        "cactus": ">=0.13",
         "fabric-api": "*"
     },
     "suggests": {

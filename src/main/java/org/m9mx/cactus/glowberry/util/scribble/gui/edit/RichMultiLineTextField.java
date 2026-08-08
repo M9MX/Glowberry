@@ -23,15 +23,6 @@ import java.util.function.Supplier;
 
 @NullMarked
 public class RichMultiLineTextField extends MultilineTextField {
-    // 26.2: ChatFormatting.isFormat() was removed; these are the format modifiers
-    private static final Set<ChatFormatting> FORMAT_MODIFIERS = Set.of(
-            ChatFormatting.OBFUSCATED,
-            ChatFormatting.BOLD,
-            ChatFormatting.STRIKETHROUGH,
-            ChatFormatting.UNDERLINE,
-            ChatFormatting.ITALIC
-    );
-
     // These assignments are used, as super() in the constructor calls functions before they are assigned.
     @SuppressWarnings("UnusedAssignment")
     private @Nullable Supplier<Pair<ChatFormatting, Set<ChatFormatting>>> formatSupplier = null;
@@ -74,7 +65,7 @@ public class RichMultiLineTextField extends MultilineTextField {
         int end = selection.endIndex();
 
         RichText result;
-        if (FORMAT_MODIFIERS.contains(formatting)) {
+        if (formatting.isFormat()) {
             if (active) {
                 result = this.richText.applyFormatting(start, end, null, Set.of(formatting), Set.of());
             } else {

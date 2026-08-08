@@ -96,8 +96,7 @@ public class PlaceholderRegistryList {
 
         category("Glowberry")
                 .add("glowberry.timeofday.24h", "14:30", "Minecraft Time (24h)")
-                .add("glowberry.timeofday.12h", "02:30 PM", "Minecraft Time (12h)")
-                .add("glowberry.world.days", "12", "Days the world has been around");
+                .add("glowberry.timeofday.12h", "02:30 PM", "Minecraft Time (12h)");
     }
 
     private static CategoryBuilder category(String name) {

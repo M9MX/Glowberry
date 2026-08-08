@@ -6,7 +6,10 @@
   "mixins": [
     "util.MinecraftRightClickAccess",
     "util.InventoryAccessor",
-    "Modules.LightLevel.LightLevelTickMixin"
+    "Modules.LightLevel.LightLevelTickMixin",
+    "Modules.appleskin.ServerPlayerEntityMixin",
+    "Modules.appleskin.PlayerManagerMixin",
+    "Modules.appleskin.HungerManagerMixin"
   ],
   "client": [
     "Modules.LightLevel.LightLevelBlockChangeMixin",
@@ -15,8 +18,13 @@
     "Modules.FastBreak.FastBreakMixin",
     "Modules.Shuffle.ShufflePlacementMixin",
     "Modules.AutoTool.AutoToolMixin",
+    "Modules.HorseStats.HorseStatsMixin",
     "util.GuiAccessor",
     "Modules.TabList.TabListPingMixin",
+    "Modules.appleskin.ItemStackMixin",
+    "Modules.appleskin.InGameHudMixin",
+    "Modules.appleskin.MinecraftClientMixin",
+    "Modules.appleskin.TooltipComponentMixin",
     "Modules.shield.ShieldSpecialRendererMixin",
     "Modules.shield.PlayerItemInHandLayerMixin",
     "Modules.shield.ClientPacketListenerMixin",

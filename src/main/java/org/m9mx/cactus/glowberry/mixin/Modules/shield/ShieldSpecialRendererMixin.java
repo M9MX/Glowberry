@@ -6,13 +6,10 @@ package org.m9mx.cactus.glowberry.mixin.Modules.shield;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.object.equipment.ShieldModel;
-import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.ShieldSpecialRenderer;
-import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Final;
@@ -31,10 +28,6 @@ public class ShieldSpecialRendererMixin {
 	@Shadow
 	@Final
 	private ShieldModel model;
-
-	@Shadow
-	@Final
-	private SpriteGetter sprites;
 
 	// Fixed: Removed ItemDisplayContext parameter to match modern signature
 	@Inject(method = "submit", at = @At("HEAD"), cancellable = true)
@@ -84,21 +77,11 @@ public class ShieldSpecialRendererMixin {
 			return;
 		}
 
-		// Render the colored shield instead of vanilla.
-		// 26.2 removed RenderBuffers.bufferSource()/Minecraft.renderBuffers() in favor of
-		// the staged SubmitNodeCollector renderer, so submit the model through it
-		// (same path vanilla ShieldSpecialRenderer uses, with our state color tint).
-		// Note: we pass an explicit entityTranslucent render type here - the sprite-resolved
-		// render type used by the SpriteId overload is opaque (drops the alpha channel),
-		// which is why the opacity setting had no effect.
+		// Render the colored shield instead of vanilla
+		MultiBufferSource.BufferSource bufferSource = mc.renderBuffers().bufferSource();
 		ShieldItemModelRenderer renderer = new ShieldItemModelRenderer();
-		int color = renderer.getColorForShield(player);
-		submitNodeCollector.submitModel(
-			model, Unit.INSTANCE, poseStack,
-			RenderTypes.entityTranslucent(Sheets.SHIELD_BASE_NO_PATTERN.texture(), true),
-			light, overlay, color,
-			sprites.get(Sheets.SHIELD_BASE_NO_PATTERN), entityId, null
-		);
+		renderer.render(model, poseStack, bufferSource, light, overlay, player);
+		bufferSource.endBatch();
 
 		// Cancel vanilla rendering
 		ci.cancel();

@@ -44,7 +44,6 @@ accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
 accessible field net/minecraft/world/level/Level random Lnet/minecraft/util/RandomSource;
 accessible field net/minecraft/client/gui/components/AbstractWidget x I
 accessible field net/minecraft/client/gui/components/AbstractWidget y I
-accessible field net/minecraft/client/gui/Gui screen Lnet/minecraft/client/gui/screens/Screen;
 
 #Cactus Modify Mixins Required Access Widener
 accessible field net/minecraft/client/gui/components/AbstractWidget width I
