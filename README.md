@@ -9,11 +9,15 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ---
 
 ## 📅 Version Matrix
+### Minecraft `26.2`
+* **Glowberry Version:** `1.6.0`+
+* **Required Cactus:** `1.14`+
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/ofDXConU/glowberry-1.6.0.jar?mr_download_reason=standalone)
 
 ### Minecraft `26.1.x`
 * **Glowberry Version:** `1.5.2`+
 * **Required Cactus:** `0.13`+
-* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/Tb9xjOAV/glowberry-1.5.1.jar?mr_download_reason=standalone)
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/4F8rdsAd/glowberry-1.5.2.jar?mr_download_reason=standalone)
 
 ### Minecraft `1.21.11`
 * **Glowberry Version:** `1.4.1`+
@@ -30,20 +34,22 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ### 📺 Interface & HUD
 * **`Pickup Log`** — A sleek, real-time visual feed showing exactly what items enter or leave your inventory.
 * **`Timer / Stopwatch`** — Pins precise time-tracking and countdown utilities directly onto your primary screen overlay.
+* **`ArmorHud+`** - ArmorHud 
+* **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values.
+* **`Waila / Target Info`** — Displays real-time block and entity info directly on your screen.
 
 ### ⚔️ Tactical Combat (PvP)
 * **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates.
 * **`NoHurtCam`** — Strips away aggressive screen-shake and blood-red tints to keep your vision clear under fire.
 * **`ShieldStatus`** — A live overlay tracking enemy shield durability, active blocks, and cooldown windows.
 * **`TotemCounter`** — Tracks your internal storage and prints exact enemy Totem pops straight into the player list.
-* **`Trajectory`** `⚠️ Server Unsafe` — Draws real-time physics vectors for arrows, snowballs, and eggs.
+* **`Trajectory`** `⚠️ Server Unsafe` `✨Up to 1.6.0` — Draws real-time physics vectors for arrows, snowballs, and eggs.
 
 ### 🌲 Survival Mechanics
-* **`AppleSkin`** — Integrates saturation, hunger depletion, and exhaustion statistics directly into your hotbar graphics.
+* **`AppleSkin`** `✨Up to 1.6.0` — Integrates saturation, hunger depletion, and exhaustion statistics directly into your hotbar graphics.
 * **`AutoTool`** — Evaluates blocks instantly and hot-swaps your slot to the mathematically optimal tool.
 * **`AutoFish`** `⚠️ Server Unsafe` — Automates the full cast-and-reel cycle using precise audio/packet cues.
 * **`FastPlace`** `⚠️ Server Unsafe` — Completely removes the internal tick delay for placing blocks.
-* **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values.
 * **`LightLevel`** — Projects a visual grid across blocks to map out potential hostile mob spawning spots.
 * **`Shuffle`** — Dynamically scrambles blocks across your active hotbar to build realistic, random texture patterns.
 * **`TabList`** — Upgrades the classic server list by displaying raw, exact numerical ping updates.
