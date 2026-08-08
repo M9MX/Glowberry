@@ -77,7 +77,7 @@ public class TimerModule extends Module {
     @EventHandler
     public void onTick(ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.screen != null) return;
+        if (mc.player == null || mc.gui.screen != null) return;
 
         boolean currentStartPause = isKeyPressed(startPauseKeybind);
         boolean currentReset = isKeyPressed(resetKeybind);

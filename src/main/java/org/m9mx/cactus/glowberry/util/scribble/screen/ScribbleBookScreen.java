@@ -100,7 +100,8 @@ public abstract class ScribbleBookScreen<T> extends Screen {
                 () -> {
                     ScribbleModule module = ScribbleModule.INSTANCE;
                     if (module != null) {
-                        this.minecraft.setScreen(new ModuleOptionsScreen(module, this));
+                        // 26.2: Minecraft.setScreen() was renamed to setScreenAndShow()
+                        this.minecraft.setScreenAndShow(new ModuleOptionsScreen(module, this));
                     }
                 },
                 x, y, 96, 90, 12, 12));

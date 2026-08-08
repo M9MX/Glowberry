@@ -8,8 +8,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.m9mx.cactus.glowberry.util.ItemStackUtil;
 import org.m9mx.cactus.glowberry.util.update.UpdateChecker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -124,7 +124,7 @@ public class UpdateNotificationMixin {
         if (!UpdateChecker.isCheckDone() || !UpdateChecker.isUpdateAvailable()) return;
 
         Minecraft mc = Minecraft.getInstance();
-        Screen screen = mc.screen;
+        Screen screen = mc.gui.screen;
         if (!(screen instanceof TitleScreen)) return;
 
         long now = Util.getMillis();
@@ -168,7 +168,8 @@ public class UpdateNotificationMixin {
         // FIXED: Properly align item icon vertically
         int iconX = x + CARD_PAD;
         int iconY = y + 8;
-        context.fakeItem(new ItemStack(Items.GLOW_BERRIES), iconX, iconY);
+        // safeStack: the title screen can render before item components are bound
+        context.fakeItem(ItemStackUtil.safeStack(Items.GLOW_BERRIES), iconX, iconY);
 
         // Version text positioning aligned perfectly to icon
         int textX = iconX + ICON_SIZE + ICON_GAP;

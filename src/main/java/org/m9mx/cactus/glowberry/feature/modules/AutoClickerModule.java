@@ -125,6 +125,7 @@ public class AutoClickerModule extends Module {
     }
     
     private boolean isScreenOpen(Minecraft mc) {
-		return mc.screen != null;
+		// 26.2: the current screen moved from Minecraft.screen to Minecraft.gui.screen()
+		return mc.gui.screen() != null;
 	}
 }

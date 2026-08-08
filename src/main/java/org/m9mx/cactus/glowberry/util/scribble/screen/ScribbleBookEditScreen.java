@@ -202,11 +202,11 @@ public class ScribbleBookEditScreen extends ScribbleBookScreen<RichText> impleme
             @SuppressWarnings("DataFlowIssue")
             BookSignScreen screen = new BookSignScreen(null, this.player, this.hand, getPagesAsStrings(true));
             ((SetReturnScreen) screen).scribble$setReturnScreen(this);
-            this.minecraft.setScreen(screen);
+            this.minecraft.setScreenAndShow(screen);
         }).pos(this.width / 2 - 98 - 2, y).width(98).build());
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
-            this.minecraft.setScreen(null);
+            this.minecraft.setScreenAndShow(null);
             this.saveChanges();
         }).pos(this.width / 2 + 2, y).width(98).build());
     }
@@ -272,11 +272,11 @@ public class ScribbleBookEditScreen extends ScribbleBookScreen<RichText> impleme
         }
 
         BooleanConsumer onConfirmed = (confirmed) -> {
-            this.minecraft.setScreen(this);
+            this.minecraft.setScreenAndShow(this);
             if (confirmed) runnable.run();
         };
 
-        this.minecraft.setScreen(new ConfirmScreen(
+        this.minecraft.setScreenAndShow(new ConfirmScreen(
                 onConfirmed,
                 Component.translatable("text.scribble." + name + ".title"),
                 Component.translatable("text.scribble." + name + ".description")
@@ -380,7 +380,9 @@ public class ScribbleBookEditScreen extends ScribbleBookScreen<RichText> impleme
 
                 ChatFormatting color = COLORS[i];
                 colorSwatches.add(addRenderableWidget(new ColorSwatchWidget(
-                        Component.translatable("text.scribble.color." + color.getName()), color,
+                        // 26.2: ChatFormatting.getName() was removed; the enum name() is uppercase,
+                        // so lowercase it to match the lang keys (e.g. DARK_AQUA -> dark_aqua).
+                        Component.translatable("text.scribble.color." + color.name().toLowerCase(Locale.ROOT)), color,
                         () -> this.applyFormat(color, true),
                         x + 3 + dx, y + 95 + dy, 8, 8
                 )));

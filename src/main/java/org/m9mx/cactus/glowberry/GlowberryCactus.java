@@ -1,27 +1,27 @@
 package org.m9mx.cactus.glowberry;
 
 import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
-import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import org.m9mx.cactus.glowberry.feature.commands.CalculatorCommand;
 import org.m9mx.cactus.glowberry.feature.commands.ShareCommand;
 import org.m9mx.cactus.glowberry.feature.commands.PrivateShareCommand;
-import org.m9mx.cactus.glowberry.feature.modules.AppleSkinModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoFishModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
 import org.m9mx.cactus.glowberry.feature.modules.FastBreakModule;
 import org.m9mx.cactus.glowberry.feature.modules.FastPlaceModule;
-import org.m9mx.cactus.glowberry.feature.modules.HorseStatsModule;
 import org.m9mx.cactus.glowberry.feature.modules.LightLevelModule;
 import org.m9mx.cactus.glowberry.feature.modules.ScribbleModule;
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 import org.m9mx.cactus.glowberry.feature.modules.TabListModule;
 import org.m9mx.cactus.glowberry.feature.modules.TotemCounterModule;
-import org.m9mx.cactus.glowberry.feature.modules.TrajectoryPreviewModule;
 import org.m9mx.cactus.glowberry.feature.modules.TimerModule;
 import org.m9mx.cactus.glowberry.feature.modules.StopwatchModule;
+import org.m9mx.cactus.glowberry.feature.modules.ToggleSprintModule;	import org.m9mx.cactus.glowberry.feature.hud.ArmorHudElement;
+	import org.m9mx.cactus.glowberry.feature.hud.HorseStatsHudElement;
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 import org.m9mx.cactus.glowberry.feature.hud.TimerStopwatchHudElement;
+import org.m9mx.cactus.glowberry.feature.hud.ToggleSprintHudElement;
+import org.m9mx.cactus.glowberry.feature.hud.WailaHudElement;
 import org.m9mx.cactus.glowberry.feature.modules.*;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -84,24 +83,26 @@ public class GlowberryCactus implements ICactusAddon {
 
 		registryBus.register(HudElement.class, ctx -> new PickUpLogHud());
 		registryBus.register(HudElement.class, ctx -> new TimerStopwatchHudElement());
+		registryBus.register(HudElement.class, ctx -> new ToggleSprintHudElement());
+		registryBus.register(HudElement.class, ctx -> new HorseStatsHudElement());
+		registryBus.register(HudElement.class, ctx -> new WailaHudElement());
+		registryBus.register(HudElement.class, ctx -> new ArmorHudElement());
 
 		// Register our modules inside the custom category
 		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(getCategory()));
 		registerModule(registryBus, "fastPlace", () -> new FastPlaceModule(getCategory()));
 		registerModule(registryBus, "fastBreak", () -> new FastBreakModule(getCategory()));
 		registerModule(registryBus, "autoTool", () -> new AutoToolModule(getCategory()));
-		registerModule(registryBus, "horseStats", () -> new HorseStatsModule(getCategory()));
 		registerModule(registryBus, "autoClicker", () -> new AutoClickerModule(getCategory()));
 		registerModule(registryBus, "autoFish", () -> new AutoFishModule(getCategory()));
 		registerModule(registryBus, "shuffle", () -> new ShuffleModule(getCategory()));
 		registerModule(registryBus, "shieldStatus", () -> new ShieldStatusModule(getCategory()));
 		registerModule(registryBus, "tabList", () -> new TabListModule(getCategory()));
 		registerModule(registryBus, "totemCounter", () -> new TotemCounterModule(getCategory()));
-		registerModule(registryBus, "appleSkin", () -> new AppleSkinModule(getCategory()));
-		registerModule(registryBus, "trajectoryPreview", () -> new TrajectoryPreviewModule(getCategory()));
 		registerModule(registryBus, "scribble", () -> new ScribbleModule(getCategory()));
 		registerModule(registryBus, "timer", () -> new TimerModule(getCategory()));
 		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(getCategory()));
+		registerModule(registryBus, "toggleSprint", () -> new ToggleSprintModule(getCategory()));
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calc"));
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calculator"));
 		registryBus.register(Command.class, ctx -> new ShareCommand());
@@ -161,7 +162,6 @@ public class GlowberryCactus implements ICactusAddon {
 	private static final Class<?>[] CHEAT_MODULE_CLASSES = {
 		AutoClickerModule.class,
 		AutoFishModule.class,
-		TrajectoryPreviewModule.class
 	};
 
 	@Override
@@ -197,7 +197,6 @@ public class GlowberryCactus implements ICactusAddon {
 			// Re-add modules if missing (pack was toggled on)
 			addCheatModule(modules, AutoClickerModule.class, () -> new AutoClickerModule(category));
 			addCheatModule(modules, AutoFishModule.class, () -> new AutoFishModule(category));
-			addCheatModule(modules, TrajectoryPreviewModule.class, () -> new TrajectoryPreviewModule(category));
 		} else {
 			// Remove modules (pack was toggled off)
 			for (Class<?> clazz : CHEAT_MODULE_CLASSES) {
