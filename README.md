@@ -17,7 +17,7 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ### Minecraft `26.1.x`
 * **Glowberry Version:** `1.5.2`+
 * **Required Cactus:** `0.13`+
-* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/4F8rdsAd/glowberry-1.5.2.jar?mr_download_reason=standalone)
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/Tb9xjOAV/glowberry-1.5.1.jar?mr_download_reason=standalone)
 
 ### Minecraft `1.21.11`
 * **Glowberry Version:** `1.4.1`+

@@ -10,10 +10,6 @@ import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Import your manager
-import org.m9mx.cactus.glowberry.util.appleskin.client.DebugInfoHudEntry;
-import org.m9mx.cactus.glowberry.util.appleskin.network.ClientSyncHandler;
-import org.m9mx.cactus.glowberry.util.trajectorypreview.PtpClient;
-import net.minecraft.client.gui.components.debug.DebugScreenEntries;
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 
 public class GlowberryMainClient implements ClientModInitializer {
@@ -21,11 +17,7 @@ public class GlowberryMainClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientSyncHandler.init();
-		PtpClient.initializeNetworking();
-		PtpClient.initializeRendering();
 		GlowberryMacroManager.load();
-		DebugScreenEntries.register(DebugInfoHudEntry.ENTRY_ID, new DebugInfoHudEntry());
 
 		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
 			// Iterate through Cactus macros to find a string-trigger match

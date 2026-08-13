@@ -31,8 +31,8 @@ public class MixinChatScreen {
 
             // 1. MANUALLY ADD TO HISTORY USING THE CORRECT MOJANG METHOD, SIR!
             if (addToHistory) {
-                // In 1.21+ Mojang, 'gui.getChat()' returns the ChatComponent
-                mc.gui.getChat().addRecentChat(message);
+                // 26.2: Gui.getChat() removed; the ChatComponent now lives on gui.hud (Gui -> Hud.getChat())
+                mc.gui.hud.getChat().addRecentChat(message);
             }
 
             // 2. EXECUTE THE MACRO PAYLOAD VIA CONNECTION

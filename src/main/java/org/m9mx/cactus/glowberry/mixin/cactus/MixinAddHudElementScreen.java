@@ -26,7 +26,7 @@ public abstract class MixinAddHudElementScreen extends CScreen {
                 28, 6, 110, 20,
                 Component.literal("Placeholder List"),
                 (button) -> {
-                    this.minecraft.setScreen(new PlaceholderBrowserScreen(this));
+                    this.minecraft.gui.setScreen(new PlaceholderBrowserScreen(this));
                 }
         ));
     }

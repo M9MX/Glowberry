@@ -6,8 +6,8 @@ package org.m9mx.cactus.glowberry.mixin.Modules.totemcounter;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Gui.class)
+// 26.2: health HUD rendering moved from Gui to the new net.minecraft.client.gui.Hud class
+@Mixin(Hud.class)
 public class TotemCounterGuiMixin {
     @Shadow
     @Final

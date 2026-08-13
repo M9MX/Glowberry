@@ -27,7 +27,7 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
-	
+
 	maven {
 		name = "Shedaniel"
 		url = "https://maven.shedaniel.me/"
@@ -41,24 +41,24 @@ repositories {
 		url = "https://api.modrinth.com/maven"
 	}
 	maven {
-    // location of the maven that hosts JEI files since January 2023
-    name = "Jared's maven"
-    url = "https://maven.blamejared.com/"
-  	}
-  	maven {
-    // location of a maven mirror for JEI files, as a fallback
-    name = "ModMaven"
-    url = "https://modmaven.dev"
-  }	
+		// location of the maven that hosts JEI files since January 2023
+		name = "Jared's maven"
+		url = "https://maven.blamejared.com/"
+	}
+	maven {
+		// location of a maven mirror for JEI files, as a fallback
+		name = "ModMaven"
+		url = "https://modmaven.dev"
+	}
 	mavenLocal()
 	maven {
 		name = "JitPack"
 		url = "https://jitpack.io"
 	}
 	maven {
-         name = 'ParchmentMC'
-         url = 'https://maven.parchmentmc.org'
-     }
+		name = 'ParchmentMC'
+		url = 'https://maven.parchmentmc.org'
+	}
 }
 
 loom {
@@ -68,7 +68,6 @@ loom {
 dependencies {
 	//mappings loom.officialMojangMappings() (because of 26.1 and minecraft is not obfuscated)
 
-
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	//mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -77,12 +76,10 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Cactus Mod (Change here the Version you want to use)
+	// Cactus Mod (Bundled via Jar-in-Jar)
 	implementation "maven.modrinth:cactus:${project.cactus_mod_version}"
-
-
-
 }
+
 processResources {
 	inputs.property "version", project.version
 
@@ -131,6 +128,26 @@ tasks.named('jar', Jar) {
 	}
 }
 
+// Cleans run/mods and copies your mod, Fabric API, and Cactus into run/mods
+tasks.register('copyToMods', Copy) {
+	doFirst {
+		fileTree('run/mods').matching {
+			include "*.jar"
+		}.each { file ->
+			file.delete()
+		}
+	}
+
+	// 1. Copy your compiled mod JAR
+	from tasks.named('jar')
+
+	// 2. Copy the Fabric API and Cactus JAR files from your dependency cache
+	from configurations.compileClasspath.filter { file ->
+		file.name.contains("fabric-api") || file.name.contains("cactus")
+	}
+
+	into file('run/mods')
+}
 // configure the maven publication
 publishing {
 	publications {
@@ -143,8 +160,5 @@ publishing {
 	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
 	repositories {
 		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-	// retrieving dependencies.
 	}
 }

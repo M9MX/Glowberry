@@ -168,7 +168,7 @@ public class ShuffleModule extends Module {
 
     private boolean isToggleKeyPressed() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.screen != null) return false;
+        if (mc.gui.screen != null) return false;
         try {
             Object keybind = this.toggleKeybind.get();
             if (keybind instanceof KeyBind) {

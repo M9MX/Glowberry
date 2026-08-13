@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -24,9 +25,11 @@ public class LightLevelRenderer {
     private static final Identifier NUMBERS_TEXTURE = Identifier.fromNamespaceAndPath("glowberry", "textures/numbers.png");
     private static boolean initialized = false;
     
-    // Cache commonly used values to avoid repeated property access
-    private static final float OVERLAY_HEIGHT_OFFSET_BLOCK = 1.02f;
-    private static final float OVERLAY_HEIGHT_OFFSET_NUMBER = 1.04f;
+    // Small offsets above the block's top surface to avoid z-fighting without
+    // visibly hovering above the surface. The number must stay ABOVE the block quad
+    // so it isn't washed out by the translucent block overlay in BOTH mode.
+    private static final float OVERLAY_OFFSET_BLOCK = 0.02f;
+    private static final float OVERLAY_OFFSET_NUMBER = 0.04f;
 
     public static void init() {
         if (initialized) return;
@@ -41,63 +44,66 @@ public class LightLevelRenderer {
     }
 
     private static void renderLightLevelOverlays(LevelRenderContext context) {
-        Map<BlockPos, Integer> blocksToRender = LightLevelOverlayHandler.getBlocksToRender();
+        Map<BlockPos, LightLevelOverlayHandler.BlockOverlayInfo> blocksToRender = LightLevelOverlayHandler.getBlocksToRender();
         if (blocksToRender.isEmpty()) return;
 
         PoseStack poseStack = context.poseStack();
-        Vec3 camPos = MC.gameRenderer.getMainCamera().position();
+        Vec3 camPos = MC.gameRenderer.mainCamera().position();
 
         poseStack.pushPose();
         poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+
+        // 26.2 removed LevelRenderContext.bufferSource() in favor of the staged
+        // SubmitNodeCollector renderer; custom geometry goes through submitCustomGeometry.
+        SubmitNodeCollector collector = context.submitNodeCollector();
 
         // Render each block with appropriate overlay type
         LightLevelModule.OverlayType overlayType = LightLevelModule.INSTANCE.getOverlayType();
         
         if (overlayType == LightLevelModule.OverlayType.BLOCK || overlayType == LightLevelModule.OverlayType.BOTH) {
             // Render block overlays (colored hitboxes)
-            VertexConsumer blockOverlayConsumer = context.bufferSource().getBuffer(RenderTypes.debugFilledBox());
-            
-            for (Map.Entry<BlockPos, Integer> entry : blocksToRender.entrySet()) {
-                BlockPos pos = entry.getKey();
-                int lightLevel = entry.getValue();
-                int color = LightLevelModule.INSTANCE.getColorForLightLevel(lightLevel);
-                
-                renderBlockOverlay(poseStack, blockOverlayConsumer, pos, color);
-            }
+            collector.submitCustomGeometry(poseStack, RenderTypes.debugFilledBox(), (pose, blockOverlayConsumer) -> {
+                for (Map.Entry<BlockPos, LightLevelOverlayHandler.BlockOverlayInfo> entry : blocksToRender.entrySet()) {
+                    BlockPos pos = entry.getKey();
+                    LightLevelOverlayHandler.BlockOverlayInfo info = entry.getValue();
+                    int color = LightLevelModule.INSTANCE.getColorForLightLevel(info.lightLevel());
+                    renderBlockOverlay(pose, blockOverlayConsumer, pos, info.topY(), color);
+                }
+            });
         }
         
         if (overlayType == LightLevelModule.OverlayType.NUMBER || overlayType == LightLevelModule.OverlayType.BOTH) {
             // Render number overlays (textured numbers)
-            VertexConsumer numberOverlayConsumer = context.bufferSource().getBuffer(RenderTypes.entityTranslucent(NUMBERS_TEXTURE));
-            
-            for (Map.Entry<BlockPos, Integer> entry : blocksToRender.entrySet()) {
-                BlockPos pos = entry.getKey();
-                int lightLevel = entry.getValue();
-                int color = LightLevelModule.INSTANCE.getColorForLightLevel(lightLevel);
-                
-                renderNumberOverlay(poseStack, numberOverlayConsumer, pos, lightLevel, color);
-            }
+            collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(NUMBERS_TEXTURE), (pose, numberOverlayConsumer) -> {
+                for (Map.Entry<BlockPos, LightLevelOverlayHandler.BlockOverlayInfo> entry : blocksToRender.entrySet()) {
+                    BlockPos pos = entry.getKey();
+                    LightLevelOverlayHandler.BlockOverlayInfo info = entry.getValue();
+                    int lightLevel = info.lightLevel();
+                    int color = LightLevelModule.INSTANCE.getColorForLightLevel(lightLevel);
+                    renderNumberOverlay(pose, numberOverlayConsumer, pos, info.topY(), lightLevel, color);
+                }
+            });
         }
 
         poseStack.popPose();
     }
 
-    private static void renderBlockOverlay(PoseStack poseStack, VertexConsumer vertexConsumer, BlockPos pos, int color) {
+    private static void renderBlockOverlay(PoseStack.Pose pose, VertexConsumer vertexConsumer, BlockPos pos, float topY, int color) {
         // Precompute color values to avoid repeated bit shifting
         float r = ((color >> 16) & 0xFF) / 255.0f;
         float g = ((color >> 8) & 0xFF) / 255.0f;
         float b = (color & 0xFF) / 255.0f;
         float alpha = 0.3f; // More transparent for block overlay
 
-        poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
+        // 26.2: the pose captured at submit time already includes the camera
+        // translation, so copy it and apply the block offset on top.
+        Matrix4f positionMatrix = new Matrix4f(pose.pose());
+        positionMatrix.translate(pos.getX(), pos.getY(), pos.getZ());
 
-        Matrix4f positionMatrix = poseStack.last().pose();
-        
-        // Draw solid colored quad on top of block (following trajectory preview pattern)
-        // Top face of the block (Y+) - moved higher to avoid being inside the block
-        // Using constants for consistent positioning
-        float minX = 0.0f, minY = OVERLAY_HEIGHT_OFFSET_BLOCK, minZ = 0.0f;
+        // Draw solid colored quad on top of the block's actual surface (topY), so it
+        // stays glued to the surface instead of hovering at a fixed height above the
+        // block base (which made it float over snow layers / slabs).
+        float minX = 0.0f, minY = topY + OVERLAY_OFFSET_BLOCK, minZ = 0.0f;
         float maxX = 1.0f, maxZ = 1.0f;
         
         // Add vertices for the top face following counter-clockwise order to ensure visibility from above
@@ -105,11 +111,9 @@ public class LightLevelRenderer {
         vertexConsumer.addVertex(positionMatrix, minX, minY, maxZ).setColor(r, g, b, alpha);
         vertexConsumer.addVertex(positionMatrix, maxX, minY, maxZ).setColor(r, g, b, alpha);
         vertexConsumer.addVertex(positionMatrix, maxX, minY, minZ).setColor(r, g, b, alpha);
-
-        poseStack.popPose();
     }
 
-    private static void renderNumberOverlay(PoseStack poseStack, VertexConsumer vertexConsumer, BlockPos pos, int lightLevel, int color) {
+    private static void renderNumberOverlay(PoseStack.Pose pose, VertexConsumer vertexConsumer, BlockPos pos, float topY, int lightLevel, int color) {
         // Precompute UV coordinates based on light level (0-15)
         // Each number takes 1/16 of the texture width
         float uSize = 1.0f / 16.0f;
@@ -124,14 +128,12 @@ public class LightLevelRenderer {
         float b = (color & 0xFF) / 255.0f;
         float alpha = 1.0f; // Increased to make numbers more visible
 
-        poseStack.pushPose();
-        poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-
-        Matrix4f positionMatrix = poseStack.last().pose();
-        PoseStack.Pose pose = poseStack.last();
-        
-        // Apply consistent height offset for number overlay
-        positionMatrix.translate(0f, OVERLAY_HEIGHT_OFFSET_NUMBER, 0f);
+        // 26.2: the pose captured at submit time already includes the camera
+        // translation; copy it and apply block offset + surface height on top.
+        // The number is glued to the block's actual top surface (topY) so it sits on
+        // top of snow layers / slabs instead of floating above the block base.
+        Matrix4f positionMatrix = new Matrix4f(pose.pose());
+        positionMatrix.translate(pos.getX(), pos.getY() + topY + OVERLAY_OFFSET_NUMBER, pos.getZ());
 
         // Draw textured quad on top of block facing up
         // Normal pointing up (0, 1, 0)
@@ -162,7 +164,5 @@ public class LightLevelRenderer {
                 .setUv2(0xF000F0, 0xF000F0)  // Add light map UV coordinates
                 .setOverlay(OverlayTexture.NO_OVERLAY)  // Add overlay coordinates
                 .setNormal(pose, 0f, 1f, 0f);
-
-        poseStack.popPose();
     }
 }

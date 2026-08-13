@@ -2,54 +2,19 @@ package org.m9mx.cactus.glowberry.util.shield;
 /**
  * Credits: https://github.com/Walksy/ShieldStatus
  */
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.object.equipment.ShieldModel;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.m9mx.cactus.glowberry.feature.modules.ShieldStatusModule;
 
 public class ShieldItemModelRenderer {
-	private static final Identifier SHIELD_TEXTURE = Identifier.withDefaultNamespace("textures/entity/shield_base_nopattern.png");
-	private final GrayscaleTextureCache grayscaleCache = new GrayscaleTextureCache();
 
-	public void render(ShieldModel model, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay, Player player) {
-		if (player == null) return;
-
-		ShieldStatusModule module = ShieldStatusModule.INSTANCE;
-		if (module == null) return;
-
-		// Get color based on shield state
-		int colorInt = getColorForShield(player);
-
-		poseStack.pushPose();
-		poseStack.scale(1.0F, -1.0F, -1.0F);
-
-		// Use grayscale texture if enabled, otherwise use normal texture
-		Identifier textureId = module.grayscaleTexture.get() ? grayscaleCache.get(SHIELD_TEXTURE) : SHIELD_TEXTURE;
-		var layer = RenderTypes.entityTranslucent(textureId, true);
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(layer);
-
-		// Render handle
-		poseStack.pushPose();
-		poseStack.translate(0.0F, 0.0F, 0.0001F);
-		model.handle().render(poseStack, vertexConsumer, light, overlay, colorInt);
-		poseStack.popPose();
-
-		// Render plate
-		model.plate().render(poseStack, vertexConsumer, light, overlay, colorInt);
-
-		poseStack.popPose();
-	}
-
-	private int getColorForShield(Player player) {
+	/**
+	 * Computes the ARGB tint color for a player's shield based on its state.
+	 * The actual model is now submitted through {@code SubmitNodeCollector.submitModel}
+	 * (see ShieldSpecialRendererMixin) since 26.2 removed MultiBufferSource/RenderBuffers.bufferSource().
+	 */
+	public int getColorForShield(Player player) {
 		ShieldStatusModule module = ShieldStatusModule.INSTANCE;
 		if (module == null) return 0xFFFFFFFF;
 
@@ -65,7 +30,7 @@ public class ShieldItemModelRenderer {
 
 		boolean isCoolingDown = manager.isCoolingDown(player);
 		boolean isUsing = manager.isUsingShield(player);
-		
+
 		// Get opacity setting (0-100%) and convert to alpha (0-255)
 		int opacity = module.opacity.get();
 		int alpha = (int) (255 * (opacity / 100f)) & 0xFF;
@@ -93,7 +58,7 @@ public class ShieldItemModelRenderer {
 
 		return 0xFFFFFFFF;
 	}
-	
+
 	private int applyAlpha(int color, int alpha) {
 		return (color & 0x00FFFFFF) | (alpha << 24);
 	}
