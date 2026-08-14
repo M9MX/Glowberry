@@ -31,6 +31,10 @@ public class ToggleSprintModule extends Module {
     private boolean sprintToggled = false;
     private boolean lastKeyState = false;
 
+    // Small debounce after toggling so one quick press can never register twice,
+    // which is what made sprint randomly turn on and off.
+    private int toggleCooldownTicks = 0;
+
     public ToggleSprintModule(Category category) {
         super("toggleSprint", category, new Module.Options());
         INSTANCE = this;
@@ -44,12 +48,14 @@ public class ToggleSprintModule extends Module {
     public void onEnable() {
         sprintToggled = false;
         lastKeyState = false;
+        toggleCooldownTicks = 0;
     }
 
     @Override
     public void onDisable() {
         sprintToggled = false;
         lastKeyState = false;
+        toggleCooldownTicks = 0;
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             mc.player.setSprinting(false);
@@ -61,23 +67,32 @@ public class ToggleSprintModule extends Module {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
-        // Toggle key handling (edge detection so one press = one toggle)
+        if (toggleCooldownTicks > 0) toggleCooldownTicks--;
+
+        // Toggle key handling (edge detection + a short debounce so one press
+        // can never flip the toggle twice in a row)
         boolean keyDown = isToggleKeyPressed();
         if (keyDown && !lastKeyState) {
             lastKeyState = true;
-            sprintToggled = !sprintToggled;
-            if (!sprintToggled) {
-                mc.player.setSprinting(false);
+            if (toggleCooldownTicks <= 0) {
+                toggleCooldownTicks = 4;
+                sprintToggled = !sprintToggled;
+                if (sprintToggled) {
+                    // Engage immediately so sprint doesn't lag a tick behind the press
+                    if (canSprint(mc)) mc.player.setSprinting(true);
+                } else {
+                    mc.player.setSprinting(false);
+                }
             }
         } else if (!keyDown && lastKeyState) {
             lastKeyState = false;
         }
 
-        // Keep sprinting while toggled on or always-sprint is enabled
-        if (sprintToggled || alwaysSprint.get()) {
-            if (canSprint(mc)) {
-                mc.player.setSprinting(true);
-            }
+        // Keep sprinting while toggled on or always-sprint is enabled. We only
+        // ever set it to true; stopping is left to vanilla when the sprint
+        // conditions are no longer met (stops moving, sneaks, runs out of food...).
+        if ((sprintToggled || alwaysSprint.get()) && canSprint(mc) && !mc.player.isSprinting()) {
+            mc.player.setSprinting(true);
         }
     }
 

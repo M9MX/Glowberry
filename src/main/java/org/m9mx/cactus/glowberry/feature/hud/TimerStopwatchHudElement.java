@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHudElement> {
+public class TimerStopwatchHudElement extends HideableHudElement<TimerStopwatchHudElement> {
     enum Direction {
         Vertical(new Vector2i(1, 1)),
         Horizontal(new Vector2i(1, 1));
@@ -39,13 +39,22 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
     private static final int PAD_Y       = 4;
     private static final int LINE_HEIGHT = 11;
     private static final int SEP_HEIGHT  = 5;
-    private static final int OFFSCREEN   = -99999;
-
-    private int savedX   = Integer.MIN_VALUE;
-    private int savedY   = Integer.MIN_VALUE;
-    private boolean isHidden = false;
 
     private int lastWidth = -1;
+
+    @Override
+    protected boolean shouldHide() {
+        boolean always = alwaysShow.get();
+        TimerModule timer = TimerModule.INSTANCE;
+        StopwatchModule stopwatch = StopwatchModule.INSTANCE;
+        if (timer != null && timer.active()) {
+            if (always || timer.isRunning() || timer.isFinished() || timer.getState() == TimerModule.TimerState.PAUSED) return false;
+        }
+        if (stopwatch != null && stopwatch.active()) {
+            if (always || stopwatch.isRunning() || stopwatch.getState() == StopwatchModule.StopwatchState.PAUSED) return false;
+        }
+        return true;
+    }
 
     public TimerStopwatchHudElement() {
         super("timer_stopwatch", Direction.Horizontal.size);
@@ -112,22 +121,6 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
         return line;
     }
 
-    private void hideOffscreen() {
-        if (!isHidden) {
-            savedX = this.getRelativePosition().x();
-            savedY = this.getRelativePosition().y();
-            this.move(OFFSCREEN, OFFSCREEN);
-            isHidden = true;
-        }
-    }
-
-    private void restorePosition() {
-        if (isHidden && savedX != Integer.MIN_VALUE) {
-            this.move(savedX, savedY);
-            isHidden = false;
-        }
-    }
-
     private void anchoredResize(int newWidth, int newHeight) {
         int oldWidth = lastWidth == -1 ? newWidth : lastWidth;
         lastWidth = newWidth;
@@ -157,7 +150,6 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
         boolean hasStopwatch = false;
 
         if (inEditor) {
-            restorePosition();
             Line l1 = new Line(); l1.add("Timer: ", COL_LABEL); l1.add("Stopped", COL_STATE); lines.add(l1);
             lines.add(makeTimeLine(0, false, true));
             lines.add(Line.separator());
@@ -220,12 +212,7 @@ public class TimerStopwatchHudElement extends DynamicHudElement<TimerStopwatchHu
         if (timer != null)     timer.elementHUD     = showHud;
         if (stopwatch != null) stopwatch.elementHUD = showHud;
 
-        if (!showHud) {
-            hideOffscreen();
-            return;
-        }
-
-        restorePosition();
+        if (!showHud) return;
 
         Minecraft mc        = Minecraft.getInstance();
         float scaleFactor   = scale.get() / 100f;

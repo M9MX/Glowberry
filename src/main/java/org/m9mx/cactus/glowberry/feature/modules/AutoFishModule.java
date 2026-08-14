@@ -6,7 +6,7 @@ package org.m9mx.cactus.glowberry.feature.modules;
 
 import org.lwjgl.glfw.GLFW;
 import org.m9mx.cactus.glowberry.cactus.FloatSetting;
-import org.m9mx.cactus.glowberry.util.ActionBarUtil;
+import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 
 import com.dwarslooper.cactus.client.event.EventHandler;
 import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
@@ -21,6 +21,7 @@ import com.dwarslooper.cactus.client.systems.key.KeyBind;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.item.Items;
@@ -73,8 +74,8 @@ public class AutoFishModule extends Module {
         boolean currentKeyState = isToggleKeyPressed();
         if (currentKeyState && !lastKeyState) {
             this.isAutoFishing = !this.isAutoFishing;
-            String status = this.isAutoFishing ? "§aEnabled" : "§cDisabled";
-            ActionBarUtil.sendActionBarMessage("AutoFish " + status);
+            int color = this.isAutoFishing ? 0xFF55FF55 : 0xFFFF5555;
+            ModuleMessageUtil.show(Component.literal("AutoFish " + (this.isAutoFishing ? "§aEnabled" : "§cDisabled")), color);
 
             if (!this.isAutoFishing) {
                 resetFishingState();
@@ -94,14 +95,14 @@ public class AutoFishModule extends Module {
         // Check if inventory is open and stop if setting enabled
         if (stopOnInventoryOpen.get() && mc.gui.screen != null && !(mc.gui.screen instanceof ChatScreen)) {
             stopAutoFishing();
-            ActionBarUtil.sendActionBarMessage("§cAutoFish disabled! Opened GUI!");
+            ModuleMessageUtil.show(Component.literal("§cAutoFish disabled! Opened GUI!"), 0xFFFF5555);
             return;
         }
 
         // Check if still holding fishing rod
         if (mc.player.getMainHandItem().getItem() != Items.FISHING_ROD) {
             stopAutoFishing();
-            ActionBarUtil.sendActionBarMessage("§cAutoFish disabled! Swapped item!");
+            ModuleMessageUtil.show(Component.literal("§cAutoFish disabled! Swapped item!"), 0xFFFF5555);
             return;
         }
 
@@ -135,7 +136,7 @@ public class AutoFishModule extends Module {
         if (mc.mouseHandler.isRightPressed() && !lastCastAutomated) {
             if (this.isAutoFishing) {
                 stopAutoFishing();
-                ActionBarUtil.sendActionBarMessage("§cAutoFish disabled! Manual reel!");
+                ModuleMessageUtil.show(Component.literal("§cAutoFish disabled! Manual reel!"), 0xFFFF5555);
             }
         }
         lastCastAutomated = false;

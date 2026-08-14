@@ -8,7 +8,9 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.IntegerSetting
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import org.joml.Vector2i;
 
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement> {
+public class HorseStatsHudElement extends HideableHudElement<HorseStatsHudElement> {
     public enum Alignment { LEFT, CENTER, RIGHT }
     public enum Orientation { HORIZONTAL, VERTICAL }
 
@@ -38,14 +40,29 @@ public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement
     private static final int PAD_X       = 6;
     private static final int PAD_Y       = 4;
     private static final int LINE_HEIGHT = 11;
-    private static final int OFFSCREEN   = -99999;
 
-    private int savedX   = Integer.MIN_VALUE;
-    private int savedY   = Integer.MIN_VALUE;
-    private boolean isHidden = false;
+    // MOVEMENT_SPEED is stored in internal units; blocks per second = value * 43.17
+    // (0.3375 (max) * 43.17 = ~14.57 b/s, the documented max horse speed).
+    private static final double SPEED_TO_BLOCKS_PER_SECOND = 43.17;
+
+    // Jump height in blocks from the internal jump strength (0.4..1.0). This is a
+    // quadratic fit through the wiki's measured values (0.4 -> 1.11, 0.5 -> 1.62,
+    // 0.7 -> 2.89, 1.0 -> 5.3 blocks), accurate to within ~1.6% across the range.
+    private static final double JUMP_A = 3.35946;
+    private static final double JUMP_B = 2.31115;
+    private static final double JUMP_C = -0.37064;
+
     private int lastWidth = -1;
 
-    // Last known stats of the ridden horse; -1 means "never seen one yet"
+    @Override
+    protected boolean shouldHide() {
+        if (!showSpeed.get() && !showJump.get() && !showHealth.get()) return true;
+        if (alwaysShow.get()) return false;
+        Minecraft mc = Minecraft.getInstance();
+        return riddenMount(mc) == null;
+    }
+
+    // Last known stats of the ridden animal; -1 means "never seen one yet"
     private double lastSpeed  = -1;
     private double lastJump   = -1;
     private double lastHealth = -1;
@@ -61,22 +78,6 @@ public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement
         this.orientation = sgGeneral.add(new EnumSetting<>("orientation", Orientation.HORIZONTAL));
         this.alignment   = sgGeneral.add(new EnumSetting<>("alignment", Alignment.LEFT));
         this.scale       = sgGeneral.add(new IntegerSetting("scale", 100).min(25).max(400));
-    }
-
-    private void hideOffscreen() {
-        if (!isHidden) {
-            savedX = this.getRelativePosition().x();
-            savedY = this.getRelativePosition().y();
-            this.move(OFFSCREEN, OFFSCREEN);
-            isHidden = true;
-        }
-    }
-
-    private void restorePosition() {
-        if (isHidden && savedX != Integer.MIN_VALUE) {
-            this.move(savedX, savedY);
-            isHidden = false;
-        }
     }
 
     private void anchoredResize(int newWidth, int newHeight) {
@@ -107,18 +108,37 @@ public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement
         Stat(String label, String value, int color) { this.label = label; this.value = value; this.color = color; }
     }
 
+    /** Jump height in blocks for an internal jump strength value. */
+    private static double jumpHeight(double jumpStrength) {
+        return JUMP_A * jumpStrength * jumpStrength + JUMP_B * jumpStrength + JUMP_C;
+    }
+
+    /**
+     * The ridable animal we are currently sitting on, or null. Works for every
+     * {@link AbstractHorse} (horse, donkey, mule, skeleton/zombie horse, llama)
+     * as well as camels, which expose the same speed/jump attributes.
+     */
+    private static LivingEntity riddenMount(Minecraft mc) {
+        if (mc.player == null) return null;
+        net.minecraft.world.entity.Entity vehicle = mc.player.getVehicle();
+        if (vehicle instanceof AbstractHorse || vehicle instanceof Camel) {
+            return (LivingEntity) vehicle;
+        }
+        return null;
+    }
+
     private List<Stat> buildStats() {
         List<Stat> stats = new ArrayList<>();
 
-        // Speed: attribute is in blocks/second, vanilla displays it as ~4.3..14.5 b/s
+        // Speed: attribute is in internal units, displayed as blocks/second
         if (showSpeed.get()) {
             stats.add(lastSpeed >= 0
                     ? new Stat("Speed: ", String.format("%.2f b/s", lastSpeed), COL_SPEED)
                     : new Stat("Speed: ", "--", COL_UNKNOWN));
         }
         if (showJump.get()) {
-            stats.add(lastJump >= 0
-                    ? new Stat("Jump: ", String.format("%.1f blocks", lastJump), COL_JUMP)
+            stats.add(lastJump > 0.001
+                    ? new Stat("Jump: ", String.format("%.2f blocks", lastJump), COL_JUMP)
                     : new Stat("Jump: ", "--", COL_UNKNOWN));
         }
         if (showHealth.get()) {
@@ -166,29 +186,25 @@ public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement
     public void renderContent(GuiGraphicsExtractor context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {
         Minecraft mc = Minecraft.getInstance();
 
-        AbstractHorse horse = mc.player != null && mc.player.getVehicle() instanceof AbstractHorse h ? h : null;
+        LivingEntity mount = riddenMount(mc);
 
-        if (horse != null) {
-            // Live stats of the horse we are currently riding
-            double jumpStrength = horse.getAttributeValue(Attributes.JUMP_STRENGTH);
-            double movementSpeed = horse.getAttributeValue(Attributes.MOVEMENT_SPEED);
-            lastSpeed  = movementSpeed * 42.15;
-            lastJump   = -1.291 * jumpStrength * jumpStrength + 4.707 * jumpStrength - 0.016;
-            lastHealth = horse.getAttributeValue(Attributes.MAX_HEALTH);
+        if (mount != null) {
+            // Live stats of the animal we are currently riding
+            double jumpStrength = mount.getAttributeValue(Attributes.JUMP_STRENGTH);
+            double movementSpeed = mount.getAttributeValue(Attributes.MOVEMENT_SPEED);
+            lastSpeed  = movementSpeed * SPEED_TO_BLOCKS_PER_SECOND;
+            lastJump   = jumpHeight(jumpStrength);
+            lastHealth = mount.getAttributeValue(Attributes.MAX_HEALTH);
         } else if (inEditor) {
             // Sample values for the HUD editor preview
             lastSpeed  = 8.43;
-            lastJump   = 2.0;
+            lastJump   = 2.89;
             lastHealth = 30;
         }
 
-        boolean onHorse = horse != null;
-        boolean show = inEditor || onHorse || alwaysShow.get();
-        if (!show) {
-            hideOffscreen();
-            return;
-        }
-        restorePosition();
+        boolean onMount = mount != null;
+        boolean show = inEditor || onMount || alwaysShow.get();
+        if (!show) return;
 
         float scaleF    = scale.get() / 100f;
         Alignment align = alignment.get();
@@ -196,7 +212,6 @@ public class HorseStatsHudElement extends DynamicHudElement<HorseStatsHudElement
         List<Stat> stats = buildStats();
         if (stats.isEmpty()) {
             // All stat toggles are off - nothing to render
-            hideOffscreen();
             return;
         }
 

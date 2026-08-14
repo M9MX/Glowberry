@@ -1,7 +1,7 @@
 package org.m9mx.cactus.glowberry.feature.modules;
 
 import org.lwjgl.glfw.GLFW;
-import org.m9mx.cactus.glowberry.util.ActionBarUtil;
+import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 
 import com.dwarslooper.cactus.client.event.EventHandler;
 import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
@@ -14,6 +14,7 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import com.dwarslooper.cactus.client.systems.key.KeyBind;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 
@@ -103,24 +104,11 @@ public class TimerModule extends Module {
                 running = false;
                 finished = true;
                 playFinishedSound(mc);
+                // Routed through the Module Message system (HUD element when placed,
+                // action bar otherwise)
+                ModuleMessageUtil.show(Component.literal("§eTimer§r finished - " + formatTime(targetMillis)), 0xFFFFD966);
             }
         }
-
-        // Action bar display removed
-    }
-
-    private String buildActionBarText() {
-        long rem = getRemainingMillis();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("§eTimer§7: ");
-        sb.append(formatTime(rem));
-
-        if (finished) {
-            sb.append(" §7| §cFinished");
-        }
-
-        return sb.toString();
     }
 
     public String formatTime(long millis) {

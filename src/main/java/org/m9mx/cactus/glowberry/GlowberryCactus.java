@@ -4,6 +4,7 @@ import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import org.m9mx.cactus.glowberry.feature.commands.CalculatorCommand;
 import org.m9mx.cactus.glowberry.feature.commands.ShareCommand;
 import org.m9mx.cactus.glowberry.feature.commands.PrivateShareCommand;
+import org.m9mx.cactus.glowberry.feature.modules.AntiAfkModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoClickerModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoFishModule;
 import org.m9mx.cactus.glowberry.feature.modules.AutoToolModule;
@@ -22,6 +23,8 @@ import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 import org.m9mx.cactus.glowberry.feature.hud.TimerStopwatchHudElement;
 import org.m9mx.cactus.glowberry.feature.hud.ToggleSprintHudElement;
 import org.m9mx.cactus.glowberry.feature.hud.WailaHudElement;
+import org.m9mx.cactus.glowberry.feature.hud.ModulesListHudElement;
+import org.m9mx.cactus.glowberry.feature.hud.ModuleMessageHudElement;
 import org.m9mx.cactus.glowberry.feature.modules.*;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiCode;
 import org.m9mx.cactus.glowberry.util.cactus.emoji.EmojiManager;
@@ -30,11 +33,20 @@ import org.m9mx.cactus.glowberry.util.compat.IncompatibilityRegistry;
 import com.dwarslooper.cactus.client.addon.v2.ICactusAddon;
 import com.dwarslooper.cactus.client.addon.v2.RegistryBus;
 import com.dwarslooper.cactus.client.feature.command.Command;
+import com.dwarslooper.cactus.client.systems.config.CactusSettings;
+import com.dwarslooper.cactus.client.systems.config.ConfigHandler;
+import com.dwarslooper.cactus.client.systems.config.FileConfiguration;
+import com.dwarslooper.cactus.client.systems.config.impl.CactusConfig;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.EnumSetting;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import com.dwarslooper.cactus.client.feature.content.ContentPack;
 import com.dwarslooper.cactus.client.feature.content.ContentPackManager;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
 import com.dwarslooper.cactus.client.feature.module.ModuleManager;
+import org.m9mx.cactus.glowberry.util.AutoSaveHandler;
+import org.m9mx.cactus.glowberry.util.config.GlowberryConfig;
 import net.minecraft.world.item.Items;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +99,8 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(HudElement.class, ctx -> new HorseStatsHudElement());
 		registryBus.register(HudElement.class, ctx -> new WailaHudElement());
 		registryBus.register(HudElement.class, ctx -> new ArmorHudElement());
+		registryBus.register(HudElement.class, ctx -> new ModulesListHudElement());
+		registryBus.register(HudElement.class, ctx -> new ModuleMessageHudElement());
 
 		// Register our modules inside the custom category
 		registerModule(registryBus, "lightLevel", () -> new LightLevelModule(getCategory()));
@@ -103,6 +117,8 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "timer", () -> new TimerModule(getCategory()));
 		registerModule(registryBus, "stopwatch", () -> new StopwatchModule(getCategory()));
 		registerModule(registryBus, "toggleSprint", () -> new ToggleSprintModule(getCategory()));
+		registerModule(registryBus, "antiAfk", () -> new AntiAfkModule(getCategory()));
+		registerGlowberryConfig(registryBus);
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calc"));
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calculator"));
 		registryBus.register(Command.class, ctx -> new ShareCommand());
@@ -159,31 +175,79 @@ public class GlowberryCactus implements ICactusAddon {
 		registryBus.register(Module.class, ctx -> factory.get());
 	}
 
+	// Kept so onLoadComplete can sync the modules without an id lookup.
+	private static ContentPack cheatsPack;
+
+	// Registers Glowberry's FileConfiguration through the official addon API. This
+	// is the one registration type whose factory receives the ConfigHandler service
+	// (Cactus provides it right before completing the FileConfiguration registry,
+	// still before the configs are loaded), so it is the right place to:
+	//
+	//  1. Add the "Auto Save on Update" setting to Cactus' own settings container
+	//     (shows in the Cactus Settings screen, serialized with Cactus' config,
+	//     and - because it is added before the load - its saved value restores).
+	//  2. Register the Cheats content pack directly with the raw id (like Cactus'
+	//     own packs), so it exists before the content pack config is loaded and its
+	//     saved enabled state restores. Registering it via the ContentPack registry
+	//     would namespace the id to "glowberry-addon:glowberry_cheats", which no
+	//     longer matches the saved config.
+	private void registerGlowberryConfig(RegistryBus registryBus) {
+		registryBus.register(FileConfiguration.class, ctx -> {
+			ConfigHandler handler = ctx.require(ConfigHandler.class);
+
+			CactusConfig cactusConfig = handler.getConfig(CactusConfig.class);
+			if (cactusConfig != null) {
+				CactusSettings cactusSettings = cactusConfig.getSubConfig(CactusSettings.class);
+				if (cactusSettings != null) {
+					Setting<Boolean> setting = cactusSettings.settings.getDefault()
+							.add(new BooleanSetting("autoSaveOnUpdate", true));
+					AutoSaveHandler.setAutoSaveSetting(setting);
+
+					// How the text rainbow animation plays on HUD elements with
+					// "Text Chroma" or an RGB text color enabled: smooth (whole text
+					// shifts together) or diagonal (a colored line sweeps across,
+					// character by character).
+					Setting<org.m9mx.cactus.glowberry.util.RainbowMode> rainbowMode = cactusSettings.settings.getDefault()
+							.add(new EnumSetting<>("rainbowMode", org.m9mx.cactus.glowberry.util.RainbowMode.DIAGONAL));
+					org.m9mx.cactus.glowberry.util.RainbowModeHandler.setSetting(rainbowMode);
+				}
+			}
+
+			ContentPackManager contentPackManager = handler.getConfig(ContentPackManager.class);
+			if (contentPackManager != null) {
+				cheatsPack = new ContentPack(
+						"glowberry_cheats",
+						ContentPack.ActivationPolicy.DEFAULT_DISABLED,
+						Items.COMMAND_BLOCK,
+						pack -> syncCheatModules(pack.isEnabled())
+				);
+				contentPackManager.registerPack(cheatsPack);
+			}
+
+			return new GlowberryConfig(handler);
+		});
+	}
+
 	private static final Class<?>[] CHEAT_MODULE_CLASSES = {
 		AutoClickerModule.class,
 		AutoFishModule.class,
+		AntiAfkModule.class,
 	};
 
 	@Override
 	public void onLoadComplete() {
-		// Register our Cheats content pack after Cactus is fully initialized
+		// The pack was registered via the registry bus during initialization, so by
+		// now Cactus has already restored its saved state from the config. We just
+		// need to apply that state to the cheat modules.
 		ContentPackManager contentPackManager = ContentPackManager.get();
-		if (contentPackManager != null) {
-			ContentPack cheatsPack = new ContentPack(
-				"glowberry_cheats",
-				ContentPack.ActivationPolicy.DEFAULT_DISABLED,
-				Items.COMMAND_BLOCK
-			);
-			contentPackManager.registerPack(cheatsPack);
-
-			// Apply initial state and listen for toggle changes
-			syncCheatModules(cheatsPack.isEnabled());
-			cheatsPack.setChangedListener(pack -> syncCheatModules(pack.isEnabled()));
-
-			LOGGER.info("Registered 'Cheats' content pack");
-		} else {
-			LOGGER.warn("ContentPackManager not available, skipping Cheats content pack registration");
+		if (contentPackManager == null || cheatsPack == null) {
+			LOGGER.warn("ContentPackManager/Cheats content pack not available, skipping Cheats content pack sync");
+			return;
 		}
+		// Safety net: the changed listener already synced the modules when the saved
+		// state was restored during config load, but sync again in case it didn't run.
+		syncCheatModules(cheatsPack.isEnabled());
+		LOGGER.info("Cheats content pack is {}", cheatsPack.isEnabled() ? "enabled" : "disabled");
 	}
 
 	private void syncCheatModules(boolean enabled) {
@@ -197,6 +261,7 @@ public class GlowberryCactus implements ICactusAddon {
 			// Re-add modules if missing (pack was toggled on)
 			addCheatModule(modules, AutoClickerModule.class, () -> new AutoClickerModule(category));
 			addCheatModule(modules, AutoFishModule.class, () -> new AutoFishModule(category));
+			addCheatModule(modules, AntiAfkModule.class, () -> new AntiAfkModule(category));
 		} else {
 			// Remove modules (pack was toggled off)
 			for (Class<?> clazz : CHEAT_MODULE_CLASSES) {

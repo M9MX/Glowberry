@@ -12,7 +12,7 @@ import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.feature.modules.ToggleSprintModule;
 
 @SuppressWarnings("unused")
-public class ToggleSprintHudElement extends DynamicHudElement<ToggleSprintHudElement> {
+public class ToggleSprintHudElement extends HideableHudElement<ToggleSprintHudElement> {
     public enum Alignment { LEFT, CENTER, RIGHT }
 
     private final Setting<Boolean>   alwaysShow;
@@ -27,12 +27,15 @@ public class ToggleSprintHudElement extends DynamicHudElement<ToggleSprintHudEle
     private static final int PAD_X       = 6;
     private static final int PAD_Y       = 4;
     private static final int LINE_HEIGHT = 11;
-    private static final int OFFSCREEN   = -99999;
 
-    private int savedX   = Integer.MIN_VALUE;
-    private int savedY   = Integer.MIN_VALUE;
-    private boolean isHidden = false;
     private int lastWidth = -1;
+
+    @Override
+    protected boolean shouldHide() {
+        ToggleSprintModule module = ToggleSprintModule.INSTANCE;
+        boolean moduleActive = module != null && module.active();
+        return !moduleActive && !alwaysShow.get();
+    }
 
     public ToggleSprintHudElement() {
         super("toggle_sprint", new Vector2i(1, 1));
@@ -41,22 +44,6 @@ public class ToggleSprintHudElement extends DynamicHudElement<ToggleSprintHudEle
         this.alwaysShow = sgGeneral.add(new BooleanSetting("alwaysShow", false));
         this.alignment  = sgGeneral.add(new EnumSetting<>("alignment", Alignment.LEFT));
         this.scale      = sgGeneral.add(new IntegerSetting("scale", 100).min(25).max(400));
-    }
-
-    private void hideOffscreen() {
-        if (!isHidden) {
-            savedX = this.getRelativePosition().x();
-            savedY = this.getRelativePosition().y();
-            this.move(OFFSCREEN, OFFSCREEN);
-            isHidden = true;
-        }
-    }
-
-    private void restorePosition() {
-        if (isHidden && savedX != Integer.MIN_VALUE) {
-            this.move(savedX, savedY);
-            isHidden = false;
-        }
     }
 
     private void anchoredResize(int newWidth, int newHeight) {
@@ -94,11 +81,7 @@ public class ToggleSprintHudElement extends DynamicHudElement<ToggleSprintHudEle
         }
 
         boolean show = inEditor || moduleActive || alwaysShow.get();
-        if (!show) {
-            hideOffscreen();
-            return;
-        }
-        restorePosition();
+        if (!show) return;
 
         Minecraft mc   = Minecraft.getInstance();
         float scaleF   = scale.get() / 100f;

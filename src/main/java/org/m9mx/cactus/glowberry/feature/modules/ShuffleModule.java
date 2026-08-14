@@ -24,14 +24,14 @@ import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 import org.m9mx.cactus.glowberry.mixin.Modules.Shuffle.ShufflePlacementMixin;
 import org.m9mx.cactus.glowberry.mixin.util.InventoryAccessor;
-import org.m9mx.cactus.glowberry.util.ActionBarUtil;
-
-import java.util.function.BiFunction;
+import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 
 /**
  * Client-side Shuffle module that toggles with a keybind (R by default).
- * When enabled and you place a block, it automatically switches to a random
- * different block in your hotbar.
+ * When enabled and you place a block, it picks a random block stack from your
+ * hotbar - weighted by how many blocks that stack holds - and switches to it.
+ * The slot you are currently holding is part of the pool too, so the selection
+ * may land on it again and the hotbar simply doesn't change.
  *
  * Based on the Shuffle mod by Dion Tryban (Trikzon).
  */
@@ -84,12 +84,12 @@ public class ShuffleModule extends Module {
             shuffleEnabled = !shuffleEnabled;
 
             if (shuffleEnabled) {
-                ActionBarUtil.sendActionBarMessage(Component.translatable("modules.shuffle.enabled").getString());
+                ModuleMessageUtil.show(Component.translatable("modules.shuffle.enabled"), 0xFF55FF55);
                 if (playSoundEffects.get()) {
                     mc.player.playSound(SoundEvents.TRIPWIRE_CLICK_OFF, 0.5f, 1.0f);
                 }
             } else {
-                ActionBarUtil.sendActionBarMessage(Component.translatable("modules.shuffle.disabled").getString());
+                ModuleMessageUtil.show(Component.translatable("modules.shuffle.disabled"), 0xFFFF5555);
                 if (playSoundEffects.get()) {
                     mc.player.playSound(SoundEvents.TRIPWIRE_CLICK_ON, 0.5f, 1.0f);
                 }
@@ -110,56 +110,40 @@ public class ShuffleModule extends Module {
 
         NonNullList<ItemStack> items = mc.player.getInventory().getNonEquipmentItems();
 
-        if (useWeightedRandom.get()) {
-            slotToSwitchTo = switchSlotWeighted(items, mc.level.random);
-        } else {
-            slotToSwitchTo = switchSlotRandom(items, mc.level.random);
-        }
+        slotToSwitchTo = useWeightedRandom.get()
+                ? pickSlot(items, mc.level.random, true)
+                : pickSlot(items, mc.level.random, false);
     }
 
     /**
-     * Randomly choose a hotbar slot with equal weight per slot.
-     */
-    private static int switchSlotRandom(NonNullList<ItemStack> items, RandomSource random) {
-        return switchSlotLogic(items, random, (slotIdx, stack) -> 1);
-    }
-
-    /**
-     * Randomly choose a hotbar slot using the item count as weight.
-     */
-    private static int switchSlotWeighted(NonNullList<ItemStack> items, RandomSource random) {
-        return switchSlotLogic(items, random, (slotIdx, stack) -> stack.getCount());
-    }
-
-    /**
-     * Choose a hotbar slot using a per-slot weight function.
-     * Skips the currently selected slot, empty slots, and non-block items.
+     * Randomly pick a hotbar slot that currently holds a placeable block. Every
+     * eligible slot - including the one you are holding right now - is added to
+     * the pool, so picking the current slot means the hotbar simply doesn't
+     * change. When {@code weighted} is enabled each slot is weighted by its
+     * stack size, so a stack of 64 blocks is far more likely to be chosen than
+     * a stack of 1, while the smaller stack still gets picked from time to time.
      *
      * @param items the full non-equipment item list (hotbar is indices 0-8)
      * @param random a random source
-     * @param calculateWeight function that returns the weight for a given slot
-     * @return the slot index to switch to, or -1 if no valid slot found
+     * @param weighted whether to weight the selection by stack size
+     * @return the slot index to switch to, or -1 if no eligible block slot exists
      */
-    private static int switchSlotLogic(
-            NonNullList<ItemStack> items,
-            RandomSource random,
-            BiFunction<Integer, ItemStack, Integer> calculateWeight
-    ) {
+    private static int pickSlot(NonNullList<ItemStack> items, RandomSource random, boolean weighted) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return -1;
 
-        int currentSlot = ((InventoryAccessor) mc.player.getInventory()).getSelected();
         var validSlotsBuilder = new WeightedList.Builder<Integer>();
 
         for (int slotIdx = 0; slotIdx < 9; slotIdx++) {
-            if (slotIdx == currentSlot) continue;
-
             ItemStack stack = items.get(slotIdx);
             if (stack.isEmpty()) continue;
             if (!(stack.getItem() instanceof BlockItem)) continue;
             if (Block.byItem(stack.getItem()) == Blocks.AIR) continue;
 
-            validSlotsBuilder.add(slotIdx, calculateWeight.apply(slotIdx, stack));
+            // Weight = stack size when weighted is on (a just-used stack is one
+            // smaller, so its chance of being re-picked drops slightly); otherwise
+            // every eligible slot is equally likely.
+            validSlotsBuilder.add(slotIdx, weighted ? Math.max(1, stack.getCount()) : 1);
         }
 
         var validSlots = validSlotsBuilder.build();

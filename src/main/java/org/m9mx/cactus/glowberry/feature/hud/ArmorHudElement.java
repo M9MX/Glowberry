@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
+public class ArmorHudElement extends HideableHudElement<ArmorHudElement> {
     public enum Orientation { VERTICAL, HORIZONTAL }
     public enum Alignment { LEFT, CENTER, RIGHT }
     public enum DurabilityFormat { PERCENT, NUMBER }
@@ -30,6 +30,7 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
     private final Setting<Orientation>      orientation;
     private final Setting<Boolean>          showDurability;
     private final Setting<Boolean>          showHeldItem;
+    private final Setting<Boolean>          showOffhand;
     private final Setting<DurabilityFormat> durabilityFormat;
     private final Setting<Boolean>          colorDurability;
     private final Setting<Alignment>        alignment;
@@ -43,8 +44,6 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
     private static final int TEXT_OFFSET = (LINE_HEIGHT - 9) / 2; // vertically centers the 9px text
     private static final int GAP         = 3;
     private static final int COL_GAP     = 5;
-    private static final int OFFSCREEN   = -99999;
-
     private static final int COL_NAME   = 0xFFFFFFFF;
     private static final int COL_GREEN  = 0xFF55FF55;
     private static final int COL_ORANGE = 0xFFFFA500;
@@ -58,12 +57,29 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
     };
 
-    private int savedX   = Integer.MIN_VALUE;
-    private int savedY   = Integer.MIN_VALUE;
-    private boolean isHidden = false;
     private int lastWidth = -1;
 
-    /** One displayed item: an armor piece or the held item. */
+    @Override
+    protected void recoverOffscreenPosition() {
+        if (this.getRelativePosition().x() <= -90000 || this.getRelativePosition().y() <= -90000) {
+            this.move(0, 84);
+        }
+    }
+
+    @Override
+    protected boolean shouldHide() {
+        // Nothing worn, nothing in hand and nothing in the offhand - hide entirely
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) return true;
+        for (EquipmentSlot slot : ARMOR_SLOTS) {
+            if (!player.getItemBySlot(slot).isEmpty()) return false;
+        }
+        if (showHeldItem.get() && !player.getMainHandItem().isEmpty()) return false;
+        return !(showOffhand.get() && !player.getOffhandItem().isEmpty());
+    }
+
+    /** One displayed item: an armor piece, the held item or the offhand item. */
     private static final class Row {
         final ItemStack icon;      // ItemStack.EMPTY = no icon (editor placeholder shows an empty slot)
         final boolean damageable;
@@ -117,26 +133,11 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
         this.orientation      = sgGeneral.add(new EnumSetting<>("orientation", Orientation.VERTICAL));
         this.showDurability   = sgGeneral.add(new BooleanSetting("showDurability", true));
         this.showHeldItem     = sgGeneral.add(new BooleanSetting("showHeldItem", false));
+        this.showOffhand      = sgGeneral.add(new BooleanSetting("showOffhand", true));
         this.durabilityFormat = sgGeneral.add(new EnumSetting<>("durabilityFormat", DurabilityFormat.PERCENT));
         this.colorDurability  = sgGeneral.add(new BooleanSetting("colorDurability", true));
         this.alignment        = sgGeneral.add(new EnumSetting<>("alignment", Alignment.LEFT));
         this.scale            = sgGeneral.add(new IntegerSetting("scale", 100).min(25).max(400));
-    }
-
-    private void hideOffscreen() {
-        if (!isHidden) {
-            savedX = this.getRelativePosition().x();
-            savedY = this.getRelativePosition().y();
-            this.move(OFFSCREEN, OFFSCREEN);
-            isHidden = true;
-        }
-    }
-
-    private void restorePosition() {
-        if (isHidden && savedX != Integer.MIN_VALUE) {
-            this.move(savedX, savedY);
-            isHidden = false;
-        }
     }
 
     private void anchoredResize(int newWidth, int newHeight) {
@@ -205,12 +206,14 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
     }
 
     /**
-     * Builds the rows to display, honoring the held-item toggle. The held item is
-     * always last. When {@code feetFirst} is true the armor part is reversed so the
-     * feet land at the bottom (vertical layout); otherwise the classic head-to-feet
-     * order is kept (horizontal layout).
+     * Builds the rows to display, honoring the held-item and offhand toggles. The
+     * held item is always last (top of the vertical stack); the offhand item sits
+     * right below it. When {@code feetFirst} is true the armor part is reversed so
+     * the feet land at the bottom (vertical layout); otherwise the classic
+     * head-to-feet order is kept (horizontal layout).
      */
-    private List<Row> buildRows(List<ItemStack> armor, ItemStack heldStack, boolean held, boolean feetFirst) {
+    private List<Row> buildRows(List<ItemStack> armor, ItemStack heldStack, boolean held,
+                                ItemStack offhandStack, boolean offhand, boolean feetFirst) {
         List<Row> rows = new ArrayList<>();
         if (feetFirst) {
             for (int i = armor.size() - 1; i >= 0; i--) {
@@ -222,6 +225,10 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
                 Row row = Row.fromStack(stack);
                 if (row != null) rows.add(row);
             }
+        }
+        if (offhand && !offhandStack.isEmpty()) {
+            Row row = Row.fromStack(offhandStack);
+            if (row != null) rows.add(row);
         }
         if (held && !heldStack.isEmpty()) {
             Row row = Row.fromStack(heldStack);
@@ -243,6 +250,7 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
         boolean horizontal = orientation.get() == Orientation.HORIZONTAL;
         boolean dur = showDurability.get();
         boolean held = showHeldItem.get();
+        boolean offhand = showOffhand.get();
         DurabilityFormat format = durabilityFormat.get();
         boolean color = colorDurability.get();
         Alignment align = alignment.get();
@@ -259,8 +267,9 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
 
             if (!helmet.isEmpty() && !chest.isEmpty() && !legs.isEmpty() && !boots.isEmpty()) {
                 // Items are usable (components bound) - show the real preview with icons
-                ItemStack heldStack = held ? previewStack(Items.DIAMOND_SWORD, 1000) : ItemStack.EMPTY;
-                rows = buildRows(List.of(helmet, chest, legs, boots), heldStack, held, !horizontal);
+                ItemStack heldStack    = held ? previewStack(Items.DIAMOND_SWORD, 1000) : ItemStack.EMPTY;
+                ItemStack offhandStack = offhand ? previewStack(Items.SHIELD, 100) : ItemStack.EMPTY;
+                rows = buildRows(List.of(helmet, chest, legs, boots), heldStack, held, offhandStack, offhand, !horizontal);
             } else {
                 // HUD editor renders before item components are bound - icon-only preview
                 // (empty slot placeholders + durability, never item names).
@@ -276,22 +285,17 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
                     rows.add(new Row(ItemStack.EMPTY, true, 120, 240));  // chestplate
                     rows.add(new Row(ItemStack.EMPTY, true, 303, 363));  // helmet
                 }
-                if (held) rows.add(new Row(ItemStack.EMPTY, true, 561, 1561)); // held last
+                if (offhand) rows.add(new Row(ItemStack.EMPTY, true, 168, 336)); // offhand
+                if (held) rows.add(new Row(ItemStack.EMPTY, true, 561, 1561));    // held last
             }
         } else {
             Player player = mc.player;
-            if (player == null) {
-                hideOffscreen();
-                return;
-            }
-            rows = buildRows(wornArmor(player), player.getMainHandItem(), held, !horizontal);
+            if (player == null) return;
+            rows = buildRows(wornArmor(player), player.getMainHandItem(), held,
+                    player.getOffhandItem(), offhand, !horizontal);
         }
 
-        if (rows.isEmpty()) {
-            hideOffscreen();
-            return;
-        }
-        restorePosition();
+        if (rows.isEmpty()) return;
 
         // ---------------- HORIZONTAL (columns side by side) ----------------
         if (horizontal) {
@@ -340,7 +344,7 @@ public class ArmorHudElement extends DynamicHudElement<ArmorHudElement> {
         // The element always reserves slotCount rows. Equipped pieces are packed from
         // the BOTTOM of the element upward, so even a single equipped piece (e.g. just
         // a helmet) sits at the bottom, and new pieces stack above it without moving.
-        int slotCount = 4 + (held ? 1 : 0);
+        int slotCount = 4 + (held ? 1 : 0) + (offhand ? 1 : 0);
 
         int maxRowW = 0;
         for (Row row : rows) {

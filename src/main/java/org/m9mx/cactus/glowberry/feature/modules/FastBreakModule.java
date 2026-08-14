@@ -4,10 +4,11 @@ import com.dwarslooper.cactus.client.event.EventHandler;
 import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
-import com.dwarslooper.cactus.client.util.game.ChatUtils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.GameType;
+import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 public class FastBreakModule extends Module {
     public static volatile FastBreakModule INSTANCE;
 
@@ -27,8 +28,7 @@ public class FastBreakModule extends Module {
         // Check if we're in creative mode before allowing the module to be enabled
         if (!isInCreativeMode()) {
             this.toggle(); // Disable the module since we're not in creative mode
-            // Using the correct method based on the ExampleCommand
-            ChatUtils.infoPrefix("Fast Break", "can only be enabled in Creative mode!");
+            ModuleMessageUtil.show(Component.literal("§6Fast Break§r can only be enabled in Creative mode!"), 0xFFFFA500);
             return;
         }
         // When module is enabled, fast break is active
@@ -44,7 +44,7 @@ public class FastBreakModule extends Module {
         // Check if we switched from creative to survival and disable the module if needed
         if (this.active() && !isInCreativeMode()) {
             this.toggle(); // Automatically disable the module
-            ChatUtils.infoPrefix("Fast Break", "disabled because you left Creative mode!");
+            ModuleMessageUtil.show(Component.literal("§6Fast Break§r disabled because you left Creative mode!"), 0xFFFFA500);
         }
     }
 

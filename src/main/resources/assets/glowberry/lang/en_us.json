@@ -1,13 +1,31 @@
 {
   "module_categories.glowberry": "Glowberry",
 
+  "settings.autoSaveOnUpdate.name": "Auto Save on Update",
+  "settings.autoSaveOnUpdate.description": "Save all settings every time something is changed (so nothing is lost on a crash or quick close)",
+
+  "settings.rainbowMode.name": "Text Rainbow Animation",
+  "settings.rainbowMode.description": "How the text rainbow (Text Chroma on HUD elements) animates: smooth (whole text shifts color together) or diagonal (a colored line sweeps across, character by character)",
+  "settings.rainbowMode.dIAGONAL": "Diagonal",
+  "settings.rainbowMode.sMOOTH": "Smooth",
+
+  "modules.antiAfk.name": "Anti AFK",
+  "modules.antiAfk.description": "Acts like a real player so you don't get kicked for being AFK. Best setup: stand in a small 3x3x3 box with levers/buttons on the walls - it randomly walks, smoothly looks around, and presses levers/buttons. Stops the moment you touch a key.",
+
+  "modules.antiAfk.groups.general": "General",
+
+  "modules.antiAfk.settings.interactionRange.name": "Interaction Range",
+  "modules.antiAfk.settings.interactionRange.description": "How far (in blocks) to search for levers, buttons and other interactable blocks to press",
+  "modules.antiAfk.settings.toggleKeybind.name": "Toggle Key",
+  "modules.antiAfk.settings.toggleKeybind.description": "Key to toggle anti AFK on/off",
+
   "modules.autoClicker.name": "Auto Clicker",
   "modules.autoClicker.description": "Automatically clicks at a set attack speed when enabled",
 
   "modules.autoClicker.groups.general": "General",
 
   "modules.autoClicker.settings.attackSpeed.name": "Attack Speed",
-  "modules.autoClicker.settings.attackSpeed.description": "Attack speed value (1.6 = sword)",
+  "modules.autoClicker.settings.attackSpeed.description": "Attacks per second (1.6 = sword). One decimal place (e.g. 1.5)",
   "modules.autoClicker.settings.buttonType.name": "Button Type",
   "modules.autoClicker.settings.buttonType.description": "Which mouse button to click",
   "modules.autoClicker.settings.buttonType.lEFT": "Left Click",
@@ -54,14 +72,14 @@
   "modules.fastPlace.groups.general": "General",
 
   "modules.shuffle.name": "Shuffle",
-  "modules.shuffle.description": "After placing a block, switches to a random different hotbar block slot",
+  "modules.shuffle.description": "After placing a block, switches to a random hotbar block slot weighted by stack size (it can also keep the current slot)",
 
   "modules.shuffle.groups.general": "General",
 
   "modules.shuffle.settings.toggleKeybind.name": "Toggle Key",
   "modules.shuffle.settings.toggleKeybind.description": "Key to toggle shuffle on/off",
   "modules.shuffle.settings.useWeightedRandom.name": "Use Weighted Random",
-  "modules.shuffle.settings.useWeightedRandom.description": "Use item count as weight for random selection (more items = higher chance)",
+  "modules.shuffle.settings.useWeightedRandom.description": "Weight the selection by stack size (more blocks = higher chance). Off: every block slot is equally likely",
   "modules.shuffle.settings.playSoundEffects.name": "Play Sound Effects",
   "modules.shuffle.settings.playSoundEffects.description": "Play sounds when toggling shuffle on/off",
 
@@ -395,7 +413,7 @@
   "hud.elements.toggle_sprint.settings.scale.description": "Size of the element as a percentage (100 = default size)",
 
   "hud.elements.horse_stats.name": "Horse Stats",
-  "hud.elements.horse_stats.description": "Displays the stats (speed, jump, health) of the horse you are riding",
+  "hud.elements.horse_stats.description": "Displays the stats (speed, jump, health) of the horse, camel, donkey or mule you are riding",
 
   "hud.elements.horse_stats.groups.general": "General",
 
@@ -420,7 +438,7 @@
   "hud.elements.horse_stats.settings.orientation.vERTICAL": "Vertical",
 
   "hud.elements.waila.name": "Waila (What Am I Looking At)",
-  "hud.elements.waila.description": "Shows the name and details of the block or entity you are looking at",
+  "hud.elements.waila.description": "Shows a simple summary of the block or entity you are looking at",
 
   "hud.elements.waila.groups.general": "General",
 
@@ -431,34 +449,56 @@
   "hud.elements.waila.settings.alignment.rIGHT": "Right",
   "hud.elements.waila.settings.scale.name": "Scale",
   "hud.elements.waila.settings.scale.description": "Size of the element as a percentage (100 = default size)",
-  "hud.elements.waila.settings.showBlockProperties.name": "Show Block Properties",
-  "hud.elements.waila.settings.showBlockProperties.description": "Display the properties of the looked-at block (facing, lit, etc.)",
-  "hud.elements.waila.settings.showBreakingBar.name": "Show Breaking Bar",
-  "hud.elements.waila.settings.showBreakingBar.description": "Show a progress bar while breaking the looked-at block",
-  "hud.elements.waila.settings.showHealth.name": "Show Health",
-  "hud.elements.waila.settings.showHealth.description": "Display the health of living entities you look at",
-  "hud.elements.waila.settings.showOwner.name": "Show Owner",
-  "hud.elements.waila.settings.showOwner.description": "Display the owner of tameable mobs you look at, or their tamed status when the owner isn't available",
-  "hud.elements.waila.settings.showType.name": "Show Type",
-  "hud.elements.waila.settings.showType.description": "Display the entity type name (e.g. Zombie, Cow)",
-  "hud.elements.waila.settings.showVillagerProfession.name": "Show Villager Profession",
-  "hud.elements.waila.settings.showVillagerProfession.description": "Display the profession of villagers you look at (e.g. librarian, farmer)",
-  "hud.elements.waila.settings.showHorseStats.name": "Show Horse Stats",
-  "hud.elements.waila.settings.showHorseStats.description": "Display speed, jump height and health of horses you look at",
-  "hud.elements.waila.settings.showHardness.name": "Show Hardness",
-  "hud.elements.waila.settings.showHardness.description": "Display the hardness of the looked-at block",
-  "hud.elements.waila.settings.showRequiredTool.name": "Show Required Tool",
-  "hud.elements.waila.settings.showRequiredTool.description": "Show the tool (with its tier) that breaks the looked-at block fastest, next to the block name",
-  "hud.elements.waila.settings.showAge.name": "Show Baby / Adult",
-  "hud.elements.waila.settings.showAge.description": "Show whether the looked-at creature is a baby or an adult",
-  "hud.elements.waila.settings.showPotionEffects.name": "Show Potion Effects",
-  "hud.elements.waila.settings.showPotionEffects.description": "Display the active potion effects of the looked-at entity (e.g. Speed II), colored by effect",
-  "hud.elements.waila.settings.showRedstone.name": "Show Redstone Signal",
-  "hud.elements.waila.settings.showRedstone.description": "Display the redstone signal strength powering the looked-at block",
-  "hud.elements.waila.settings.showCoordinates.name": "Show Coordinates",
-  "hud.elements.waila.settings.showCoordinates.description": "Display the X/Y/Z position of the looked-at block",
-  "hud.elements.waila.settings.showNicheInfo.name": "Show Special Block Info",
-  "hud.elements.waila.settings.showNicheInfo.description": "Display special info for block entities: beehive bee count, jukebox disc, sign text, spawner mob",
+  "hud.elements.waila.settings.show.name": "Show",
+  "hud.elements.waila.settings.show.description": "Pick which grouped information Waila shows",
+  "hud.elements.waila.settings.show.hEALTH": "Entity Health",
+  "hud.elements.waila.settings.show.eXTRA_INFO": "Extra Entity Info",
+  "hud.elements.waila.settings.show.pOTION_EFFECTS": "Entity Potion Effects",
+  "hud.elements.waila.settings.show.eQUIPMENT": "Entity Equipment",
+  "hud.elements.waila.settings.show.mOD_NAME": "Mod Name",
+  "hud.elements.waila.settings.show.bREAK_PROGRESS": "Break Progress",
+  "hud.elements.waila.settings.show.rEQUIRED_TOOL": "Required Tool / Harvestable",
+  "hud.elements.waila.settings.show.cOORDINATES": "Block Coordinates",
+  "hud.elements.waila.settings.show.bLOCK_EXTRA_INFO": "Extra Block Info",
+  "hud.elements.waila.settings.show.bLOCK_PROPERTIES": "Block Properties",
+  "hud.elements.waila.settings.show.sTORAGE_INFO": "Storage Info",
+
+  "hud.elements.modules_list.name": "Modules List",
+  "hud.elements.modules_list.description": "Shows every toggled module as a vertical list, with its keybind when it has one",
+
+  "hud.elements.modules_list.groups.general": "General",
+
+  "hud.elements.modules_list.settings.alignment.name": "Alignment",
+  "hud.elements.modules_list.settings.alignment.description": "Horizontal alignment of the module list within the element",
+  "hud.elements.modules_list.settings.alignment.cENTER": "Center",
+  "hud.elements.modules_list.settings.alignment.lEFT": "Left",
+  "hud.elements.modules_list.settings.alignment.rIGHT": "Right",
+  "hud.elements.modules_list.settings.scale.name": "Scale",
+  "hud.elements.modules_list.settings.scale.description": "Size of the element as a percentage (100 = default size)",
+  "hud.elements.modules_list.settings.showKeybind.name": "Show Keybinds",
+  "hud.elements.modules_list.settings.showKeybind.description": "Show the module's keybind next to its name (module bind first, then a custom toggle key like Auto Clicker's)",
+
+  "hud.elements.module_message.name": "Module Message",
+  "hud.elements.module_message.description": "Shows module toggle changes and module info messages in an overlay instead of the action bar",
+
+  "hud.elements.module_message.groups.general": "General",
+
+  "hud.elements.module_message.settings.alignment.name": "Alignment",
+  "hud.elements.module_message.settings.alignment.description": "Horizontal alignment of messages within the element",
+  "hud.elements.module_message.settings.alignment.cENTER": "Center",
+  "hud.elements.module_message.settings.alignment.lEFT": "Left",
+  "hud.elements.module_message.settings.alignment.rIGHT": "Right",
+  "hud.elements.module_message.settings.duration.name": "Message Duration",
+  "hud.elements.module_message.settings.duration.description": "How many seconds a message stays before fading out",
+  "hud.elements.module_message.settings.showIcons.name": "Show Icons",
+  "hud.elements.module_message.settings.showIcons.description": "Draw the message's sprite or item icon before the text",
+  "hud.elements.module_message.settings.indicator.name": "State Indicator",
+  "hud.elements.module_message.settings.indicator.description": "How the message's color is shown while the text follows the Text Color setting: a rounded border around the element, a bar at the bottom, or not shown",
+  "hud.elements.module_message.settings.indicator.bORDER": "Rounded Border",
+  "hud.elements.module_message.settings.indicator.bAR": "Bottom Bar",
+  "hud.elements.module_message.settings.indicator.nONE": "None",
+  "hud.elements.module_message.settings.scale.name": "Scale",
+  "hud.elements.module_message.settings.scale.description": "Size of the element as a percentage (100 = default size)",
 
   "hud.elements.armor_hud.name": "Armor HUD+",
   "hud.elements.armor_hud.description": "Displays your equipped armor and held item with durability bars",
@@ -486,6 +526,8 @@
   "hud.elements.armor_hud.settings.showDurability.description": "Display the durability value for each piece",
   "hud.elements.armor_hud.settings.showHeldItem.name": "Show Held Item",
   "hud.elements.armor_hud.settings.showHeldItem.description": "Also display the item in your main hand with the same durability display",
+  "hud.elements.armor_hud.settings.showOffhand.name": "Show Offhand Item",
+  "hud.elements.armor_hud.settings.showOffhand.description": "Also display the item in your off hand (e.g. shield, totem) with the same durability display",
 
   "hud.elements.timer_stopwatch.name": "Timer & Stopwatch",
   "hud.elements.timer_stopwatch.description": "Displays the Timer and Stopwatch modules together in a single HUD element",

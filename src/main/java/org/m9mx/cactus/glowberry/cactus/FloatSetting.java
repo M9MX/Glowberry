@@ -29,6 +29,9 @@ public class FloatSetting extends Setting<Float> {
     private float max;
     private float sliderMin;
     private float sliderMax;
+    // How many digits are kept after the decimal point. The slider snaps to this
+    // precision and the value text is formatted with it (e.g. decimals(1) -> 1.5).
+    private int decimals = 2;
 
     public FloatSetting(String name, float value) {
         this(name, value, FloatSetting.EditorStyle.Slider);
@@ -94,6 +97,27 @@ public class FloatSetting extends Setting<Float> {
         return this;
     }
 
+    /** Sets how many digits after the decimal point are kept (0-6). The slider snaps to this precision. */
+    public FloatSetting decimals(int decimals) {
+        this.decimals = Mth.clamp(decimals, 0, 6);
+        return this;
+    }
+
+    public int getDecimals() {
+        return this.decimals;
+    }
+
+    /** The smallest step the value can change by, derived from the decimal precision (0.1, 0.01, ...). */
+    public float step() {
+        return (float) Math.pow(10, -this.decimals);
+    }
+
+    /** Clamps to [min, max] and snaps to the configured decimal precision. */
+    public float snap(float value) {
+        float factor = (float) Math.pow(10, this.decimals);
+        return Math.round(Mth.clamp(value, this.min, this.max) * factor) / factor;
+    }
+
     public void setEditorStyle(EditorStyle editorStyle) {
         this.editorStyle = editorStyle;
     }
@@ -119,11 +143,16 @@ public class FloatSetting extends Setting<Float> {
     }
 
     public void set(Float value) {
-        super.set(Mth.clamp(value, this.min, this.max));
+        super.set(this.snap(value));
     }
 
     public Float get() {
         return (Float)super.get();
+    }
+
+    @Override
+    public String getText() {
+        return String.format("%." + this.decimals + "f", this.get());
     }
 
     public void save(JsonObject object) {
@@ -161,10 +190,10 @@ public class FloatSetting extends Setting<Float> {
             this.widget = new EditBox(this.textRenderer, this.widgetWidth, 20, Component.empty());
 
             // Set the initial value first so our responder has a baseline text track
-            this.widget.setValue(FloatSetting.this.get().toString());
+            this.widget.setValue(FloatSetting.this.getText());
 
             // Create a local single-element array to track the last valid string input state across lambda updates
-            final String[] lastValidValue = { FloatSetting.this.get().toString() };
+            final String[] lastValidValue = { FloatSetting.this.getText() };
 
             this.widget.setResponder((s) -> {
                 // If it's empty or a negative sign, color it red but let them keep typing the rest of the float
@@ -240,7 +269,7 @@ public class FloatSetting extends Setting<Float> {
             } else {
                 if (this.isToggleHovered(click.x(), click.y())) {
                     this.isSlider = !this.isSlider;
-                    this.widget.setValue(FloatSetting.this.get().toString());
+                    this.widget.setValue(FloatSetting.this.getText());
                     FloatSetting.this.setEditorStyle(this.isSlider ? FloatSetting.EditorStyle.Slider : FloatSetting.EditorStyle.Input);
                 }
 
@@ -268,7 +297,8 @@ public class FloatSetting extends Setting<Float> {
             if (!this.isSlider || input.key() != 262 && input.key() != 263) {
                 return this.widget.keyPressed(input) || super.keyPressed(input);
             } else {
-                this.setValue(this.value + (input.key() == 262 ? 0.1f : -0.1f) * (input.hasShiftDown() ? 10 : 1));
+                float step = FloatSetting.this.step();
+                this.setValue(this.value + (input.key() == 262 ? step : -step) * (input.hasShiftDown() ? 10 : 1));
                 return true;
             }
         }
@@ -292,9 +322,9 @@ public class FloatSetting extends Setting<Float> {
         }
 
         public void setValue(float value) {
-            float clampedValue = Mth.clamp(value, FloatSetting.this.getMin(), FloatSetting.this.getMax());
-            if (clampedValue != this.value) {
-                this.value = clampedValue;
+            float snappedValue = FloatSetting.this.snap(value);
+            if (snappedValue != this.value) {
+                this.value = snappedValue;
                 FloatSetting.this.set(this.value);
             }
 

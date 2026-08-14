@@ -1,9 +1,9 @@
 package org.m9mx.cactus.glowberry.feature.modules;
 
 import org.lwjgl.glfw.GLFW;
-import org.m9mx.cactus.glowberry.accessor.IKeyBindingAccessor;
+import org.m9mx.cactus.glowberry.accessor.IMinecraftClickAccessor;
 import org.m9mx.cactus.glowberry.cactus.FloatSetting;
-import org.m9mx.cactus.glowberry.util.ActionBarUtil;
+import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 
 import com.dwarslooper.cactus.client.event.EventHandler;
 import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
@@ -16,6 +16,8 @@ import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import com.dwarslooper.cactus.client.systems.key.KeyBind;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+
 public class AutoClickerModule extends Module {
     public static AutoClickerModule INSTANCE;
 
@@ -39,7 +41,7 @@ public class AutoClickerModule extends Module {
 
         this.generalGroup = this.settings.buildGroup("general");
         this.buttonType = this.generalGroup.add(new EnumSetting<>("buttonType", ButtonType.LEFT));
-        this.attackSpeed = this.generalGroup.add(new FloatSetting("attackSpeed", 1.6f).min(0.0f).max(3.0f));
+        this.attackSpeed = this.generalGroup.add(new FloatSetting("attackSpeed", 1.6f).min(0.0f).max(3.0f).decimals(1));
         this.toggleKeybind = this.generalGroup.add(new KeybindSetting("toggleKeybind", KeyBind.of(GLFW.GLFW_KEY_X)));
     }
 
@@ -51,7 +53,6 @@ public class AutoClickerModule extends Module {
     @Override
     public void onDisable() {
         this.autoClickerActive = false;
-        releaseKeys();
     }
 
     @EventHandler
@@ -65,12 +66,8 @@ public class AutoClickerModule extends Module {
         boolean currentKeyState = isToggleKeyPressed();
         if (currentKeyState && !lastKeyState) {
             this.autoClickerActive = !this.autoClickerActive;
-            String status = this.autoClickerActive ? "§aEnabled" : "§cDisabled";
-            ActionBarUtil.sendActionBarMessage("AutoClicker " + status);
-
-            if (!this.autoClickerActive) {
-                releaseKeys();
-            }
+            int color = this.autoClickerActive ? 0xFF55FF55 : 0xFFFF5555;
+            ModuleMessageUtil.show(Component.literal("AutoClicker " + (this.autoClickerActive ? "§aEnabled" : "§cDisabled")), color);
         }
         lastKeyState = currentKeyState;
 
@@ -79,7 +76,6 @@ public class AutoClickerModule extends Module {
         long delayMs = (long) ((1.0 / this.attackSpeed.get()) * 1000);
         if (this.autoClickerActive && System.currentTimeMillis() - lastClickTime >= delayMs) {
             performClick(mc);
-            releaseKeys();
             lastClickTime = System.currentTimeMillis();
         }
     }
@@ -87,24 +83,15 @@ public class AutoClickerModule extends Module {
     private void performClick(Minecraft mc) {
         ButtonType type = this.buttonType.get();
 
+        // Use vanilla's own click handlers instead of faking a held key. The old
+        // approach set keyAttack/keyUse down every click, which left the input
+        // system in a stuck "mouse held" state that dragged the framerate down
+        // to ~30fps until the mouse was physically moved.
+        IMinecraftClickAccessor accessor = (IMinecraftClickAccessor) (Object) mc;
         if (type == ButtonType.LEFT) {
-            // Simulate a left click by incrementing clickCount and setting key down
-            // Minecraft's handleKeybinds() will consume this and handle attack/break properly
-            ((IKeyBindingAccessor) (Object) mc.options.keyAttack).glowberry_SetTimesPressed(1);
-            mc.options.keyAttack.setDown(true);
-        } else if (type == ButtonType.RIGHT) {
-            // Simulate a right click by incrementing clickCount and setting key down
-            // Minecraft's handleKeybinds() will consume this and handle use/place properly
-            ((IKeyBindingAccessor) (Object) mc.options.keyUse).glowberry_SetTimesPressed(1);
-            mc.options.keyUse.setDown(true);
-        }
-    }
-
-    private void releaseKeys() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.options != null) {
-            mc.options.keyAttack.setDown(false);
-            mc.options.keyUse.setDown(false);
+            accessor.glowberry_StartAttack();
+        } else {
+            accessor.glowberry_StartUseItem();
         }
     }
 

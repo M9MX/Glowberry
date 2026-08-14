@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
+public class PickUpLogHud extends HideableHudElement<PickUpLogHud> {
     public enum Origin {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
@@ -58,10 +58,10 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
 
     private boolean initializedInventory = false;
 
-    private static final int OFFSCREEN = -99999;
-    private int savedX      = Integer.MIN_VALUE;
-    private int savedY      = Integer.MIN_VALUE;
-    private boolean isHidden = false;
+    @Override
+    protected boolean shouldHide() {
+        return logEntries.isEmpty() && !alwaysShow.get();
+    }
 
     private int lastBgWidth  = -1;
     private int lastBgHeight = -1;
@@ -214,22 +214,6 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
         return stripped;
     }
 
-    private void hideOffscreen() {
-        if (!isHidden) {
-            savedX = this.getRelativePosition().x();
-            savedY = this.getRelativePosition().y();
-            this.move(OFFSCREEN, OFFSCREEN);
-            isHidden = true;
-        }
-    }
-
-    private void restorePosition() {
-        if (isHidden && savedX != Integer.MIN_VALUE) {
-            this.move(savedX, savedY);
-            isHidden = false;
-        }
-    }
-
     private void anchoredResize(int newWidth, int newHeight) {
         if (newWidth == lastBgWidth && newHeight == lastBgHeight) return;
 
@@ -281,11 +265,8 @@ public class PickUpLogHud extends DynamicHudElement<PickUpLogHud> {
         boolean hasEntries = !renderEntries.isEmpty();
 
         if (!hasEntries && !always && !inEditor) {
-            hideOffscreen();
             return;
         }
-
-        restorePosition();
 
         if (inEditor && !hasEntries) {
             int phCountW  = mc.font.width("+10x");
