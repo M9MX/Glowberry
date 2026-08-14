@@ -10,14 +10,14 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 
 ## 📅 Version Matrix
 ### Minecraft `26.2`
-* **Glowberry Version:** `1.6.0`+
+* **Glowberry Version:** `1.6.1`+
 * **Required Cactus:** `1.14`+
-* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/ofDXConU/glowberry-1.6.0.jar?mr_download_reason=standalone)
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/OF3ObkMY/glowberry-1.6.1.jar?mr_download_reason=standalone)
 
 ### Minecraft `26.1.x`
 * **Glowberry Version:** `1.5.2`+
 * **Required Cactus:** `0.13`+
-* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/Tb9xjOAV/glowberry-1.5.1.jar?mr_download_reason=standalone)
+* **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/4F8rdsAd/glowberry-1.5.2.jar?mr_download_reason=standalone)
 
 ### Minecraft `1.21.11`
 * **Glowberry Version:** `1.4.1`+
@@ -34,12 +34,14 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 ### 📺 Interface & HUD
 * **`Pickup Log`** — A sleek, real-time visual feed showing exactly what items enter or leave your inventory.
 * **`Timer / Stopwatch`** — Pins precise time-tracking and countdown utilities directly onto your primary screen overlay.
-* **`ArmorHud+`** - ArmorHud 
-* **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values.
-* **`Waila / Target Info`** — Displays real-time block and entity info directly on your screen.
+* **`ArmorHud+`** — Displays equipped armor status with support for offhand items.
+* **`HorseStats`** — Reads hidden entity data to show raw jump heights, speed scales, and exact health values with improved calculation accuracy.
+* **`Waila / Target Info`** — Displays real-time block and entity info directly on your screen (remade system & HUD with extended feature support).
+* **`Module List Element`** `✨ 1.6.1+` — Displays active modules directly on your HUD.
+* **`Module Message Element`** `✨ 1.6.1+` — Displays module notification messages directly on your HUD overlay.
 
 ### ⚔️ Tactical Combat (PvP)
-* **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates.
+* **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates (fixed stationary mouse FPS issue).
 * **`NoHurtCam`** — Strips away aggressive screen-shake and blood-red tints to keep your vision clear under fire.
 * **`ShieldStatus`** — A live overlay tracking enemy shield durability, active blocks, and cooldown windows.
 * **`TotemCounter`** — Tracks your internal storage and prints exact enemy Totem pops straight into the player list.
@@ -53,10 +55,15 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 * **`LightLevel`** — Projects a visual grid across blocks to map out potential hostile mob spawning spots.
 * **`Shuffle`** — Dynamically scrambles blocks across your active hotbar to build realistic, random texture patterns.
 * **`TabList`** — Upgrades the classic server list by displaying raw, exact numerical ping updates.
+* **`ToggleSprint`** `✨ 1.6.0+` — Allows smooth toggling of player sprinting.
 
 ### 💡 Utility & Sandbox
 * **`BookEdit`** — Unlocks full rich-text formatting, allowing standard color codes (`&` / `§`) right inside writable books.
 * **`FastBreak`** — Fully eliminates the vanilla block reset timer for instantaneous breaking while in Creative Mode.
+
+### ⚙️ Settings
+* **`Rainbow Text`** `✨ 1.6.1+` — Option to switch Cactus rainbow text between a solid uniform color and smooth animated transitions across text.
+* **`Auto Save`** `✨ 1.6.1+` — Saves configurations automatically on screen changes instead of waiting until close.
 
 ### 💻 Client Commands
 * **`Calc / Calculator`** `✨ 1.5.1+` — Runs an advanced internal math compiler directly through your chat box. Supports variables like `pi`, `e`, and `ans` (previous answer), item-to-stack math breakdowns (`stack`, `shulker`), coordinate conversion using a `Current` location shortcut, and full operation history tracking.
