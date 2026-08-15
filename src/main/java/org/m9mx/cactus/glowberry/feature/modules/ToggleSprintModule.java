@@ -18,8 +18,18 @@ import org.lwjgl.glfw.GLFW;
  * Toggle Sprint module.
  * Press the configured key once to keep sprinting without holding it (vanilla
  * requires holding the sprint key). With "always sprint" enabled the player
- * automatically sprints whenever moving forward, as long as the vanilla sprint
- * conditions are met (food above 6, not sneaking, not riding, ...).
+ * automatically sprints whenever moving forward.
+ *
+ * <p>The module drives {@code options.keySprint.setDown()} - it fakes the
+ * sprint key being held - instead of calling {@code setSprinting()} directly.
+ * Vanilla's own sprint logic ({@code canStartSprinting}, {@code aiStep}, ...)
+ * then evaluates every condition itself (food, headroom, water, sneaking,
+ * fall-flying, ...), so the module can never fight vanilla into a flicker or
+ * drift out of sync with the real sprint rules.
+ *
+ * <p>Inspired by BetterSprint by tfourj
+ * (https://github.com/tfourj/BetterSprint), which fakes the sprint key the
+ * same way instead of forcing the sprint state.
  */
 public class ToggleSprintModule extends Module {
     public static volatile ToggleSprintModule INSTANCE;
@@ -57,6 +67,8 @@ public class ToggleSprintModule extends Module {
         lastKeyState = false;
         toggleCooldownTicks = 0;
         Minecraft mc = Minecraft.getInstance();
+        // Release the faked sprint key so vanilla stops sprinting on its own.
+        mc.options.keySprint.setDown(false);
         if (mc.player != null) {
             mc.player.setSprinting(false);
         }
@@ -77,23 +89,30 @@ public class ToggleSprintModule extends Module {
             if (toggleCooldownTicks <= 0) {
                 toggleCooldownTicks = 4;
                 sprintToggled = !sprintToggled;
-                if (sprintToggled) {
-                    // Engage immediately so sprint doesn't lag a tick behind the press
-                    if (canSprint(mc)) mc.player.setSprinting(true);
-                } else {
-                    mc.player.setSprinting(false);
-                }
             }
         } else if (!keyDown && lastKeyState) {
             lastKeyState = false;
         }
 
-        // Keep sprinting while toggled on or always-sprint is enabled. We only
-        // ever set it to true; stopping is left to vanilla when the sprint
-        // conditions are no longer met (stops moving, sneaks, runs out of food...).
-        if ((sprintToggled || alwaysSprint.get()) && canSprint(mc) && !mc.player.isSprinting()) {
-            mc.player.setSprinting(true);
-        }
+        // Fake the sprint key being held whenever sprint is wanted. Vanilla then
+        // handles starting/stopping sprint and all its conditions itself - we
+        // only supply the input, never the sprint state.
+        boolean wantSprint = (sprintToggled || alwaysSprint.get()) && wantsForwardSprint(mc);
+        mc.options.keySprint.setDown(wantSprint);
+    }
+
+    /**
+     * Whether sprint should be requested right now. Only gates on the things
+     * this module is about (the toggle being on and forward movement); every
+     * other condition (food, headroom, water, sneaking, ...) is left to vanilla.
+     */
+    private boolean wantsForwardSprint(Minecraft mc) {
+        if (mc.player == null) return false;
+        if (mc.player.isSpectator()) return false;
+        // Sneaking must win over our faked key so a toggled sprint can't
+        // re-engage mid-sneak.
+        if (mc.player.isCrouching()) return false;
+        return mc.player.input.hasForwardImpulse();
     }
 
     private boolean isToggleKeyPressed() {
@@ -108,20 +127,6 @@ public class ToggleSprintModule extends Module {
             // Ignore
         }
         return false;
-    }
-
-    /**
-     * Mirrors the vanilla sprint conditions: needs forward movement input,
-     * food level above 6, and no state that blocks sprinting.
-     */
-    private boolean canSprint(Minecraft mc) {
-        if (mc.player == null) return false;
-        if (mc.player.isSpectator()) return false;
-        if (mc.player.isCrouching()) return false;
-        if (mc.player.isFallFlying()) return false;
-        if (mc.player.isPassenger()) return false;
-        if (mc.player.getFoodData().getFoodLevel() <= 6) return false;
-        return mc.player.input.hasForwardImpulse();
     }
 
     /** Whether the manual sprint toggle is currently engaged. */
