@@ -128,13 +128,17 @@ tasks.named('jar', Jar) {
 	}
 }
 
-// Cleans run/mods and copies your mod, Fabric API, and Cactus into run/mods
+// Updates run/mods with your mod, Fabric API, and Cactus - only replacing the
+// jars this task copies, so other mods (e.g. Freecam for testing) stay in place.
 tasks.register('copyToMods', Copy) {
 	doFirst {
+		def replaced = ["cactus", "fabric-api", "${project.archives_base_name}-${project.mod_version}"]
 		fileTree('run/mods').matching {
 			include "*.jar"
 		}.each { file ->
-			file.delete()
+			if (replaced.any { file.name.contains(it) }) {
+				file.delete()
+			}
 		}
 	}
 

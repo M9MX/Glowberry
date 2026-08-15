@@ -26,6 +26,12 @@
 
   "modules.autoClicker.settings.attackSpeed.name": "Attack Speed",
   "modules.autoClicker.settings.attackSpeed.description": "Attacks per second (1.6 = sword). One decimal place (e.g. 1.5)",
+  "modules.autoClicker.settings.delayType.name": "Delay Type",
+  "modules.autoClicker.settings.delayType.description": "How the delay between clicks is set: attack speed (attacks per second) or a fixed time",
+  "modules.autoClicker.settings.delayType.aTTACK_SPEED": "Attack Speed",
+  "modules.autoClicker.settings.delayType.tIME": "Time",
+  "modules.autoClicker.settings.delayTime.name": "Delay Time",
+  "modules.autoClicker.settings.delayTime.description": "Time between clicks as a formatted value, e.g. 1s10ms, 625ms, 2.5s or 1m30s",
   "modules.autoClicker.settings.buttonType.name": "Button Type",
   "modules.autoClicker.settings.buttonType.description": "Which mouse button to click",
   "modules.autoClicker.settings.buttonType.lEFT": "Left Click",
