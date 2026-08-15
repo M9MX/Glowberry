@@ -48,6 +48,8 @@ import com.dwarslooper.cactus.client.feature.module.ModuleManager;
 import org.m9mx.cactus.glowberry.util.AutoSaveHandler;
 import org.m9mx.cactus.glowberry.util.config.GlowberryConfig;
 import net.minecraft.world.item.Items;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowMode;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowModeHandler;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -207,9 +209,9 @@ public class GlowberryCactus implements ICactusAddon {
 					// "Text Chroma" or an RGB text color enabled: smooth (whole text
 					// shifts together) or diagonal (a colored line sweeps across,
 					// character by character).
-					Setting<org.m9mx.cactus.glowberry.util.RainbowMode> rainbowMode = cactusSettings.settings.getDefault()
-							.add(new EnumSetting<>("rainbowMode", org.m9mx.cactus.glowberry.util.RainbowMode.DIAGONAL));
-					org.m9mx.cactus.glowberry.util.RainbowModeHandler.setSetting(rainbowMode);
+					Setting<RainbowMode> rainbowMode = cactusSettings.settings.getDefault()
+							.add(new EnumSetting<>("rainbowMode", RainbowMode.DIAGONAL));
+					RainbowModeHandler.setSetting(rainbowMode);
 				}
 			}
 

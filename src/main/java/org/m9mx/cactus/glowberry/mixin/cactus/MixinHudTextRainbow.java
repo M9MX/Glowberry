@@ -2,9 +2,9 @@ package org.m9mx.cactus.glowberry.mixin.cactus;
 
 import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.m9mx.cactus.glowberry.util.RainbowMode;
-import org.m9mx.cactus.glowberry.util.RainbowModeHandler;
-import org.m9mx.cactus.glowberry.util.RainbowRenderer;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowMode;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowModeHandler;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

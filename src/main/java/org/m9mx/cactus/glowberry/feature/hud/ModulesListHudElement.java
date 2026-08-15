@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
-import org.m9mx.cactus.glowberry.util.RainbowRenderer;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowRenderer;
 
 import java.util.ArrayList;
 import java.util.Comparator;

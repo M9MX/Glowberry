@@ -1,4 +1,4 @@
-package org.m9mx.cactus.glowberry.util;
+package org.m9mx.cactus.glowberry.util.rainbow;
 
 /**
  * How the Cactus text rainbow ("Text Chroma" on a HUD element) animates:

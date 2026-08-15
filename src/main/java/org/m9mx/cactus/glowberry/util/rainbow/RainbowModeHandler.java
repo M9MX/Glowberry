@@ -1,4 +1,4 @@
-package org.m9mx.cactus.glowberry.util;
+package org.m9mx.cactus.glowberry.util.rainbow;
 
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 

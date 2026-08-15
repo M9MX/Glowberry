@@ -16,7 +16,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
-import org.m9mx.cactus.glowberry.util.RainbowRenderer;
+import org.m9mx.cactus.glowberry.util.rainbow.RainbowRenderer;
 
 /**
  * Module Message - a small overlay that shows module changes and module info
