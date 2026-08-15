@@ -57,8 +57,6 @@ public class ArmorHudElement extends HideableHudElement<ArmorHudElement> {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET
     };
 
-    private int lastWidth = -1;
-
     @Override
     protected void recoverOffscreenPosition() {
         if (this.getRelativePosition().x() <= -90000 || this.getRelativePosition().y() <= -90000) {
@@ -140,20 +138,6 @@ public class ArmorHudElement extends HideableHudElement<ArmorHudElement> {
         this.scale            = sgGeneral.add(new IntegerSetting("scale", 100).min(25).max(400));
     }
 
-    private void anchoredResize(int newWidth, int newHeight) {
-        int oldWidth = lastWidth == -1 ? newWidth : lastWidth;
-        lastWidth = newWidth;
-        this.resize(newWidth, newHeight);
-        if (lastWidth != -1 && newWidth != oldWidth) {
-            int dx = newWidth - oldWidth;
-            Alignment align = alignment.get();
-            if (align == Alignment.CENTER) {
-                this.move(this.getRelativePosition().x() - dx / 2, this.getRelativePosition().y());
-            } else if (align == Alignment.RIGHT) {
-                this.move(this.getRelativePosition().x() - dx, this.getRelativePosition().y());
-            }
-        }
-    }
 
     private static int durabilityColor(int remaining, int max) {
         float p = max <= 0 ? 1f : remaining / (float) max;

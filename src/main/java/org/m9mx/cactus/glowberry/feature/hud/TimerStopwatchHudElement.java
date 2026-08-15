@@ -40,8 +40,6 @@ public class TimerStopwatchHudElement extends HideableHudElement<TimerStopwatchH
     private static final int LINE_HEIGHT = 11;
     private static final int SEP_HEIGHT  = 5;
 
-    private int lastWidth = -1;
-
     @Override
     protected boolean shouldHide() {
         boolean always = alwaysShow.get();
@@ -121,20 +119,6 @@ public class TimerStopwatchHudElement extends HideableHudElement<TimerStopwatchH
         return line;
     }
 
-    private void anchoredResize(int newWidth, int newHeight) {
-        int oldWidth = lastWidth == -1 ? newWidth : lastWidth;
-        lastWidth = newWidth;
-        this.resize(newWidth, newHeight);
-        if (lastWidth != -1 && newWidth != oldWidth) {
-            int dx = newWidth - oldWidth;
-            Alignment align = alignment.get();
-            if (align == Alignment.CENTER) {
-                this.move(this.getRelativePosition().x() - dx / 2, this.getRelativePosition().y());
-            } else if (align == Alignment.RIGHT) {
-                this.move(this.getRelativePosition().x() - dx, this.getRelativePosition().y());
-            }
-        }
-    }
 
     @Override
     public void renderContent(GuiGraphicsExtractor context, int x, int y, int width, int height, int screenWidth, int screenHeight, float delta, boolean inEditor) {

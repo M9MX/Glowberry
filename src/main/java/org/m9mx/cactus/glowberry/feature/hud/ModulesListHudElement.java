@@ -43,8 +43,6 @@ public class ModulesListHudElement extends HideableHudElement<ModulesListHudElem
     private static final int ANIM_MS      = 260; // slide/fade duration on toggle
     private static final int SLIDE_PIXELS = 8;
 
-    private int lastWidth = -1;
-
     @Override
     protected boolean shouldHide() {
         // Nothing to show while no module is toggled on
@@ -89,21 +87,6 @@ public class ModulesListHudElement extends HideableHudElement<ModulesListHudElem
             len += kb.length() + 3; // " (" + kb + ")"
         }
         return len;
-    }
-
-    private void anchoredResize(int newWidth, int newHeight) {
-        int oldWidth = lastWidth == -1 ? newWidth : lastWidth;
-        lastWidth = newWidth;
-        this.resize(newWidth, newHeight);
-        if (lastWidth != -1 && newWidth != oldWidth) {
-            int dx = newWidth - oldWidth;
-            Alignment align = alignment.get();
-            if (align == Alignment.CENTER) {
-                this.move(this.getRelativePosition().x() - dx / 2, this.getRelativePosition().y());
-            } else if (align == Alignment.RIGHT) {
-                this.move(this.getRelativePosition().x() - dx, this.getRelativePosition().y());
-            }
-        }
     }
 
     @Override

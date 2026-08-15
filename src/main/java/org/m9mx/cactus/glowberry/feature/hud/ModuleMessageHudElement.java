@@ -47,9 +47,13 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
     private final Setting<Indicator> indicator;   // how the message color is shown
     private final Setting<Integer>   scale;
 
-    private static final int FADE_MS     = 400;   // fade out over the last 0.4s
-    private static final int ENTER_MS    = 250;   // slide-in duration
-    private static final int SLIDE_PIXELS = 10;   // entrance slide distance (whole element)
+    private static final int FADE_MS        = 400;   // fade out over the last 0.4s
+    private static final int MIN_ENTER_MS   = 150;   // slide-in is never snappier than this
+    private static final int MAX_ENTER_MS   = 700;   // slide-in is never slower than this
+    private static final float SLIDE_SPEED  = 0.9f;  // entrance speed (px per ms) - quick but not
+                                                     // too quick; the duration scales with the
+                                                     // distance travelled
+    private static final int CENTER_RISE_PX = 8;     // center appear: how far the box floats up
     private static final int PAD_X       = 6;
     private static final int PAD_Y       = 4;
     private static final int LINE_HEIGHT = 16;    // matches the 16px icon height
@@ -58,8 +62,11 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
     private static final int BAR_HEIGHT  = 2;     // bottom bar thickness
     private static final int CORNER_R    = 4;     // rounded border corner radius
 
-    private int lastWidth = -1;
     private boolean editorSampleAdded = false;
+    // Entrance duration for the message currently showing, derived from the
+    // distance it has to travel (see render()). Shared with renderContent so the
+    // text fade matches the box slide timing.
+    private long currentEnterMs = MIN_ENTER_MS;
 
     @Override
     protected boolean shouldHide() {
@@ -92,62 +99,95 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
         ModuleMessageUtil.currentMessage = null;
     }
 
-    private void anchoredResize(int newWidth, int newHeight) {
-        int oldWidth = lastWidth == -1 ? newWidth : lastWidth;
-        lastWidth = newWidth;
-        this.resize(newWidth, newHeight);
-        if (lastWidth != -1 && newWidth != oldWidth) {
-            int dx = newWidth - oldWidth;
-            Alignment align = alignment.get();
-            if (align == Alignment.CENTER) {
-                this.move(this.getRelativePosition().x() - dx / 2, this.getRelativePosition().y());
-            } else if (align == Alignment.RIGHT) {
-                this.move(this.getRelativePosition().x() - dx, this.getRelativePosition().y());
-            }
-        }
-    }
-
     /**
-     * Slides the WHOLE element (background box included) in from the alignment
-     * side while a new message animates in, instead of only moving the text.
+     * Slides the WHOLE element (background box included) in from the screen side
+     * matching the alignment setting while a new message animates in, instead of
+     * only moving the text: LEFT alignment comes from the left edge, RIGHT from
+     * the right edge, CENTER floats up in place (a custom appear). Each slide
+     * covers the full distance from that side to the element's resting spot at a
+     * constant speed, so the duration scales with the distance: an element next
+     * to the side snaps in quickly, one in the middle of the screen visibly
+     * travels in. Exit drifts back out toward the same side.
      */
     @Override
     public void render(GuiGraphicsExtractor context, int x, int y, int width, int height, float delta, boolean inEditor) {
-        recoverOffscreenPosition();
-        if (!inEditor && shouldHide()) {
-            return;
-        }
-
-        int slideX = x;
-        int slideY = y;
+        int drawX = x;
+        int drawY = y;
         if (!inEditor) {
             ModuleMessageUtil.Message message = ModuleMessageUtil.currentMessage;
             if (message != null) {
                 long now = System.currentTimeMillis();
                 long keepMs = duration.get() * 1000L;
-
-                // Entrance: slide the whole element in from the alignment side.
-                // The offset is positive for the first ENTER_MS, then eases to 0.
-                float enter = Mth.clamp((now - message.time) / (float) ENTER_MS, 0f, 1f);
-                int offset = (int) ((1f - enter) * SLIDE_PIXELS);
-
-                // Exit: during the fade-out window, keep drifting the whole
-                // element away in the same direction so the background doesn't
-                // sit still while the text fades.
                 long age = now - message.time;
-                if (age > keepMs) {
-                    float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
-                    offset -= (int) (exit * SLIDE_PIXELS * 0.5f);
-                }
+
+                Minecraft mc = Minecraft.getInstance();
+                int screenWidth = mc.getWindow().getGuiScaledWidth();
+                int boxW = this.getSize().x();
+
+                // Entrance duration derives from the distance to the matching
+                // screen side, so the animation always comes from that side at a
+                // constant (quick but not too quick) speed.
+                long enterMs = enterMsFor(travelDist(alignment.get(), drawX, screenWidth, boxW));
+                currentEnterMs = enterMs;
+                float enter = Mth.clamp(age / (float) enterMs, 0f, 1f);
 
                 switch (alignment.get()) {
-                    case CENTER -> { /* slides straight in place - just fades */ }
-                    case RIGHT -> slideX += offset;
-                    default -> slideX -= offset;
+                    case CENTER -> {
+                        // Custom center appear: the box floats up into place while
+                        // the text fades in, and sinks back down on exit.
+                        drawY += (int) ((1f - enter) * CENTER_RISE_PX);
+                        if (age > keepMs) {
+                            float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
+                            drawY += (int) (exit * CENTER_RISE_PX);
+                        }
+                    }
+                    case RIGHT -> {
+                        int travel = travelDist(Alignment.RIGHT, drawX, screenWidth, boxW);
+                        drawX += (int) ((1f - enter) * travel);
+                        if (age > keepMs) {
+                            float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
+                            drawX += (int) (exit * travel * 0.4f);
+                        }
+                    }
+                    default -> {
+                        int travel = travelDist(Alignment.LEFT, drawX, screenWidth, boxW);
+                        drawX -= (int) ((1f - enter) * travel);
+                        if (age > keepMs) {
+                            float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
+                            drawX -= (int) (exit * travel * 0.4f);
+                        }
+                    }
                 }
             }
         }
-        super.render(context, slideX, slideY, width, height, delta, inEditor);
+        // The base render applies the resize anchor offset (render-time only),
+        // recovers off-screen configs and resets everything in the HUD editor, so
+        // the box is never double-shifted and the saved position never changes.
+        super.render(context, drawX, drawY, width, height, delta, inEditor);
+    }
+
+    /**
+     * How far the box has to travel to reach its resting spot when sliding in
+     * from the matching screen side: LEFT comes from the left edge (distance =
+     * the box's current x), RIGHT from the right edge (distance = the gap to the
+     * right edge). CENTER never slides horizontally.
+     */
+    private static int travelDist(Alignment align, int x, int screenWidth, int boxW) {
+        return switch (align) {
+            case CENTER -> 0;
+            case RIGHT -> Math.max(0, screenWidth - (x + boxW));
+            default -> Math.max(0, x);
+        };
+    }
+
+    /**
+     * Entrance duration for a given slide distance: the distance travelled at
+     * the constant {@link #SLIDE_SPEED}, clamped to a snappy minimum and a
+     * sensible maximum so very far elements don't take forever.
+     */
+    private static long enterMsFor(int travelDist) {
+        long ms = (long) Math.ceil(travelDist / SLIDE_SPEED);
+        return Mth.clamp(ms, MIN_ENTER_MS, MAX_ENTER_MS);
     }
 
     @Override
@@ -210,8 +250,9 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
         pose.scale(scaleF, scaleF);
 
         // Entrance: the whole element already slides in (see render()); here the
-        // text just fades in over the first ENTER_MS.
-        float progress = Mth.clamp((now - message.time) / (float) ENTER_MS, 0f, 1f);
+        // text just fades in over the same distance-based duration, so the fade
+        // matches the slide.
+        float progress = Mth.clamp((now - message.time) / (float) currentEnterMs, 0f, 1f);
         int alpha = (int) (255 * progress);
 
         // Expiry fade-out over the last FADE_MS

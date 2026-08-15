@@ -214,7 +214,8 @@ public class PickUpLogHud extends HideableHudElement<PickUpLogHud> {
         return stripped;
     }
 
-    private void anchoredResize(int newWidth, int newHeight) {
+    @Override
+    protected void anchoredResize(int newWidth, int newHeight) {
         if (newWidth == lastBgWidth && newHeight == lastBgHeight) return;
 
         int oldWidth  = lastBgWidth  == -1 ? newWidth  : lastBgWidth;
@@ -225,25 +226,23 @@ public class PickUpLogHud extends HideableHudElement<PickUpLogHud> {
 
         super.resize(newWidth, newHeight);
 
-        int px = this.getRelativePosition().x();
-        int py = this.getRelativePosition().y();
-
         int dx = newWidth  - oldWidth;
         int dy = newHeight - oldHeight;
 
         Alignment align = alignment.get();
 
+        // Keep the box visually anchored when it resizes without touching the
+        // stored position: the correction is applied as a render-time offset
+        // (see HideableHudElement#render), so the saved position never drifts.
         if (align == Alignment.CENTER && dx != 0) {
-            px -= dx / 2;
+            anchorOffsetX -= dx / 2;
         } else if (align == Alignment.RIGHT && dx != 0) {
-            px -= dx;
+            anchorOffsetX -= dx;
         }
 
         if ((origin == Origin.BOTTOM_LEFT || origin == Origin.BOTTOM_RIGHT) && dy != 0 && oldHeight > 0) {
-            py -= dy;
+            anchorOffsetY -= dy;
         }
-
-        if (dx != 0 || dy != 0) this.move(px, py);
     }
 
     @Override
