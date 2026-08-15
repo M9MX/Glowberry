@@ -41,16 +41,12 @@ public class HorseStatsHudElement extends HideableHudElement<HorseStatsHudElemen
     private static final int PAD_Y       = 4;
     private static final int LINE_HEIGHT = 11;
 
-    // MOVEMENT_SPEED is stored in internal units; blocks per second = value * 43.17
-    // (0.3375 (max) * 43.17 = ~14.57 b/s, the documented max horse speed).
-    private static final double SPEED_TO_BLOCKS_PER_SECOND = 43.17;
-
-    // Jump height in blocks from the internal jump strength (0.4..1.0). This is a
-    // quadratic fit through the wiki's measured values (0.4 -> 1.11, 0.5 -> 1.62,
-    // 0.7 -> 2.89, 1.0 -> 5.3 blocks), accurate to within ~1.6% across the range.
-    private static final double JUMP_A = 3.35946;
-    private static final double JUMP_B = 2.31115;
-    private static final double JUMP_C = -0.37064;
+    // Horse stat formulas taken from Jade (https://github.com/snownee/Jade), with
+    // values from https://minecraft.wiki/w/Horse#Movement_speed and
+    // https://github.com/sakura-ryoko/minihud/pull/179.
+    private static final double JUMP_A = 4.53680079;
+    private static final double JUMP_B = 1.61431730;
+    private static final double JUMP_C = -0.22656224;
 
     private int lastWidth = -1;
 
@@ -108,9 +104,19 @@ public class HorseStatsHudElement extends HideableHudElement<HorseStatsHudElemen
         Stat(String label, String value, int color) { this.label = label; this.value = value; this.color = color; }
     }
 
-    /** Jump height in blocks for an internal jump strength value. */
-    private static double jumpHeight(double jumpStrength) {
+    /** Jump height in blocks for an internal jump strength value. Credit: Jade. */
+    private static double getJumpHeight(double jumpStrength) {
         return JUMP_A * jumpStrength * jumpStrength + JUMP_B * jumpStrength + JUMP_C;
+    }
+
+    /**
+     * Movement speed in blocks/second from the internal attribute value.
+     * Credit: Jade, values from the Minecraft wiki and minihud.
+     */
+    private static double getSpeed(double speed) {
+        // https://minecraft.wiki/w/Horse#Movement_speed
+        // https://github.com/sakura-ryoko/minihud/pull/179
+        return speed * 43.171815466666658 - 0.000000339999999;
     }
 
     /**
@@ -192,8 +198,8 @@ public class HorseStatsHudElement extends HideableHudElement<HorseStatsHudElemen
             // Live stats of the animal we are currently riding
             double jumpStrength = mount.getAttributeValue(Attributes.JUMP_STRENGTH);
             double movementSpeed = mount.getAttributeValue(Attributes.MOVEMENT_SPEED);
-            lastSpeed  = movementSpeed * SPEED_TO_BLOCKS_PER_SECOND;
-            lastJump   = jumpHeight(jumpStrength);
+            lastSpeed  = getSpeed(movementSpeed);
+            lastJump   = getJumpHeight(jumpStrength);
             lastHealth = mount.getAttributeValue(Attributes.MAX_HEALTH);
         } else if (inEditor) {
             // Sample values for the HUD editor preview

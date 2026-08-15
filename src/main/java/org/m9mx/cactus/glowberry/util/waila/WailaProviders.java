@@ -57,10 +57,12 @@ public final class WailaProviders {
     public static final int COL_TEXT = 0xFFD8D8D8;
     public static final int COL_MOD = 0xFF66A6FF;
 
-    private static final double SPEED_TO_BLOCKS_PER_SECOND = 43.17;
-    private static final double JUMP_A = 3.35946;
-    private static final double JUMP_B = 2.31115;
-    private static final double JUMP_C = -0.37064;
+    // Horse stat formulas taken from Jade (https://github.com/snownee/Jade), with
+    // values from https://minecraft.wiki/w/Horse#Movement_speed and
+    // https://github.com/sakura-ryoko/minihud/pull/179.
+    private static final double JUMP_A = 4.53680079;
+    private static final double JUMP_B = 1.61431730;
+    private static final double JUMP_C = -0.22656224;
     private static final long CURE_TOTAL_MS = 240_000L;
     private static final int STORAGE_ROW_WIDTH = 6;
 
@@ -101,8 +103,19 @@ public final class WailaProviders {
         return String.format("%d:%02d", secs / 60, secs % 60);
     }
 
-    static double jumpHeight(double jumpStrength) {
+    /** Jump height in blocks for an internal jump strength value. Credit: Jade. */
+    static double getJumpHeight(double jumpStrength) {
         return JUMP_A * jumpStrength * jumpStrength + JUMP_B * jumpStrength + JUMP_C;
+    }
+
+    /**
+     * Movement speed in blocks/second from the internal attribute value.
+     * Credit: Jade, values from the Minecraft wiki and minihud.
+     */
+    static double getSpeed(double speed) {
+        // https://minecraft.wiki/w/Horse#Movement_speed
+        // https://github.com/sakura-ryoko/minihud/pull/179
+        return speed * 43.171815466666658 - 0.000000339999999;
     }
 
     private static ItemStack requiredToolIcon(BlockState state) {
@@ -255,20 +268,20 @@ public final class WailaProviders {
 
         if (entity instanceof AbstractHorse horse) {
             lines.add(WailaLine.text(Component.literal("Speed"),
-                    Component.literal(String.format("%.2f", horse.getAttributeValue(Attributes.MOVEMENT_SPEED) * SPEED_TO_BLOCKS_PER_SECOND)),
+                    Component.literal(String.format("%.2f", getSpeed(horse.getAttributeValue(Attributes.MOVEMENT_SPEED)))),
                     COL_TEXT));
             lines.add(WailaLine.text(Component.literal("Jump"),
-                    Component.literal(String.format("%.2f", jumpHeight(horse.getAttributeValue(Attributes.JUMP_STRENGTH)))),
+                    Component.literal(String.format("%.2f", getJumpHeight(horse.getAttributeValue(Attributes.JUMP_STRENGTH)))),
                     COL_TEXT));
             lines.add(WailaLine.text(Component.literal("Health"),
                     Component.literal(String.format("%.0f", horse.getAttributeValue(Attributes.MAX_HEALTH))),
                     COL_TEXT));
         } else if (entity instanceof Camel camel) {
             lines.add(WailaLine.text(Component.literal("Speed"),
-                    Component.literal(String.format("%.2f", camel.getAttributeValue(Attributes.MOVEMENT_SPEED) * SPEED_TO_BLOCKS_PER_SECOND)),
+                    Component.literal(String.format("%.2f", getSpeed(camel.getAttributeValue(Attributes.MOVEMENT_SPEED)))),
                     COL_TEXT));
             lines.add(WailaLine.text(Component.literal("Jump"),
-                    Component.literal(String.format("%.2f", jumpHeight(camel.getAttributeValue(Attributes.JUMP_STRENGTH)))),
+                    Component.literal(String.format("%.2f", getJumpHeight(camel.getAttributeValue(Attributes.JUMP_STRENGTH)))),
                     COL_TEXT));
             lines.add(WailaLine.text(Component.literal("Health"),
                     Component.literal(String.format("%.0f", camel.getAttributeValue(Attributes.MAX_HEALTH))),
