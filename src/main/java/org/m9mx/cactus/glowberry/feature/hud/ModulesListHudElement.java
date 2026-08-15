@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
+import org.m9mx.cactus.glowberry.util.RainbowRenderer;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -172,11 +173,11 @@ public class ModulesListHudElement extends HideableHudElement<ModulesListHudElem
                 default -> -offset;
             };
 
-            context.text(mc.font, name, lineX, lineY, color);
+            RainbowRenderer.draw(context, mc.font, name, lineX, lineY, color, true, this);
             if (kb != null) {
                 // Dimmer version of the same color for the keybind suffix
                 int dim = (color & 0x00FFFFFF) | (((color >>> 24) * 3 / 5) << 24);
-                context.text(mc.font, " (" + kb + ")", lineX + mc.font.width(name), lineY, dim);
+                RainbowRenderer.draw(context, mc.font, " (" + kb + ")", lineX + mc.font.width(name), lineY, dim, true, this);
             }
             lineY += LINE_HEIGHT;
         }

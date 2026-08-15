@@ -39,8 +39,7 @@
     "Modules.totemcounter.TotemCounterPlayerDeathMixin",
 
     "cactus.MixinGuiSetScreen",
-    "cactus.MixinCurrentElement",
-    "cactus.MixinTextRendererRainbow",
+    "cactus.MixinHudTextRainbow",
     "cactus.MixinModuleToggleTrack",
     "cactus.MixinModuleToggleFeedback",
     "cactus.MixinMacroEditScreen",
