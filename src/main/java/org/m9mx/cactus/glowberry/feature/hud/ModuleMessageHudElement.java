@@ -28,7 +28,9 @@ import org.m9mx.cactus.glowberry.util.rainbow.RainbowRenderer;
  * Only ONE message is ever shown: a new message replaces the previous one, so
  * the overlay never stacks. Messages can carry a leading sprite (e.g. a potion
  * effect icon) or item icon, drawn before the text. New messages slide in and
- * fade in; expiring messages fade out.
+ * fade in; a message that arrives while the previous one is still on screen
+ * swaps in instantly without replaying the entrance animation; expiring
+ * messages fade out.
  *
  * The message text always renders in the element's Text Color setting, so the
  * user can freely override the color. The message's own color (picked by the
@@ -67,6 +69,16 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
     // distance it has to travel (see render()). Shared with renderContent so the
     // text fade matches the box slide timing.
     private long currentEnterMs = MIN_ENTER_MS;
+    // The message that was on screen last frame (instance identity). When a new
+    // message arrives while the previous one is still showing, it swaps in
+    // without replaying the entrance animation.
+    private ModuleMessageUtil.Message lastMessage = null;
+    // When the entrance animation of the message currently shown began (ms). A
+    // message that replaces one still on screen keeps the previous value, so the
+    // slide/fade simply continues instead of restarting - rapid updates (e.g.
+    // holding a key that sends a new message every tick) never replay the
+    // animation.
+    private long entranceStart = 0;
 
     @Override
     protected boolean shouldHide() {
@@ -80,7 +92,7 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
         var sgGeneral = this.settings.buildGroup("general");
         this.duration  = sgGeneral.add(new IntegerSetting("duration", 4).min(1).max(15));
         this.showIcons = sgGeneral.add(new BooleanSetting("showIcons", true));
-        this.alignment = sgGeneral.add(new EnumSetting<>("alignment", Alignment.LEFT));
+        this.alignment = sgGeneral.add(new EnumSetting<>("alignment", Alignment.CENTER));
         this.indicator = sgGeneral.add(new EnumSetting<>("indicator", Indicator.BORDER));
         this.scale     = sgGeneral.add(new IntegerSetting("scale", 100).min(25).max(400));
     }
@@ -97,6 +109,7 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
         // Element removed - everything falls back to the action bar again.
         ModuleMessageUtil.moduleMessageElementActive = false;
         ModuleMessageUtil.currentMessage = null;
+        super.removed();
     }
 
     /**
@@ -111,8 +124,12 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
      */
     @Override
     public void render(GuiGraphicsExtractor context, int x, int y, int width, int height, float delta, boolean inEditor) {
-        int drawX = x;
-        int drawY = y;
+        // The slide-in/out is a fake move: the offsets are registered with the
+        // renderer control and applied at draw time by the renderer mixin, so
+        // the stored position never changes and Cactus always sees the box at
+        // its resting spot.
+        int offsetX = 0;
+        int offsetY = 0;
         if (!inEditor) {
             ModuleMessageUtil.Message message = ModuleMessageUtil.currentMessage;
             if (message != null) {
@@ -127,43 +144,59 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
                 // Entrance duration derives from the distance to the matching
                 // screen side, so the animation always comes from that side at a
                 // constant (quick but not too quick) speed.
-                long enterMs = enterMsFor(travelDist(alignment.get(), drawX, screenWidth, boxW));
+                long enterMs = enterMsFor(travelDist(alignment.get(), x, screenWidth, boxW));
                 currentEnterMs = enterMs;
-                float enter = Mth.clamp(age / (float) enterMs, 0f, 1f);
+
+                // A message that replaces one still on screen just swaps the
+                // content: the entrance keeps its previous start time, so the
+                // slide/fade continues from where it was (usually already
+                // finished -> nothing moves, no replayed animation). Only a
+                // message appearing after nothing was shown starts the entrance.
+                if (message != lastMessage) {
+                    if (lastMessage == null) {
+                        entranceStart = message.time;
+                    }
+                    lastMessage = message;
+                }
+                float enter = Mth.clamp((now - entranceStart) / (float) enterMs, 0f, 1f);
 
                 switch (alignment.get()) {
                     case CENTER -> {
                         // Custom center appear: the box floats up into place while
                         // the text fades in, and sinks back down on exit.
-                        drawY += (int) ((1f - enter) * CENTER_RISE_PX);
+                        offsetY += (int) ((1f - enter) * CENTER_RISE_PX);
                         if (age > keepMs) {
                             float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
-                            drawY += (int) (exit * CENTER_RISE_PX);
+                            offsetY += (int) (exit * CENTER_RISE_PX);
                         }
                     }
                     case RIGHT -> {
-                        int travel = travelDist(Alignment.RIGHT, drawX, screenWidth, boxW);
-                        drawX += (int) ((1f - enter) * travel);
+                        int travel = travelDist(Alignment.RIGHT, x, screenWidth, boxW);
+                        offsetX += (int) ((1f - enter) * travel);
                         if (age > keepMs) {
                             float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
-                            drawX += (int) (exit * travel * 0.4f);
+                            offsetX += (int) (exit * travel * 0.4f);
                         }
                     }
                     default -> {
-                        int travel = travelDist(Alignment.LEFT, drawX, screenWidth, boxW);
-                        drawX -= (int) ((1f - enter) * travel);
+                        int travel = travelDist(Alignment.LEFT, x, screenWidth, boxW);
+                        offsetX -= (int) ((1f - enter) * travel);
                         if (age > keepMs) {
                             float exit = Mth.clamp((age - keepMs) / (float) FADE_MS, 0f, 1f);
-                            drawX -= (int) (exit * travel * 0.4f);
+                            offsetX -= (int) (exit * travel * 0.4f);
                         }
                     }
                 }
+            } else {
+                lastMessage = null;
+                entranceStart = 0;
             }
         }
-        // The base render applies the resize anchor offset (render-time only),
-        // recovers off-screen configs and resets everything in the HUD editor, so
-        // the box is never double-shifted and the saved position never changes.
-        super.render(context, drawX, drawY, width, height, delta, inEditor);
+        setRenderOffset(offsetX, offsetY);
+        // The base render hides the element when there is nothing to show and
+        // recovers off-screen configs; the slide is applied as a render-time
+        // offset by the mixin, so the stored position never changes.
+        super.render(context, x, y, width, height, delta, inEditor);
     }
 
     /**
@@ -251,8 +284,9 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
 
         // Entrance: the whole element already slides in (see render()); here the
         // text just fades in over the same distance-based duration, so the fade
-        // matches the slide.
-        float progress = Mth.clamp((now - message.time) / (float) currentEnterMs, 0f, 1f);
+        // matches the slide. Replaced messages keep the previous entrance start,
+        // so their text never re-fades; the editor sample is always fully shown.
+        float progress = inEditor ? 1f : Mth.clamp((now - entranceStart) / (float) currentEnterMs, 0f, 1f);
         int alpha = (int) (255 * progress);
 
         // Expiry fade-out over the last FADE_MS

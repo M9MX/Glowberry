@@ -63,9 +63,6 @@ public class PickUpLogHud extends HideableHudElement<PickUpLogHud> {
         return logEntries.isEmpty() && !alwaysShow.get();
     }
 
-    private int lastBgWidth  = -1;
-    private int lastBgHeight = -1;
-
     private static final int ICON_SIZE      = 16;
     private static final int PAD_X          = 5;
     private static final int PAD_Y          = 4;
@@ -216,38 +213,25 @@ public class PickUpLogHud extends HideableHudElement<PickUpLogHud> {
 
     @Override
     protected void anchoredResize(int newWidth, int newHeight) {
-        if (newWidth == lastBgWidth && newHeight == lastBgHeight) return;
-
-        int oldWidth  = lastBgWidth  == -1 ? newWidth  : lastBgWidth;
-        int oldHeight = lastBgHeight == -1 ? newHeight : lastBgHeight;
-
-        lastBgWidth  = newWidth;
-        lastBgHeight = newHeight;
-
+        int dx = newWidth - this.getSize().x();
+        int dy = newHeight - this.getSize().y();
+        if (dx != 0 || dy != 0) {
+            // Keep the box anchored when it resizes: CENTER stays centered, RIGHT
+            // stays flush right, and bottom origins stay flush with the bottom.
+            // The stored position is adjusted together with the size, so the
+            // saved (position, size) pair always stays consistent.
+            int moveX = switch (alignment.get()) {
+                case CENTER -> -dx / 2;
+                case RIGHT  -> -dx;
+                default     -> 0;
+            };
+            int moveY = (origin == Origin.BOTTOM_LEFT || origin == Origin.BOTTOM_RIGHT) ? -dy : 0;
+            if (moveX != 0 || moveY != 0) {
+                Vector2i position = this.getRelativePosition();
+                this.move(position.x() + moveX, position.y() + moveY);
+            }
+        }
         super.resize(newWidth, newHeight);
-
-        int dx = newWidth  - oldWidth;
-        int dy = newHeight - oldHeight;
-
-        Alignment align = alignment.get();
-
-        // Keep the box visually anchored when it resizes without touching the
-        // stored position: the correction is applied as a render-time offset
-        // (see HideableHudElement#render), so the saved position never drifts.
-        if (align == Alignment.CENTER && dx != 0) {
-            anchorOffsetX -= dx / 2;
-        } else if (align == Alignment.RIGHT && dx != 0) {
-            anchorOffsetX -= dx;
-        }
-
-        if ((origin == Origin.BOTTOM_LEFT || origin == Origin.BOTTOM_RIGHT) && dy != 0 && oldHeight > 0) {
-            anchorOffsetY -= dy;
-        }
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        anchoredResize(width, height);
     }
 
     @Override

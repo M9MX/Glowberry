@@ -77,6 +77,26 @@
 
   "modules.fastPlace.groups.general": "General",
 
+  "modules.gamma.name": "Gamma (FullBright)",
+  "modules.gamma.description": "Boosts your brightness far beyond the vanilla maximum so nights and caves look fully lit, with optional client-side night vision and in-game adjustment keys",
+
+  "modules.gamma.groups.general": "General",
+
+  "modules.gamma.settings.gammaPercentage.name": "Gamma Percentage",
+  "modules.gamma.settings.gammaPercentage.description": "Brightness to apply while enabled, as a percent of the vanilla maximum (100 = vanilla max, up to 1500)",
+  "modules.gamma.settings.stepPercentage.name": "Adjust Step",
+  "modules.gamma.settings.stepPercentage.description": "How many percent each in-game increase/decrease key changes the gamma by",
+  "modules.gamma.settings.nightVision.name": "Night Vision",
+  "modules.gamma.settings.nightVision.description": "Apply a client-side night vision effect (works with shaders, unlike gamma). While night vision is active (this setting or a potion), the gamma boost is disabled but not reset",
+  "modules.gamma.settings.smoothTransition.name": "Smooth Transition",
+  "modules.gamma.settings.smoothTransition.description": "Smoothly animate the gamma towards its target instead of snapping instantly",
+  "modules.gamma.settings.transitionSpeed.name": "Transition Speed",
+  "modules.gamma.settings.transitionSpeed.description": "How fast the smooth transition moves, in gamma percentage per second",
+  "modules.gamma.settings.increaseKeybind.name": "Increase Gamma Key",
+  "modules.gamma.settings.increaseKeybind.description": "Key to raise the gamma percentage while enabled",
+  "modules.gamma.settings.decreaseKeybind.name": "Decrease Gamma Key",
+  "modules.gamma.settings.decreaseKeybind.description": "Key to lower the gamma percentage while enabled",
+
   "modules.shuffle.name": "Shuffle",
   "modules.shuffle.description": "After placing a block, switches to a random hotbar block slot weighted by stack size (it can also keep the current slot)",
 

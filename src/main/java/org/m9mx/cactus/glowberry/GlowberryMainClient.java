@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Import your manager
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
+import org.m9mx.cactus.glowberry.feature.modules.GammaModule;
 import org.m9mx.cactus.glowberry.util.update.UpdateChecker;
 
 public class GlowberryMainClient implements ClientModInitializer {
@@ -65,5 +66,9 @@ public class GlowberryMainClient implements ClientModInitializer {
 					.getFriendlyString();
 			UpdateChecker.check(currentVersion);
 		});
+
+		// If the game closes while the Gamma module is still on, put the player's
+		// own brightness back before the options are saved to disk.
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> GammaModule.restoreGammaOnShutdown());
 	}
 }

@@ -41,8 +41,12 @@ public class FloatSetting extends Setting<Float> {
         super(name, value);
         this.min = 0.0f;
         this.max = 200.0f;
-        this.sliderMin = this.min;
-        this.sliderMax = this.max;
+        // Slider bounds default to the full float range (mirroring IntegerSetting's
+        // +/-Integer.MAX_VALUE), so chaining .min()/.max() limits the slider
+        // correctly. Previously the slider was hard-capped at the old default max
+        // of 200, so e.g. .max(1500) still only allowed values up to 200.
+        this.sliderMin = -Float.MAX_VALUE;
+        this.sliderMax = Float.MAX_VALUE;
         this.editorStyle = editorStyle;
     }
 

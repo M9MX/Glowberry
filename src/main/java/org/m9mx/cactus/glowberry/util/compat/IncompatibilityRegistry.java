@@ -42,6 +42,10 @@ public final class IncompatibilityRegistry {
             mod("shuffle") // https://modrinth.com/mod/shuffle
                     .mixin("ShufflePlacementMixin")
                     .module("shuffle")
+                    .build(),
+            mod("gamma-utils") // https://modrinth.com/mod/gamma-utils
+                    .mixin("GammaOptionInstanceMixin", "GammaOptionsMixin")
+                    .module("gamma")
                     .build()
     );
 

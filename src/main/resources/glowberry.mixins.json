@@ -38,6 +38,9 @@
     "Modules.totemcounter.TotemCounterChatComponentMixin",
     "Modules.totemcounter.TotemCounterPlayerDeathMixin",
 
+    "Modules.Gamma.GammaOptionInstanceMixin",
+    "Modules.Gamma.GammaOptionsMixin",
+
     "cactus.MixinGuiSetScreen",
     "cactus.MixinHudTextRainbow",
     "cactus.MixinModuleToggleTrack",
@@ -50,6 +53,7 @@
     "cactus.MixinMacroManager",
     "cactus.MixinChatScreen",
     "cactus.MixinAddHudElementScreen",
+    "cactus.HudElementRenderMixin",
     "util.UpdateNotificationMixin"
   ],
   "injectors": {
