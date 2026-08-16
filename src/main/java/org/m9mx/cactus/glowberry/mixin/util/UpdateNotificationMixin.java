@@ -1,7 +1,6 @@
 package org.m9mx.cactus.glowberry.mixin.util;
 
 import com.dwarslooper.cactus.client.gui.widget.CButtonWidget;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(TitleScreen.class)
 public class UpdateNotificationMixin {
     @Unique
-    private static boolean glowberry$checkStarted = false;
+    private static final org.apache.logging.log4j.Logger GLOWBERRY_LOGGER = org.apache.logging.log4j.LogManager.getLogger("Glowberry Update");
     @Unique
     private long glowberry$appearTime = 0;
     @Unique
@@ -44,28 +43,10 @@ public class UpdateNotificationMixin {
     private static final int LEFT_OFFSET = -4;
 
     @Inject(method = "init", at = @At("TAIL"))
-    private void glowberry$startUpdateCheck(CallbackInfo ci) {
-        if (!glowberry$checkStarted) {
-            glowberry$checkStarted = true;
-            String currentVersion = FabricLoader.getInstance()
-                    .getModContainer("glowberry-addon")
-                    .orElseThrow()
-                    .getMetadata()
-                    .getVersion()
-                    .getFriendlyString();
-
-            // If this Glowberry version is the final one for the current Cactus version, skip checking
-            if (UpdateChecker.shouldSkipCheck(currentVersion)) {
-                glowberry$done = true;
-                return;
-            }
-
-            glowberry$appearTime = Util.getMillis();
-            new Thread(() -> {
-                UpdateChecker.check(currentVersion);
-            }, "Glowberry Update Check").start();
-        }
-
+    private void glowberry$initUpdateNotification(CallbackInfo ci) {
+        // Create the buttons up front so the render path never touches null
+        // widgets, no matter how fast the check (started at client startup in
+        // GlowberryMainClient) finishes. The check itself runs on client start.
         glowberry$downloadButton = new CButtonWidget(0, 0, 80, 20, Component.literal("Download"), (btn) -> {
             Util.getPlatform().openUri(UpdateChecker.getModrinthUrl());
             glowberry$dismissing = true;
@@ -128,6 +109,12 @@ public class UpdateNotificationMixin {
         if (!(screen instanceof TitleScreen)) return;
 
         long now = Util.getMillis();
+        // Start the appear animation when the card actually becomes visible, not
+        // when the title screen opened (the network check takes seconds).
+        if (glowberry$appearTime == 0) {
+            glowberry$appearTime = now;
+            GLOWBERRY_LOGGER.info("Showing update notification: Glowberry {} available", UpdateChecker.getLatestVersion());
+        }
         float progress = glowberry$getProgress(now);
         if (glowberry$done) return;
 

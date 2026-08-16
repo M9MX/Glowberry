@@ -3,7 +3,9 @@ package org.m9mx.cactus.glowberry;
 import com.dwarslooper.cactus.client.feature.macro.MacroManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents; // Added this
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import com.dwarslooper.cactus.client.gui.hud.HudManager;
 import com.dwarslooper.cactus.client.gui.hud.element.HudElement;
@@ -11,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Import your manager
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
+import org.m9mx.cactus.glowberry.util.update.UpdateChecker;
 
 public class GlowberryMainClient implements ClientModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -49,6 +52,18 @@ public class GlowberryMainClient implements ClientModInitializer {
 					}
 				}
 			}
+		});
+
+		// Run the update check once the client is fully started, so it does not
+		// depend on the title screen being opened.
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			String currentVersion = FabricLoader.getInstance()
+					.getModContainer("glowberry-addon")
+					.orElseThrow()
+					.getMetadata()
+					.getVersion()
+					.getFriendlyString();
+			UpdateChecker.check(currentVersion);
 		});
 	}
 }
