@@ -5,7 +5,7 @@
   "settings.autoSaveOnUpdate.description": "Save all settings every time something is changed (so nothing is lost on a crash or quick close)",
 
   "modules.antiAfk.name": "Anti AFK",
-  "modules.antiAfk.description": "Acts like a real player so you don't get kicked for being AFK. Best setup: stand in a small 3x3x3 box with levers/buttons on the walls - it randomly walks, smoothly looks around, and presses levers/buttons. Stops the moment you touch a key.",
+  "modules.antiAfk.description": "Acts like a real player so you don't get kicked for being AFK. Best setup: stand in a small 3x3 box with levers/buttons on the walls - it walks inside that 3x3 area, smoothly looks around, and presses levers/buttons. Stops the moment you touch a key.",
 
   "modules.antiAfk.groups.general": "General",
 
@@ -13,6 +13,16 @@
   "modules.antiAfk.settings.interactionRange.description": "How far (in blocks) to search for levers, buttons and other interactable blocks to press",
   "modules.antiAfk.settings.toggleKeybind.name": "Toggle Key",
   "modules.antiAfk.settings.toggleKeybind.description": "Key to toggle anti AFK on/off",
+  "modules.antiAfk.settings.allowMove.name": "Allow Moving",
+  "modules.antiAfk.settings.allowMove.description": "Walk around inside a small 3x3 area while AFK",
+  "modules.antiAfk.settings.allowTurn.name": "Allow Turning",
+  "modules.antiAfk.settings.allowTurn.description": "Smoothly look around and aim at interactables while AFK",
+  "modules.antiAfk.settings.autoInteract.name": "Auto Interact",
+  "modules.antiAfk.settings.autoInteract.description": "Keep pressing nearby levers, buttons and plates non-stop with a random delay between presses",
+  "modules.antiAfk.settings.interactMinDelay.name": "Min Interact Delay",
+  "modules.antiAfk.settings.interactMinDelay.description": "Shortest random delay (seconds) between auto-interact presses",
+  "modules.antiAfk.settings.interactMaxDelay.name": "Max Interact Delay",
+  "modules.antiAfk.settings.interactMaxDelay.description": "Longest random delay (seconds) between auto-interact presses",
 
   "modules.autoClicker.name": "Auto Clicker",
   "modules.autoClicker.description": "Automatically clicks at a set attack speed when enabled",

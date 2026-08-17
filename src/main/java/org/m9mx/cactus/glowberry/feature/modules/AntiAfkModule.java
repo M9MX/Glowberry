@@ -5,6 +5,7 @@ import com.dwarslooper.cactus.client.event.impl.ClientTickEvent;
 import com.dwarslooper.cactus.client.feature.module.Category;
 import com.dwarslooper.cactus.client.feature.module.Module;
 import com.dwarslooper.cactus.client.systems.config.settings.group.SettingGroup;
+import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.IntegerSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.KeybindSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
@@ -18,6 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Input;
 
 import org.lwjgl.glfw.GLFW;
+import org.m9mx.cactus.glowberry.cactus.FloatSetting;
 import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
 import net.minecraft.world.level.block.BasePressurePlateBlock;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -35,11 +39,14 @@ import java.util.Random;
  * like a real (bored) player:
  *
  * <ul>
- *   <li>randomly walks in short bursts in random directions, with occasional jumps,</li>
+ *   <li>randomly walks in short bursts inside a small 3x3 area around where it
+ *       started, with occasional jumps,</li>
  *   <li>randomly pans the camera around in smooth sweeps (with a gentle sway
  *       while walking),</li>
  *   <li>finds interactable blocks (levers, buttons, repeaters/comparators, pressure
- *       plates) nearby and smoothly looks at one, then presses it.</li>
+ *       plates) nearby and smoothly looks at one, then presses it,</li>
+ *   <li>can keep pressing interactables non-stop with a random delay between
+ *       presses (auto interact); moving and turning can be disabled individually.</li>
  * </ul>
  *
  * Best setup: stand inside a small 3x3x3 box with a few levers/buttons on the
@@ -54,14 +61,21 @@ public class AntiAfkModule extends Module {
 
     public final Setting<Integer> interactionRange;
     public final Setting<KeyBind> toggleKeybind;
+    public final Setting<Boolean> allowMove;
+    public final Setting<Boolean> allowTurn;
+    public final Setting<Boolean> autoInteract;
+    public final Setting<Float> interactMinDelay;
+    public final Setting<Float> interactMaxDelay;
 
     private static final double MAX_CLICK_DISTANCE_SQ = 4.5 * 4.5;
     private static final float FACE_EPSILON = 2.5f;
     private static final long INTERACT_COOLDOWN_MS = 3000;
-    // Camera smoothing. The rotation closes a fixed fraction of the remaining
-    // angle every tick (no random jitter), so the view sweeps smoothly and
-    // never overshoots. INTERACT snaps faster so pressing feels deliberate.
-    private static final float LOOK_STEP = 0.14f;
+    // Camera motion. LOOK_AROUND moves at a steady, player-like speed and eases
+    // in when close, so the view travels quickly but never snaps or overshoots.
+    // INTERACT snaps faster so pressing feels deliberate.
+    private static final float LOOK_SPEED = 16f;         // max degrees per tick, yaw
+    private static final float LOOK_PITCH_SPEED = 12f;   // max degrees per tick, pitch
+    private static final float LOOK_EASE_STEP = 0.25f;   // fraction of remaining angle when slowing
     private static final float INTERACT_STEP = 0.18f;
     private static final float PRECISION_STEP = 0.30f;
     private static final float PRECISION_RANGE = 12f;
@@ -69,10 +83,16 @@ public class AntiAfkModule extends Module {
 
     // Slow smooth camera drift while walking (sin-based, direction changes
     // every few seconds) so the view sways naturally instead of twitching.
-    private static final float WALK_DRIFT_AMPLITUDE = 4f;
+    private static final float WALK_DRIFT_AMPLITUDE = 3f;
     private static final float WALK_DRIFT_SPEED = 0.01f;
     private float walkDriftPhase = 0f;
     private float walkDriftDirection = 1f;
+
+    // The block the player stood on when the anti-AFK behavior started; the
+    // player is kept within MOVE_HALF_EXTENT blocks of its center, i.e. inside
+    // a 3x3 area.
+    private BlockPos startPos = null;
+    private static final double MOVE_HALF_EXTENT = 1.5;
 
     private enum State { IDLE, LOOK_AROUND, WALK, INTERACT }
 
@@ -117,6 +137,11 @@ public class AntiAfkModule extends Module {
         SettingGroup general = this.settings.buildGroup("general");
         this.interactionRange = general.add(new IntegerSetting("interactionRange", 6).min(2).max(16));
         this.toggleKeybind = general.add(new KeybindSetting("toggleKeybind", KeyBind.of(GLFW.GLFW_KEY_F8)));
+        this.allowMove = general.add(new BooleanSetting("allowMove", true));
+        this.allowTurn = general.add(new BooleanSetting("allowTurn", true));
+        this.autoInteract = general.add(new BooleanSetting("autoInteract", false));
+        this.interactMinDelay = general.add(new FloatSetting("interactMinDelay", 1.0f).min(0.1f).max(10f).decimals(1));
+        this.interactMaxDelay = general.add(new FloatSetting("interactMaxDelay", 5.0f).min(0.1f).max(10f).decimals(1));
     }
 
     @Override
@@ -127,6 +152,8 @@ public class AntiAfkModule extends Module {
         hasLookTarget = false;
         simulatedInput = null;
         userInteracting = false;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null) startPos = mc.player.blockPosition();
     }
 
     @Override
@@ -154,7 +181,9 @@ public class AntiAfkModule extends Module {
             antiAfkEnabled = !antiAfkEnabled;
             int color = antiAfkEnabled ? 0xFF55FF55 : 0xFFFF5555;
             ModuleMessageUtil.show(Component.literal("Anti AFK " + (antiAfkEnabled ? "§aEnabled" : "§cDisabled")), color);
-            if (!antiAfkEnabled) {
+            if (antiAfkEnabled) {
+                if (mc.player != null) startPos = mc.player.blockPosition();
+            } else {
                 simulatedInput = null;
                 targetBlock = null;
                 hasLookTarget = false;
@@ -190,9 +219,15 @@ public class AntiAfkModule extends Module {
     private void tickStateMachine(Minecraft mc) {
         if (stateTicksLeft > 0) {
             stateTicksLeft--;
-            // Still aiming at a block? finish the interaction when lined up
             if (state == State.INTERACT && targetBlock != null) {
+                // Still aiming at a block? finish the interaction when lined up
                 tryInteract(mc);
+            } else if (state == State.LOOK_AROUND && hasLookTarget
+                    && isCameraNear(lookYaw, lookPitch, LOOK_DONE_EPSILON)
+                    && random.nextInt(40) == 0) {
+                // Reached the current target - glance somewhere else instead of
+                // staring at one spot for the rest of the state.
+                pickRandomLookTarget(mc);
             }
             return;
         }
@@ -204,6 +239,25 @@ public class AntiAfkModule extends Module {
             return;
         }
 
+        // Auto interact: keep pressing the nearest interactable, pausing a
+        // random delay between presses. Falls back to the normal behavior below
+        // when there is nothing to press nearby.
+        if (autoInteract.get()) {
+            BlockPos target = findInteractable(mc);
+            if (target != null) {
+                // Generous timeout - tryInteract presses as soon as it is lined
+                // up and then pauses for the configured random delay.
+                enter(State.INTERACT, 400);
+                targetBlock = target;
+                hasLookTarget = true;
+                updateLookTarget(mc, target);
+                return;
+            }
+        }
+
+        boolean canMove = allowMove.get();
+        boolean canTurn = allowTurn.get();
+
         // Time to pick a new random behavior
         int roll = random.nextInt(100);
         if (roll < 25) {
@@ -211,25 +265,38 @@ public class AntiAfkModule extends Module {
             enter(State.IDLE, ticksBetween(20, 60));
             hasLookTarget = false;
         } else if (roll < 60) {
-            // LOOK_AROUND - wander the camera
-            enter(State.LOOK_AROUND, ticksBetween(40, 120));
-            pickRandomLookTarget(mc);
+            if (!canTurn) {
+                // Turning disabled - idle instead of wandering the camera
+                enter(State.IDLE, ticksBetween(20, 60));
+                hasLookTarget = false;
+            } else {
+                // LOOK_AROUND - wander the camera
+                enter(State.LOOK_AROUND, ticksBetween(60, 160));
+                pickRandomLookTarget(mc);
+            }
         } else if (roll < 85) {
-            // WALK - move in a random direction
-            enter(State.WALK, ticksBetween(20, 80));
-            int dir = random.nextInt(4);
-            walkForward = dir == 0;
-            walkBackward = dir == 1;
-            walkLeft = dir == 2;
-            walkRight = dir == 3;
-            hasLookTarget = false;
+            if (!canMove) {
+                // Moving disabled - idle instead of walking
+                enter(State.IDLE, ticksBetween(20, 60));
+                hasLookTarget = false;
+            } else {
+                // WALK - move in a random direction that stays in the 3x3 area
+                enter(State.WALK, ticksBetween(20, 80));
+                pickWalkDirection(mc);
+                hasLookTarget = false;
+            }
         } else {
             // INTERACT - find a lever/button and press it
             BlockPos target = findInteractable(mc);
             if (target == null) {
                 // Nothing to press here - just look around instead
-                enter(State.LOOK_AROUND, ticksBetween(40, 80));
-                pickRandomLookTarget(mc);
+                if (canTurn) {
+                    enter(State.LOOK_AROUND, ticksBetween(40, 80));
+                    pickRandomLookTarget(mc);
+                } else {
+                    enter(State.IDLE, ticksBetween(20, 60));
+                    hasLookTarget = false;
+                }
                 return;
             }
             enter(State.INTERACT, ticksBetween(60, 140));
@@ -256,11 +323,82 @@ public class AntiAfkModule extends Module {
         hasLookTarget = true;
     }
 
+    /**
+     * Picks a walk direction that keeps the player inside the 3x3 area around
+     * the start position. When every direction points out of the area (e.g. a
+     * corner), steps back toward the center instead of standing still.
+     */
+    private void pickWalkDirection(Minecraft mc) {
+        List<Integer> allowed = new ArrayList<>(4);
+        for (int i = 0; i < 4; i++) {
+            double[] move = worldMove(mc, i == 0, i == 1, i == 2, i == 3);
+            if (movementAllowed(mc, move[0], move[1])) allowed.add(i);
+        }
+        if (!allowed.isEmpty()) {
+            applyWalkDirection(allowed.get(random.nextInt(allowed.size())));
+            return;
+        }
+
+        // No room to move outward - step back toward the center of the 3x3 area
+        double dx = mc.player.getX() - (startPos.getX() + 0.5);
+        double dz = mc.player.getZ() - (startPos.getZ() + 0.5);
+        double len = Math.sqrt(dx * dx + dz * dz);
+        if (len < 0.1) {
+            applyWalkDirection(random.nextInt(4));
+            return;
+        }
+        double tx = -dx / len, tz = -dz / len;
+        int best = 0;
+        double bestDot = Double.NEGATIVE_INFINITY;
+        for (int i = 0; i < 4; i++) {
+            double[] move = worldMove(mc, i == 0, i == 1, i == 2, i == 3);
+            double dot = move[0] * tx + move[1] * tz;
+            if (dot > bestDot) {
+                bestDot = dot;
+                best = i;
+            }
+        }
+        applyWalkDirection(best);
+    }
+
+    private void applyWalkDirection(int pick) {
+        walkForward = pick == 0;
+        walkBackward = pick == 1;
+        walkLeft = pick == 2;
+        walkRight = pick == 3;
+    }
+
+    /** World-space (x, z) movement produced by the given player-relative keys. */
+    private static double[] worldMove(Minecraft mc, boolean fwd, boolean back, boolean left, boolean right) {
+        double rad = Math.toRadians(mc.player.getYRot());
+        double sin = Math.sin(rad), cos = Math.cos(rad);
+        double fx = -sin, fz = cos;   // forward (yaw 0 faces +z)
+        double rx = -cos, rz = -sin;  // right (yaw 90 faces -x)
+        double mx = (fwd ? fx : 0) + (back ? -fx : 0) + (right ? rx : 0) + (left ? -rx : 0);
+        double mz = (fwd ? fz : 0) + (back ? -fz : 0) + (right ? rz : 0) + (left ? -rz : 0);
+        return new double[]{mx, mz};
+    }
+
+    /** True when moving along (mx, mz) keeps the player inside the 3x3 area. */
+    private boolean movementAllowed(Minecraft mc, double mx, double mz) {
+        if (startPos == null) return true;
+        double dx = mc.player.getX() - (startPos.getX() + 0.5);
+        double dz = mc.player.getZ() - (startPos.getZ() + 0.5);
+        if (mx > 0.001 && dx >= MOVE_HALF_EXTENT) return false;
+        if (mx < -0.001 && dx <= -MOVE_HALF_EXTENT) return false;
+        if (mz > 0.001 && dz >= MOVE_HALF_EXTENT) return false;
+        if (mz < -0.001 && dz <= -MOVE_HALF_EXTENT) return false;
+        return true;
+    }
+
     // ------------------------------------------------------------------
     // Movement input (consumed by ClientInputMixin each tick)
     // ------------------------------------------------------------------
 
     private void tickCamera(Minecraft mc) {
+        // Turning disabled - the camera stays exactly where the player left it
+        if (!allowTurn.get()) return;
+
         if (state == State.INTERACT && targetBlock != null && hasLookTarget) {
             // Smoothly aim at the block - faster once close so the press lands
             // quickly, with no random jitter around the target.
@@ -271,11 +409,14 @@ public class AntiAfkModule extends Module {
             mc.player.setYRot(stepAngle(mc.player.getYRot(), target[0], step));
             mc.player.setXRot(stepAngle(mc.player.getXRot(), target[1], step));
         } else if (state == State.LOOK_AROUND && hasLookTarget) {
-            // Sweep smoothly toward the chosen random look target. The step is
-            // proportional to the remaining angle, so it visibly moves every
-            // tick, slows down as it arrives, and never overshoots.
-            mc.player.setYRot(stepAngle(mc.player.getYRot(), lookYaw, LOOK_STEP));
-            mc.player.setXRot(stepAngle(mc.player.getXRot(), lookPitch, LOOK_STEP));
+            // Fast, player-like glance: move at a steady rate, easing in as it
+            // approaches so it settles without snapping or overshooting.
+            float yawDiff = shortestAngleDiff(mc.player.getYRot(), lookYaw);
+            float pitchDiff = shortestAngleDiff(mc.player.getXRot(), lookPitch);
+            float yawStep = Math.min(LOOK_SPEED, Math.abs(yawDiff) * LOOK_EASE_STEP);
+            float pitchStep = Math.min(LOOK_PITCH_SPEED, Math.abs(pitchDiff) * LOOK_EASE_STEP);
+            mc.player.setYRot(mc.player.getYRot() + Math.copySign(yawStep, yawDiff));
+            mc.player.setXRot(mc.player.getXRot() + Math.copySign(pitchStep, pitchDiff));
         } else if (state == State.WALK) {
             // Gentle slow sway while walking so the view moves naturally with
             // the motion instead of sitting frozen or twitching randomly.
@@ -292,17 +433,31 @@ public class AntiAfkModule extends Module {
     }
 
     private void tryInteract(Minecraft mc) {
-        float[] target = lookAnglesTo(mc, targetBlock);
-        float yawDiff = shortestAngleDiff(mc.player.getYRot(), target[0]);
-        float pitchDiff = shortestAngleDiff(mc.player.getXRot(), target[1]);
         double distSq = mc.player.distanceToSqr(targetBlock.getX() + 0.5, targetBlock.getY() + 0.5, targetBlock.getZ() + 0.5);
+        if (distSq >= MAX_CLICK_DISTANCE_SQ) return;
 
-        if (Math.abs(yawDiff) < FACE_EPSILON && Math.abs(pitchDiff) < FACE_EPSILON && distSq < MAX_CLICK_DISTANCE_SQ) {
-            long now = System.currentTimeMillis();
-            if (now - lastInteractTime < INTERACT_COOLDOWN_MS) return;
+        // When turning is enabled the press only lands once the camera is lined
+        // up; with turning disabled the block is pressed directly instead.
+        if (allowTurn.get()) {
+            float[] target = lookAnglesTo(mc, targetBlock);
+            float yawDiff = shortestAngleDiff(mc.player.getYRot(), target[0]);
+            float pitchDiff = shortestAngleDiff(mc.player.getXRot(), target[1]);
+            if (Math.abs(yawDiff) >= FACE_EPSILON || Math.abs(pitchDiff) >= FACE_EPSILON) return;
+        }
 
-            lastInteractTime = now;
-            pressBlock(mc, targetBlock);
+        long now = System.currentTimeMillis();
+        // Auto interact paces itself with the configured random delay; the fixed
+        // cooldown only applies to the occasional one-off presses.
+        if (!autoInteract.get() && now - lastInteractTime < INTERACT_COOLDOWN_MS) return;
+
+        lastInteractTime = now;
+        pressBlock(mc, targetBlock);
+        if (autoInteract.get()) {
+            // Pause a random delay between presses (0.1s .. 10s, in ticks)
+            int minTicks = Math.round(interactMinDelay.get() * 20f);
+            int maxTicks = Math.max(minTicks, Math.round(interactMaxDelay.get() * 20f));
+            enter(State.IDLE, ticksBetween(minTicks, maxTicks));
+        } else {
             // Long pause after pressing so the sequence looks deliberate
             enter(State.IDLE, ticksBetween(60, 160));
         }
@@ -430,7 +585,7 @@ public class AntiAfkModule extends Module {
         boolean forward = false, backward = false, left = false, right = false;
         boolean jump = false, sprint = false;
 
-        if (state == State.WALK) {
+        if (state == State.WALK && allowMove.get()) {
             forward = walkForward;
             backward = walkBackward;
             left = walkLeft;
@@ -439,6 +594,13 @@ public class AntiAfkModule extends Module {
             // Occasional hop while walking so the movement looks alive
             if (random.nextInt(100) < 2) {
                 jump = true;
+            }
+
+            // Keep the player inside the 3x3 area: if the current keys would
+            // push past the boundary, hold still this tick instead.
+            double[] move = worldMove(mc, forward, backward, left, right);
+            if (!movementAllowed(mc, move[0], move[1])) {
+                forward = backward = left = right = false;
             }
         }
 
