@@ -4,11 +4,6 @@
   "settings.autoSaveOnUpdate.name": "Auto Save on Update",
   "settings.autoSaveOnUpdate.description": "Save all settings every time something is changed (so nothing is lost on a crash or quick close)",
 
-  "settings.rainbowMode.name": "Text Rainbow Animation",
-  "settings.rainbowMode.description": "How the text rainbow (Text Chroma on HUD elements) animates: smooth (whole text shifts color together) or diagonal (a colored line sweeps across, character by character)",
-  "settings.rainbowMode.dIAGONAL": "Diagonal",
-  "settings.rainbowMode.sMOOTH": "Smooth",
-
   "modules.antiAfk.name": "Anti AFK",
   "modules.antiAfk.description": "Acts like a real player so you don't get kicked for being AFK. Best setup: stand in a small 3x3x3 box with levers/buttons on the walls - it randomly walks, smoothly looks around, and presses levers/buttons. Stops the moment you touch a key.",
 

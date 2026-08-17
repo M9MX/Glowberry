@@ -42,7 +42,6 @@
     "Modules.Gamma.GammaOptionsMixin",
 
     "cactus.MixinGuiSetScreen",
-    "cactus.MixinHudTextRainbow",
     "cactus.MixinModuleToggleTrack",
     "cactus.MixinModuleToggleFeedback",
     "cactus.MixinMacroEditScreen",

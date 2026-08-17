@@ -38,7 +38,6 @@ import com.dwarslooper.cactus.client.systems.config.ConfigHandler;
 import com.dwarslooper.cactus.client.systems.config.FileConfiguration;
 import com.dwarslooper.cactus.client.systems.config.impl.CactusConfig;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.BooleanSetting;
-import com.dwarslooper.cactus.client.systems.config.settings.impl.EnumSetting;
 import com.dwarslooper.cactus.client.systems.config.settings.impl.Setting;
 import com.dwarslooper.cactus.client.feature.content.ContentPack;
 import com.dwarslooper.cactus.client.feature.content.ContentPackManager;
@@ -48,8 +47,6 @@ import com.dwarslooper.cactus.client.feature.module.ModuleManager;
 import org.m9mx.cactus.glowberry.util.AutoSaveHandler;
 import org.m9mx.cactus.glowberry.util.config.GlowberryConfig;
 import net.minecraft.world.item.Items;
-import org.m9mx.cactus.glowberry.util.rainbow.RainbowMode;
-import org.m9mx.cactus.glowberry.util.rainbow.RainbowModeHandler;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -205,14 +202,6 @@ public class GlowberryCactus implements ICactusAddon {
 					Setting<Boolean> setting = cactusSettings.settings.getDefault()
 							.add(new BooleanSetting("autoSaveOnUpdate", true));
 					AutoSaveHandler.setAutoSaveSetting(setting);
-
-					// How the text rainbow animation plays on HUD elements with
-					// "Text Chroma" or an RGB text color enabled: smooth (whole text
-					// shifts together) or diagonal (a colored line sweeps across,
-					// character by character).
-					Setting<RainbowMode> rainbowMode = cactusSettings.settings.getDefault()
-							.add(new EnumSetting<>("rainbowMode", RainbowMode.DIAGONAL));
-					RainbowModeHandler.setSetting(rainbowMode);
 				}
 			}
 

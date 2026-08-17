@@ -62,7 +62,6 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 * **`FastBreak`** — Fully eliminates the vanilla block reset timer for instantaneous breaking while in Creative Mode.
 
 ### ⚙️ Settings
-* **`Rainbow Text`** `✨ 1.6.1+` — Option to switch Cactus rainbow text between a solid uniform color and smooth animated transitions across text.
 * **`Auto Save`** `✨ 1.6.1+` — Saves configurations automatically on screen changes instead of waiting until close.
 
 ### 💻 Client Commands

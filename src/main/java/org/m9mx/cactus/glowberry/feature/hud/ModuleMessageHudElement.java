@@ -16,7 +16,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector2i;
 import org.m9mx.cactus.glowberry.util.ModuleMessageUtil;
-import org.m9mx.cactus.glowberry.util.rainbow.RainbowRenderer;
 
 /**
  * Module Message - a small overlay that shows module changes and module info
@@ -312,7 +311,7 @@ public class ModuleMessageHudElement extends HideableHudElement<ModuleMessageHud
         } else if (hasIcon) {
             context.fakeItem(message.icon, lineX, PAD_Y + (LINE_HEIGHT - ICON_SIZE) / 2);
         }
-        RainbowRenderer.draw(context, mc.font, text, textX, PAD_Y + (LINE_HEIGHT - 9) / 2, textColor, true, this);
+        context.text(mc.font, text, textX, PAD_Y + (LINE_HEIGHT - 9) / 2, textColor, true);
 
         // State indicator: the message's color (senders pick it, e.g. green for
         // enabled, red for disabled) shown as a rounded border or a bottom bar,
