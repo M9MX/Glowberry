@@ -41,6 +41,8 @@
     "Modules.Gamma.GammaOptionInstanceMixin",
     "Modules.Gamma.GammaOptionsMixin",
 
+    "Modules.moss.BrandClientBrandRetrieverMixin",
+
     "cactus.MixinGuiSetScreen",
     "cactus.MixinModuleToggleTrack",
     "cactus.MixinModuleToggleFeedback",

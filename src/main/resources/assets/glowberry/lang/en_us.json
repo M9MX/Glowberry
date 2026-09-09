@@ -374,6 +374,12 @@
   "modules.trajectoryPreview.settings.showTrajectory.eNABLED": "Enabled",
   "modules.trajectoryPreview.settings.showTrajectory.tARGET_IS_ENTITY": "Target Is Entity",
 
+  "modules.brand_name.name": "Brand Name Changer",
+  "modules.brand_name.description": "Change the brand name displayed in the F3 debug screen and in the main menu",
+  "modules.brand_name.groups.options": "Options",
+  "modules.brand_name.settings.brand.name": "Brand Name",
+  "modules.brand_name.settings.brand.description": "The brand name to display in the F3 debug screen and in the main menu",
+
   "modules.waypointsV2.name": "Waypoints V2",
   "modules.waypointsV2.description": "Create, edit, and manage location/block waypoints with configurable rendering and backups",
 
