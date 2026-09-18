@@ -10,7 +10,7 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 
 ## 📅 Version Matrix
 ### Minecraft `26.2`
-* **Glowberry Version:** `1.6.1`+
+* **Glowberry Version:** `1.6.2`+
 * **Required Cactus:** `1.14`+
 * **Download:** [Get Latest Release (.jar)](https://cdn.modrinth.com/data/Lnf97vJG/versions/OF3ObkMY/glowberry-1.6.1.jar?mr_download_reason=standalone)
 
@@ -39,11 +39,15 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 * **`Waila / Target Info`** — Displays real-time block and entity info directly on your screen (remade system & HUD with extended feature support).
 * **`Module List Element`** `✨ 1.6.1+` — Displays active modules directly on your HUD.
 * **`Module Message Element`** `✨ 1.6.1+` — Displays module notification messages directly on your HUD overlay.
+* **`Gamma`** `✨ 1.6.2+` — Unclamped brightness, night vision support, and gamma restore on shutdown.
 
 ### ⚔️ Tactical Combat (PvP)
 * **`AutoClicker`** — Simulates raw mouse hardware input to deliver flawless, customizable click rates (fixed stationary mouse FPS issue).
 * **`NoHurtCam`** — Strips away aggressive screen-shake and blood-red tints to keep your vision clear under fire.
 * **`ShieldStatus`** — A live overlay tracking enemy shield durability, active blocks, and cooldown windows.
+* **`ArrowTrails`** `✨ 1.6.2+` — Adds visual trails to arrows with configurable colors and effects (ported from discontinued MossAddon).
+* **`DamageIndicator`** `✨ 1.6.2+` — Floating damage numbers and hit popups (ported from discontinued MossAddon).
+* **`HealthIndicators`** `✨ 1.6.2+` — Visual health markers for entities (ported from discontinued MossAddon).
 * **`TotemCounter`** — Tracks your internal storage and prints exact enemy Totem pops straight into the player list.
 * **`Trajectory`** `⚠️ Server Unsafe` `✨Up to 1.6.0` — Draws real-time physics vectors for arrows, snowballs, and eggs.
 
@@ -59,6 +63,7 @@ Glowberry is a comprehensive expansion toolkit built exclusively for the [Cactus
 
 ### 💡 Utility & Sandbox
 * **`BookEdit`** — Unlocks full rich-text formatting, allowing standard color codes (`&` / `§`) right inside writable books.
+* **`BrandNameChanger`** `✨ 1.6.2+` — Change the displayed client brand name (ported from discontinued MossAddon).
 * **`FastBreak`** — Fully eliminates the vanilla block reset timer for instantaneous breaking while in Creative Mode.
 
 ### ⚙️ Settings
