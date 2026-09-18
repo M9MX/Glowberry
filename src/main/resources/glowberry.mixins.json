@@ -24,6 +24,8 @@
     "util.MultiPlayerGameModeAccessorMixin",
     "Modules.TabList.TabListPingMixin",
     "Modules.shield.ShieldSpecialRendererMixin",
+    "Modules.shield.LayerRenderStateMixin",
+    "Modules.shield.GuiRendererMixin",
     "Modules.shield.PlayerItemInHandLayerMixin",
     "Modules.shield.ClientPacketListenerMixin",
     "Modules.shield.MultiPlayerGameModeMixin",
@@ -42,6 +44,11 @@
     "Modules.Gamma.GammaOptionsMixin",
 
     "Modules.moss.BrandClientBrandRetrieverMixin",
+    "Modules.moss.ArrowEntityTickMixin",
+    "Modules.moss.AbstractArrowTickMixin",
+    "Modules.moss.LivingEntityRenderStateMixin",
+    "Modules.moss.DamageIndicatorEntityRendererMixin",
+    "Modules.moss.DamageIndicatorLivingEntityRendererMixin",
 
     "cactus.MixinGuiSetScreen",
     "cactus.MixinModuleToggleTrack",

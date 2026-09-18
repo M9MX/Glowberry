@@ -45,6 +45,10 @@ accessible class net/minecraft/client/Options$OptionAccess
 
 #other
 accessible field net/minecraft/world/level/Level random Lnet/minecraft/util/RandomSource;
+
+# Shield status: ItemStackRenderState$LayerRenderState needs the display context
+# to decide first-person vs third-person shield tinting.
+accessible field net/minecraft/client/renderer/item/ItemStackRenderState displayContext Lnet/minecraft/world/item/ItemDisplayContext;
 accessible field net/minecraft/client/gui/components/AbstractWidget x I
 accessible field net/minecraft/client/gui/components/AbstractWidget y I
 accessible field net/minecraft/client/gui/Gui screen Lnet/minecraft/client/gui/screens/Screen;

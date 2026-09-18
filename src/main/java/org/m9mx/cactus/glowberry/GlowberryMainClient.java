@@ -14,6 +14,7 @@ import org.apache.logging.log4j.Logger;
 import org.m9mx.cactus.glowberry.util.cactus.macro.GlowberryMacroManager; // Import your manager
 import org.m9mx.cactus.glowberry.feature.hud.PickUpLogHud;
 import org.m9mx.cactus.glowberry.feature.modules.GammaModule;
+import org.m9mx.cactus.glowberry.util.DamagePopupTracker;
 import org.m9mx.cactus.glowberry.util.update.UpdateChecker;
 
 public class GlowberryMainClient implements ClientModInitializer {
@@ -22,6 +23,9 @@ public class GlowberryMainClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		GlowberryMacroManager.load();
+
+		// Registers the world-render hook used by the Damage Indicator popups.
+		DamagePopupTracker.ensureRegistered();
 
 		ClientSendMessageEvents.ALLOW_CHAT.register((message) -> {
 			// Iterate through Cactus macros to find a string-trigger match

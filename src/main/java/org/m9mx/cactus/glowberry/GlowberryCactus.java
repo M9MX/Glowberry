@@ -119,6 +119,9 @@ public class GlowberryCactus implements ICactusAddon {
 		registerModule(registryBus, "gamma", () -> new GammaModule(getCategory()));
 		registerModule(registryBus, "antiAfk", () -> new AntiAfkModule(getCategory()));
 		registerModule(registryBus, "brand_name", () -> new BrandNameChanger(getCategory()));
+		registerModule(registryBus, "arrow_trails", () -> new ArrowTrails(getCategory()));
+		registerModule(registryBus, "health_indicators", () -> new HealthIndicators(getCategory()));
+		registerModule(registryBus, "damage_indicator", () -> new DamageIndicator(getCategory()));
 		registerGlowberryConfig(registryBus);
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calc"));
 		registryBus.register(Command.class, ctx -> new CalculatorCommand("calculator"));

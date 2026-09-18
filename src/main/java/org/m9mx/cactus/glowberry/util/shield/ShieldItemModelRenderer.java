@@ -16,7 +16,8 @@ public class ShieldItemModelRenderer {
 	 */
 	public int getColorForShield(Player player) {
 		ShieldStatusModule module = ShieldStatusModule.INSTANCE;
-		if (module == null) return 0xFFFFFFFF;
+		if (module == null || player == null) return 0xFFFFFFFF;
+		if (module.getShieldStateManager() == null) return 0xFFFFFFFF;
 
 		Minecraft mc = Minecraft.getInstance();
 
